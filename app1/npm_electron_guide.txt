@@ -1,0 +1,30 @@
+
+Good guide here: https://electronjs.org/docs/tutorial/first-app
+
+Summarized:
+1. Need to install NPM (node package manager)
+2. Create a new directory for the project
+3. In a console run "npm init" within the directory. 
+4. It'll do some stuff and you'll end up with this:
+	your-app/
+	├── package.json
+	├── main.js
+	└── index.html
+5. Change package.js to include this code instead of the default code. 
+   This code runs an electron project instead of a node project:
+	{
+  	"name": "your-app",
+  	"version": "0.1.0",
+  	"main": "main.js",
+  	"scripts": {
+    	"start": "electron ."
+  		}
+	}
+6. Now install electron, run in a console: "npm install --save-dev electron"
+7. To start the project just run: "npm start" into the console when in the 
+   directory of your project. 
+
+Essentially electron loads a webpage inside a stripped down version of google chrome. 
+The GUI is entirely dependent on css/js. The attached project is a very basic test I did
+so that I could figure out how this works. The main.js is what actually constructs the 
+window and loads the starting webpage. 

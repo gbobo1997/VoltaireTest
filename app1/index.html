@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+	<link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+	<script>
+	var testList = ["item1", "item2", "item3"]
+
+	function hidePane()
+	{
+
+		var x = document.getElementById("column right");
+		testList[0] = x.style.display;
+		if (x.style.display == "none") {x.style.display = "block";} 
+		else {x.style.display = "none";}
+	}
+	</script>
+    <div class="headBar">
+		<ul> 
+			<li> <a href="">Groups</a></li>
+			<li> <button onclick="hidePane()">Toggle Right</li>
+			<li style="float:right"> <a href="">Account</a></li>
+			
+		</ul>
+	</div>
+	<div class="row">
+		<div class="column left"><script>document.write(testList[0])</script></div>
+		<div class="column center">
+		<h1>Hello World!</h1>
+    	We are using node <script>document.write(process.versions.node)</script>,
+    	Chrome <script>document.write(process.versions.chrome)</script>,
+    	and Electron <script>document.write(process.versions.electron)</script>.
+		</div>
+		<div class="column right">Test Content2</div>
+	</div>
+  </body>
+</html>
