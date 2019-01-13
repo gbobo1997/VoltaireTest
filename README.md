@@ -1,5 +1,6 @@
 # Overview
 The application is geared toward student collaboration within a team environment with a social media spin. The application will allow teams to communicate and share documents over a cloud platform, with their documents and communications saved for future reference. Teams will be able to edit documents using the same application they communicate with.  
+[Read More](https://github.com/gbobo1997/VoltaireTest/blob/master/BACS487_ProjectReport_AcademicCollaborationApp.pdf)
 
 ## Planning Start Date: 9/1/2018
 ## Development Start Date: 2/1/2019
