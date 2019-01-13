@@ -6,11 +6,18 @@ The application is geared toward student collaboration within a team environment
 
 # Team Members
 Front End:
-Robert Carver - lead
-Courtney Casperson
-Austin Carter
+
+- Robert Carver - lead
+
+- Courtney Casperson
+
+- Austin Carter
   
 Back End: 
-Nathaniel Been
-Marleigh Catteruza
-Tyler Marler
+
+- Nathaniel Been - lead
+
+- Marleigh Catteruza
+
+- Tyler Marler
+
