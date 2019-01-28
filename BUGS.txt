@@ -1,0 +1,8 @@
+Know Dev Bugs:
+
+Dev Bug 1 (1/28/2019, RC):
+	'electron' is not recognized as an internal or external command,
+	operable program or batch file....
+
+Fix: this indicates electron isnt installed locally, as long as you have node and npm installed, the fix is easy. 
+Simply run npm i -g electron, rebuild the app with 'npm build' and try to start it again with 'npm start'
