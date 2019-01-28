@@ -2,38 +2,43 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>MD Editor</title>
+    <title>Login</title>
 	<link rel="stylesheet" href="styles.css">
-
-  </head>
-  <body>
-
-    <div id="mySidenav" class="sidenav">
-      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-      <a href="#">New</a>
-      <a href="openFile.html">Open</a>
-      <a href="#">Settings</a>
+  <body id="body">
+    <!-- 
+    JS function to determine logged in or not
+    redirects to main page if logged in
+    displays login area on button click for fancy fx
+     -->
+     <div class="loginArea" id="loginArea2">
+        <center>
+          Welcome to Project Voltaire<br>
+        <button type="button" onclick="rdsLogin()">Login</button>
+      </center>
     </div>
-
-    <!-- Use any element to open the sidenav -->
-    <button type="button" onclick="openNav()">Menu</button>
-    Current File: <input type="text" id="fileName" name="fileName">
-    <div id="main">
-      <button id="saveMe" onclick="writeContent()">Save</button>
-      <div class="flexbox">
-
-        <textarea class="left" id="text-input" oninput="this.editor.update()"
-              rows="6" cols="60">Type **Markdown** here.</textarea>
-      
-        <div class="right" id="preview"></div>
-      </div>
-      <script src="node_modules/markdown/lib/markdown.js"></script>
-      <script src="liveEdit.js"></script>
-
-    </div>
-    <script src="openFile.js"></script>
-    <script src="navMenu.js"></script> 
-    <script src="getContent.js"></script>
 
   </body>
 </html>
+<script>
+  
+  function rdsLogin()
+  {
+    var content = '<center>Welcome to Project Voltaire<br>Username: <input type="text" name="uName" id="uName"><br>Password: <input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></center>';
+    document.getElementById("loginArea2").innerHTML = content;
+  }
+
+  function loginConfirm()
+  {
+    var username = document.getElementById("uName").value;
+    var password = document.getElementById("pWord").value;
+
+
+    // heres where we could have a database query that hashes the password string and compares it against the hash associated with the username 
+    if(username == 'root' && password == 'test')
+    {
+      window.location.href = 'home.html';
+    }
+
+  }
+</script>
+
