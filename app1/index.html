@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Login</title>
 	<link rel="stylesheet" href="styles.css">
-  <body id="body">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />
+  <body id="canvas">
     <!-- 
     JS function to determine logged in or not
     redirects to main page if logged in
@@ -12,7 +13,7 @@
      -->
      <div class="loginArea" id="loginArea2">
         <center>
-          Welcome to Project Voltaire<br>
+          <h1>Welcome to Project Voltaire</h1><br>
         <button type="button" onclick="rdsLogin()">Login</button>
       </center>
     </div>
@@ -23,7 +24,7 @@
   
   function rdsLogin()
   {
-    var content = '<center>Welcome to Project Voltaire<br>Username: <input type="text" name="uName" id="uName"><br>Password: <input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></center>';
+    var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username:<input type="text" name="uName" id="uName"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
     document.getElementById("loginArea2").innerHTML = content;
   }
 
@@ -33,12 +34,15 @@
     var password = document.getElementById("pWord").value;
 
 
-    // heres where we could have a database query that hashes the password string and compares it against the hash associated with the username 
+    // heres where we would have a database query that hashes the password string and compares it against the hash associated with the username 
     if(username == 'root' && password == 'test')
     {
       window.location.href = 'home.html';
     }
-
+    else
+    {
+      alert("Incorrect Username or Password");
+    }
   }
 </script>
 
