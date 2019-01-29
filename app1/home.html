@@ -2,18 +2,28 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Home</title>
 	<link rel="stylesheet" href="styles2.css">
   <body id="body">
   	<section>
   		<div class="column">Menu Bar</div>
   	</section>
   	<section>
-  		<div class = "column">First</div>
-  		<div class="column">Second</div>
-  		<div class="column">Third</div>
+  		<div class="columnScroll">First</div>
+  		<div class="columnScroll" id="fillMe">Second<br></div>
+  		<div class="columnScroll">Third
+        <script>
+          var loremIpsum = require('lorem-ipsum');
+          var output = loremIpsum(
+            {
+              count: 4,
+              units: 'paragraphs'
+            }
+          );
+          document.getElementById("fillMe").innerHTML += output;
+        </script>
+      </div>
   	</section>
 
   </body>
 </html>
-

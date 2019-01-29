@@ -1,5 +1,5 @@
 section {
-	
+
 	margin: 0 auto;
 	display: flex;
 }
@@ -21,7 +21,18 @@ section:first-of-type .column:first-of-type {
 	flex-basis: 0;
 }
 
-.column:first-of-type {
+.columnScroll {
+	margin: 2px;
+	height: 80vh;
+	border-style: solid;
+	border-width: 3px;
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
+	overflow: auto;
+}
+
+.columnScroll:first-of-type {
 	flex-grow: .75;
 	flex-shrink: .75;
 	flex-basis: 0;

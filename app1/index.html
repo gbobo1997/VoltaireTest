@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />
   <body id="canvas">
-    <!-- 
+    <!--
     JS function to determine logged in or not
     redirects to main page if logged in
     displays login area on button click for fancy fx
@@ -21,7 +21,7 @@
   </body>
 </html>
 <script>
-  
+
   function rdsLogin()
   {
     var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username:<input type="text" name="uName" id="uName"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
@@ -34,7 +34,7 @@
     var password = document.getElementById("pWord").value;
 
 
-    // heres where we would have a database query that hashes the password string and compares it against the hash associated with the username 
+    // heres where we would have a database query that hashes the password string and compares it against the hash associated with the username
     if(username == 'root' && password == 'test')
     {
       window.location.href = 'home.html';
@@ -45,4 +45,3 @@
     }
   }
 </script>
-
