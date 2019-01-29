@@ -10,20 +10,22 @@
   	</section>
   	<section>
   		<div class="columnScroll">First</div>
-  		<div class="columnScroll" id="fillMe">Second<br></div>
-  		<div class="columnScroll">Third
-        <script>
-          var loremIpsum = require('lorem-ipsum');
-          var output = loremIpsum(
-            {
-              count: 4,
-              units: 'paragraphs'
-            }
-          );
-          document.getElementById("fillMe").innerHTML += output;
-        </script>
+  		<div class="columnScroll" id="fillMe">Second<br>
+        <div class="row">Output</div>
+        <div class="row">Input</div>
       </div>
+  		<div class="columnScroll">Third</div>
   	</section>
+    <script>
+      var loremIpsum = require('lorem-ipsum');
+      var output = loremIpsum(
+        {
+          count: 4,
+          units: 'paragraphs'
+        }
+      );
+      //document.getElementById("fillMe").innerHTML += output;
+    </script>
 
   </body>
 </html>

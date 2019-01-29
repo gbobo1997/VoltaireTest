@@ -10,8 +10,5 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^3.0.8"
-  },
-  "dependencies": {
-    "markdown-it": "^8.4.2"
   }
 }

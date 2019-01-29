@@ -32,6 +32,22 @@ section:first-of-type .column:first-of-type {
 	overflow: auto;
 }
 
+.row {
+	display: flex;
+	border-style: solid;
+	border-width: 1px;
+}
+
+.row:first-of-type {
+	flex-grow: 0.75;
+	border-color: red;
+}
+
+.row:second-of-type {
+	flex-grow: 0.25;
+	border-color: green;
+}
+
 .columnScroll:first-of-type {
 	flex-grow: .75;
 	flex-shrink: .75;
