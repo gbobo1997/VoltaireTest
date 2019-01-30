@@ -11,6 +11,7 @@ function createDbQuery(){
     return `CREATE TABLE Users (
         UserID int NOT NULL AUTO_INCREMENT,
         UserName varchar(32) NOT NULL,
+        ScreenName varchar(32) NOT NULL,
         Password varchar(64) NOT NULL,
         PRIMARY KEY (UserID)
     )`;

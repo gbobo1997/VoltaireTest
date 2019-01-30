@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const authRoutes = require('./code/auth/authRoute');
+const authRoutes = require('./auth/authRoute');
+const db = require('./db');
 
 const app = express();
 
@@ -18,5 +19,9 @@ app.use((req, res, next) =>{
 });
 
 app.use('/auth', authRoutes);
+app.listen(process.env.PORT || 3000, (error) =>{
+    if (error) console.log('error');
+    else console.log('running');
+});
 
 module.exports = app;
