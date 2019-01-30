@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const { QueryResult, Error } = require('./common');
 
 async function connectToDb(){
     const {DB_USER, DB_PASS, DB_NAME, SOCKET, DB_TYPE } = process.env; 
@@ -7,21 +8,19 @@ async function connectToDb(){
     if (DB_TYPE === 'Production') db_options.socketPath = SOCKET;
 
     const connection = mysql.createConnection(db_options);
-    
-    return new Promise((resolve, reject) => {
-        connection.connect((error) =>{
-            if (error) reject({code : '500', error : error});
-            else resolve(connection);
-        })
-    });
+    connection.connect((error) =>{
+        if (error){
+            console.log(error);
+            return null;
+        }
+        else return connection;
+    })
 }
 
 async function queryDb(connection, query, values=[]){
-    return new Promise((resolve, reject) =>{
-        connection.query(query, values, (error, result) =>{
-            if (error) reject({code : '500', error : error});
-            else resolve(result);
-        });
+    connection.query(query, values, (error, result) =>{
+        if (error) return new Error(500, 'database error', error);
+        else return new QueryResult(result);
     });
 }
 

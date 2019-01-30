@@ -1,48 +1,29 @@
 const express = require('express');
 
-const db = require('../db');
+const { executeRoute, Success } = require('../common');
 const validation = require('./authValidation');
 const controller = require('./authController');
 
 const router = express.Router();
 
-router.post('/login', (request, response) =>{
-    login(request)
-        .then(result =>{
-            const {code, ...values} = result;
-            response.status(code).send(values);
-        })
-        .catch(result => response.status(result.code).send(result.error));
-});
-
-router.post('/sign-up', (request, response) =>{
-    signUp(request)
-    .then(result =>{
-        const {code, ...values} = result;
-        response.status(code).send(values);
-    })
-    .catch(result => response.status(result.code).send(result.error));
-});
+router.post('/login', (request, response) => executeRoute(login, request, response));
+router.post('/sign-up', (request, response) => executeRoute(signUp, request, response));
 
 async function login(request){
-    if (!validation.validateLogin(request)) return {code: '400', error: 'validation error'};
+    const valid = validation.validateLogin(request);
+    if (valid.isError()) return valid;
 
-    const connection = await db.connectToDb();
-    const id = await controller.verifyPassword(connection, request.body.name, request.body.password);
-    if (id === null) return {code : '401', error : 'auth error'};
+    const verify = await controller.verifyPassword(connection, request.body.name, request.body.password);
+    if (verify.isError()) return verify;
 
-    const token = controller.createToken(id);
-    return {code : '200', token : token};
+    return controller.createToken(verify.getParam('id'));
 }
 
 async function signUp(request){
-    const connection = await db.connectToDb();
+    const valid = await validation.validateSignUp(connection, request);
+    if (valid.isError()) return valid;
 
-    if (!validation.validateSignUp(connection, request)) return {code:'400', error:'validation error'};
-    const result = controller.signUp(connection, request.body.name, request.body.screen_name, request.body.password);
-    
-    if (result) return {code:'200', id: result}
-    else return {code:'500', error:'error'}
+    return await controller.signUp(connection, request.body.name, request.body.screen_name, request.body.password);
 }
 
 module.exports = router;
