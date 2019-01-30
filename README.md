@@ -10,7 +10,7 @@ Front End:
 
 - Robert Carver - lead
 
-- Courtney Casperson
+- Marleigh Cattaruzza
 
 - Austin Carter
   
@@ -18,7 +18,7 @@ Back End:
 
 - Nathaniel Been - lead
 
-- Marleigh Catteruza
+- Courtney Casperson
 
 - Tyler Marler
 
