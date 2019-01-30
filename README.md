@@ -22,3 +22,13 @@ Back End:
 
 - Tyler Marler
 
+# Schedule
+1. Login Message
+    - Username - string
+    - Password - string
+2. Sign-up 
+    - Username - string
+    - Password - string
+    - Name - string
+3. Logout
+    - clear a cookie
