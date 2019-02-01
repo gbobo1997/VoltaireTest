@@ -1,26 +1,3 @@
-const db = require('./db');
-
-function executeRoute(internal_function, request, response){
-    handleConnection(internal_function, request)
-    .then(result => sendResult(response, result))
-    .catch(result => sendResult(response, result));
-}
-
-async function handleConnection(internal_function, request){
-    const connection = await db.connectToDb();
-    if (connection === null) return { code: '500', error: 'database connection error'}
-    else{
-        const result = internal_function(request);
-        connection.end();
-        return result;
-    }
-}
-
-function sendResult(response, result){ 
-    if (result.isError()) console.log(result);
-    response.status(result.getCode()).send(result.getParams());
-}
-
 class Success{
     constructor(params=null){
         this.params = params;
@@ -44,9 +21,12 @@ class Error{
 
     getCode(){ return this.code; }
 
-    getMessage(){ return this.message; }
-
-    getError(){ return this.error; }
+    getParams(){
+        return {
+            message : this.message,
+            error : this.error
+        }
+    }
 
     isError(){ return true; }
 }
@@ -56,11 +36,27 @@ class QueryResult{
         this.result = result;
     }
 
-    getResult(){ return this.result; }
+    getData(){ return this.result; }
+
+    getDataValue(attribute, index=0){
+        if (this.result == null || index < 0 || index >= this.result.length){
+            console.log('could not get '+attribute+'of item '+index+' from '+this.result);
+            return null;
+        }
+        return this.result[index][attribute];
+    }
+
+    getAddedRowId(){
+        if (this.result == null || this.result.insertId == null){
+            console.log('there was no insertId for this query');
+            return null;
+        }
+        return this.result.insertId;
+    }
 
     isError(){ return false; }
 
     isEmpty(){ return this.result.length === 0; }
 }
 
-module.exports = { executeRoute, Success, Error, QueryResult }
+module.exports = {Success, Error, QueryResult}
