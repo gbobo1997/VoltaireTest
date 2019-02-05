@@ -37,9 +37,9 @@ function createToken(id){
 //database interaction methods
 async function createUser(connection, name, screen_name, password){
     const enc_password = await bcrypt.hash(password, 10);
-    if(!enc_password) return null;
+    if(!enc_password) return new Error(500, 'password encryption failed');
 
-    const query = `INSERT INTO Users (USerName, ScreenName, Password) VALUES (?,?,?);`;
+    const query = `INSERT INTO Users (UserName, ScreenName, Password) VALUES (?,?,?);`;
     const result = await queryDb(connection, query, [name, screen_name, enc_password]);
 
     if (result.isError()) return result;

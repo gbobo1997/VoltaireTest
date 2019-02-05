@@ -19,6 +19,7 @@ async function connectToDb(){
 async function queryDb(connection, query, values=[]){
     return new Promise((resolve) =>{
         connection.query(query, values, (error, result) =>{
+            console.log(result);
             if (error) resolve(new Error(500, 'database error', error));
             else resolve(new QueryResult(result));
         });

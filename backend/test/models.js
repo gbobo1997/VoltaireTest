@@ -1,5 +1,12 @@
 const bcrypt = require('bcrypt');
 
+class TestModels{
+    constructor(models, token_model=null){
+        this.models = models;
+        this.token_model = token_model;
+    }
+}
+
 class DbModel{
     constructor(id){
         this.id = id;
@@ -99,4 +106,4 @@ class DocumentModel extends DbModel{
     }
 }
 
-module.exports = { UserModel }
+module.exports = { TestModels, UserModel }

@@ -6,6 +6,8 @@ class Inserter{
         this.connection = connection;
     }
 
+    getModels()
+
     async executeInsert(){
         if (!this.validateModels()) return;
 

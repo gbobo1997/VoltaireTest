@@ -1,66 +1,89 @@
 const chai = require('./chai');
 const chaiHttp = require('chai-http');
+const deep_equal = require('deep-equal-in-any-order');
 
-const should = chai.should();
 const expect = chai.expect;
 chai.use(chaiHttp);
+chai.use(deep_equal);
 
 const test_db = require('./testdb');
+const { Success, Error, QueryResult } = require('../API/common');
 
-async function executeTest(connection, desc, models, internal_function, token_model=null){
-    it(desc, (done) =>{
-        await test_db.recreateDb(connection, models);
+class TestSuite{
+    constructor(description){
+        this.description = description;
+        this.tests = [];
+    }
 
-        if(token_model == null) internal_function(connection);
-        else{
-            const token = test_db.getToken();
-            internal_function(connection, token)
-        }
-        done();
-    });
+    addTests(tests){
+        this.tests = tests;
+    }
+
+    async executeTestSuite(){
+        describe(this.description, () =>{
+            test_db.handleConnection((connection) =>{
+                this.tests.forEach((test) =>{
+                    await test.executeTest(connection);
+                });
+            });
+        });
+    }
+
+    async executeTest(connection){
+        describe(this.description, () =>{
+            this.tests.forEach((test) =>{
+                await test.executeTest(connection);
+            });
+        });
+    }
 }
 
-function assertError(err){
+class Test{
+    constructor(description, {models, token_model}, func){
+        this.description = description;
+        this.models = models;
+        this.token_model = token_model;
+        this.internal_function = func;
+    }
 
+    async executeTest(connection){
+        it(this.description, (done) =>{
+            await test_db.recreateDb(connection, this.models);
+    
+            if(this.token_model == null) internal_function(connection);
+            else{
+                const token = test_db.getToken();
+                await internal_function(connection, token)
+            }
+            done();
+        });
+    }
 }
 
-function assertSuccess(success){
+function assertRouteResult(err, result, code, body){
+    expect(err).to.be.null;
+    expect(result).to.have.status(code);
+    assertEquals(result.body, body);
+}
 
+function assertError(err, code, message){
+    expect(err).to.be.an.instanceOf(Error);
+    expect(err.getCode()).to.equal(code);
+    expect(err.getParams().message).to.equal(message);
+}
+
+function assertSuccess(success, body=null){
+    expect(success).to.be.an.instanceOf(Success);
+    assertEquals(success.getParams(), body);
+}
+
+function assertQueryResult(result, data){
+    expect(result).to.be.an.instanceOf(QueryResult);
+    assertEquals(result.getData(), data);
 }
 
 function assertEquals(a,b){
-    const result = equals(a,b);
-    expect(result).to.be.true;
+    expect(a).to.deep.equalInAnyOrder(b);
 }
 
-function equals(a, b){
-    if (a instanceof Object && b instanceof Object) return equalsObject(a,b)
-    else if (Array.isArray(a) && b.isArray(b)) return equalsArray(a,b);
-    else return equalsPrimitive(a,b);
-}
-
-function equalsPrimitive(a, b){
-    return a === b;
-}
-
-function equalsObject(a, b){
-    const a_props = Object.keys(a);
-    const b_props = Object.keys(b);
-    const diff = a_props.filter(prop => !b_props.includes(prop));
-    if (a_props.length !== b_props.length || diff.length === 0) return false;
-
-    a_props.forEach(prop =>{
-        if (!equals(a[prop], b[prop])) return false;
-    });
-    return true;
-}
-
-function equalsArray(a, b){
-    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return false;
-    a.forEach(element =>{
-        if (!b.some(e => equals(element, e))) return false;
-    });
-    return true;
-}
-
-module.exports = { executeTest }
+module.exports = { chai, Test, TestSuite, assertRouteResult, assertError, assertSuccess, assertQueryResult, assertEquals }
