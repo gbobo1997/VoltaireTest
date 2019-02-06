@@ -1,7 +1,7 @@
 const controller = require('./authController');
 const { Error, Success } = require('../common');
 
-function validateLogin(body, connection){
+function validateLogin(body){
     if (body.name == null || body.password == null) return new Error(400, 'validation error');
     else return new Success();
 }

@@ -14,27 +14,27 @@ class Inserter{
         const divided = this.divideModels();
         const ordered = this.getInsertOrder(divided);
 
-        ordered.forEach(async group => {
+        for (var group of ordered){
             await this.insertModelType(group.models, group.type);
-        });
+        }
     }
 
     validateModels(){
-        this.models.forEach(model =>{
+        for (var model of this.models){
             if (!model.hasValidAttributes() || !model.hasValidRelationships()){
                 return false;
             }
-        });
+        }
         return true;
     }
 
     divideModels(){
         const divided = {};
-        this.models.forEach(model =>{
+        for (var model of this.models){
             const type = model.constructor.name;
             if (divided[type] === undefined) divided[type] = [];
             divided[type].push(model);
-        });
+        }
         return divided;
     }
 
@@ -51,6 +51,11 @@ class Inserter{
     }
 
     async insertModelType(models, type){
+        if (type === 'UserModel'){
+            for (var model of models){
+                await model.encryptPassword();
+            }
+        }
         const query = this.getModelTypeQuery(models, type);
 
         const result = await db.queryDb(this.connection, query);

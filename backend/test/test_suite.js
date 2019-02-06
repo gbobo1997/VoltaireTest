@@ -10,12 +10,8 @@ const test_db = require('./testdb');
 const { Success, Error, QueryResult } = require('../API/common');
 
 class TestSuite{
-    constructor(description){
+    constructor(description, tests){
         this.description = description;
-        this.tests = [];
-    }
-
-    addTests(tests){
         this.tests = tests;
     }
 
@@ -64,10 +60,14 @@ class Test{
     }
 }
 
-function assertRouteResult(err, result, code, body){
-    expect(err).to.be.null;
+function assertRouteResult(result, code, body=false){
     expect(result).to.have.status(code);
-    assertEquals(result.body, body);
+    if (body !== false) assertEquals(result.body, body);
+}
+
+function assertRouteError(result, code, message){
+    expect(result).to.have.status(code);
+    assertEquals(result.body.message, message);
 }
 
 function assertError(err, code, message){
@@ -76,18 +76,18 @@ function assertError(err, code, message){
     expect(err.getParams().message).to.equal(message);
 }
 
-function assertSuccess(success, body=null){
+function assertSuccess(success, body=false){
     expect(success).to.be.an.instanceOf(Success);
-    assertEquals(success.getParams(), body);
+    if (body !== false) assertEquals(success.getParams(), body);
 }
 
-function assertQueryResult(result, data){
+function assertQueryResult(result, data=false){
     expect(result).to.be.an.instanceOf(QueryResult);
-    assertEquals(result.getData(), data);
+    if (data !== false) assertEquals(result.getData(), data);
 }
 
 function assertEquals(a,b){
     expect(a).to.deep.equalInAnyOrder(b);
 }
 
-module.exports = { chai, Test, TestSuite, assertRouteResult, assertError, assertSuccess, assertQueryResult, assertEquals }
+module.exports = { chai, expect, Test, TestSuite, assertRouteResult, assertRouteError, assertError, assertSuccess, assertQueryResult, assertEquals }

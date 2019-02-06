@@ -22,7 +22,6 @@ async function handleConnection(request, controller, validator){
 }
 
 function sendResult(response, result){ 
-    console.log(result);
     response.status(result.getCode()).send(result.getParams());
 }
 

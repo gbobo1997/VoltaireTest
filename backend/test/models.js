@@ -52,8 +52,8 @@ class UserModel extends DbModel{
         return DbModel.getValueString(props);
     }
 
-    static async encryptPassword(password){
-        return await bcrypt.hash(password, 10);
+    async encryptPassword(){
+        this.password = await bcrypt.hash(this.password, 10);
     }
 
     static getDbName(){
@@ -68,7 +68,7 @@ class UserModel extends DbModel{
         return 0;
     }
 }
-UserModel.insert_id = 0;
+UserModel.insert_id = 1;
 
 
 //this is a test model
@@ -98,6 +98,6 @@ class DocumentModel extends DbModel{
         this.owner.push(user.getID());
     }
 }
-DocumentModel.insert_id = 0;
+DocumentModel.insert_id = 1;
 
 module.exports = { TestModels, UserModel }

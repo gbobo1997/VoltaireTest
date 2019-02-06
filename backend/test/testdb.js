@@ -22,13 +22,13 @@ async function resetDb(connection){
     const result = await db.queryDb(connection, query);
     if (result.isError()) throw new Error('error in clearing database '+result.getError());
 
-    models.UserModel.insert_id = 0;
+    models.UserModel.insert_id = 1;
     return result;
 } 
 
 async function populateDb(connection, models){
     const insert = new Inserter(models, connection);
-    insert.executeInsert();
+    await insert.executeInsert();
 }
 
 function getToken(token_model){
