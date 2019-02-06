@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon ./API/index.js",
     "createdb": "node ./API/createdb.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --timeout 3000"
   },
   "author": "",
   "license": "ISC",

@@ -12,7 +12,7 @@ class DbModel{
         this.id = id;
     }
 
-    getID(){
+    getId(){
         return this.id;
     }
 
@@ -27,18 +27,12 @@ class DbModel{
     static getValueString(props){
         return '('+props.join()+')';
     }
-
-    static getValueString(models){
-        return models.map(model => model.getValueString()).join();
-    }
 }
 
 class UserModel extends DbModel{
-    static insert_id = 0;
-
     constructor(name, screen_name, password){
-        super(insert_id);
-        insert_id++;
+        super(UserModel.insert_id);
+        UserModel.insert_id++;
 
         this.name = name;
         this.screen_name = screen_name;
@@ -54,7 +48,7 @@ class UserModel extends DbModel{
     }
 
     getValueString(){
-        const props = [this.name, this.screen_name, this.password];
+        const props = ["'"+this.name+"'", "'"+this.screen_name+"'", "'"+this.password+"'"];
         return DbModel.getValueString(props);
     }
 
@@ -74,15 +68,14 @@ class UserModel extends DbModel{
         return 0;
     }
 }
+UserModel.insert_id = 0;
 
 
 //this is a test model
 class DocumentModel extends DbModel{
-    static insert_id = 0;
-
     constructor(name, content){
-        super(insert_id + 1);
-        insert_id++;
+        super(DocumentModel.insert_id + 1);
+        DocumentModel.insert_id++;
 
         this.name = name;
         this.content = content;
@@ -105,5 +98,6 @@ class DocumentModel extends DbModel{
         this.owner.push(user.getID());
     }
 }
+DocumentModel.insert_id = 0;
 
 module.exports = { TestModels, UserModel }

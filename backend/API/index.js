@@ -19,9 +19,9 @@ app.use((req, res, next) =>{
 });
 
 app.use('/auth', authRoutes);
-app.listen(process.env.PORT || 3000, (error) =>{
+const server = app.listen(process.env.PORT || 3000, (error) =>{
     if (error) console.log('error');
     else console.log('running');
 });
 
-module.exports = app;
+module.exports = {app, server};

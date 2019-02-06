@@ -1,4 +1,4 @@
-const chai = require('./chai');
+const chai = require('chai');
 const chaiHttp = require('chai-http');
 const deep_equal = require('deep-equal-in-any-order');
 
@@ -19,20 +19,23 @@ class TestSuite{
         this.tests = tests;
     }
 
-    async executeTestSuite(){
-        describe(this.description, () =>{
-            test_db.handleConnection((connection) =>{
-                this.tests.forEach((test) =>{
-                    await test.executeTest(connection);
-                });
+    static executeTestSuite({description, tests}, server){
+        describe(description, function(){
+            tests.forEach((test) =>{
+                test.constructor.executeTest(test);
             });
+
+            after(function(done){
+                server.close();
+                done();
+            })
         });
     }
 
-    async executeTest(connection){
-        describe(this.description, () =>{
-            this.tests.forEach((test) =>{
-                await test.executeTest(connection);
+    static executeTest({description, tests}){
+        describe(description, function(){
+            tests.forEach((test) =>{
+                test.constructor.executeTest(test);
             });
         });
     }
@@ -46,16 +49,17 @@ class Test{
         this.internal_function = func;
     }
 
-    async executeTest(connection){
-        it(this.description, (done) =>{
-            await test_db.recreateDb(connection, this.models);
+    static executeTest({description, models, token_model, internal_function}){
+        it(description, async function(){
+            const connection = await test_db.startConnection();
+            await test_db.recreateDb(connection, models);
     
-            if(this.token_model == null) internal_function(connection);
+            if(token_model == null) await internal_function(connection);
             else{
                 const token = test_db.getToken();
                 await internal_function(connection, token)
             }
-            done();
+            connection.end();
         });
     }
 }

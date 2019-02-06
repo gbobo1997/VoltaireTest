@@ -51,4 +51,4 @@ async function getUser(connection, name){
     return result = await queryDb(connection, query, name);
 }
 
-module.exports = { login, signUp, getUser }
+module.exports = { login, signUp, getUser, createUser }
