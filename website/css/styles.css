@@ -1,0 +1,12 @@
+body {
+	width: 100wh;
+  	height: 100vh;
+  	background: rgb(71, 84, 114);
+}
+
+.center {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 75%;
+}
