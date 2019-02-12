@@ -21,6 +21,7 @@ section:first-of-type .column:first-of-type {
 	flex-basis: 0;
 }
 
+
 .columnScroll {
 	margin: 2px;
 	height: 80vh;
@@ -29,22 +30,25 @@ section:first-of-type .column:first-of-type {
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
-	overflow: auto;
 }
-
-.row {
+.messaging {
 	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+.row {
 	border-style: solid;
 	border-width: 1px;
 }
 
 .row:first-of-type {
-	flex-grow: 0.75;
+	flex-grow: 1;
 	border-color: red;
+	overflow: auto;
 }
 
 .row:second-of-type {
-	flex-grow: 0.25;
+	flex-grow: 1;
 	border-color: green;
 }
 

@@ -13,24 +13,30 @@
   	</section>
   	<section>
   		<div class="columnScroll">First</div>
-  		<div class="columnScroll" id="fillMe">Second<br>
-        <div class="row">Output</div>
-        <div class="row">Input</div>
+  		<div class="columnScroll" id="fillMe">
+        <section class="messaging"> 
+        <div class="row" id="output">Output</div> 
+        <div class="row">
+          <form>
+            Message: <input type="text"  name="textInput" id="tInput">
+            <input type="button" value="Send" onclick="sendMessage()">
+          </form>
+        </div>   
+        </section>    
       </div>
+      
   		<div class="columnScroll">Third</div>
   	</section>
     <script>
       var loremIpsum = require('lorem-ipsum');
       var output = loremIpsum(
         {
-          count: 4,
+          count: 10,
           units: 'paragraphs'
         }
       );
-      //document.getElementById("fillMe").innerHTML += output;
-<<<<<<< HEAD
-      
-=======
+      //document.getElementById("output").innerHTML += output;
+
 
       function logout()
       {
@@ -38,7 +44,16 @@
         localStorage.clear();
         window.location.href = 'index.html';
       }
->>>>>>> origin/master
+
+      /* Techncally we would call this method, then pass the 
+      arguments to the message parser that would package
+      all of the needed info and then post the request to the 
+      webserver but for now this works as a base lol */
+      function sendMessage()
+      {
+        document.getElementById('output').innerHTML += document.getElementById('tInput').value;
+        document.getElementById('tInput').value= '';
+      }
     </script>
 
   </body>
