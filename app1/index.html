@@ -15,16 +15,23 @@
         <center>
           <h1>Welcome to Project Voltaire</h1><br>
         <button type="button" onclick="rdsLogin()">Login</button>
+        <button type="button" onclick="rdsSignup()">Signup</button>
       </center>
     </div>
 
   </body>
 </html>
 <script>
-
+  checkLogin();
   function rdsLogin()
   {
     var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username:<input type="text" name="uName" id="uName"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
+    document.getElementById("loginArea2").innerHTML = content;
+  }
+
+  function rdsSignup()
+  {
+    var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username (Email):<input type="text" name="email" id="email"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="signupConfirm()">Signup</button></form></center>';
     document.getElementById("loginArea2").innerHTML = content;
   }
 
@@ -43,5 +50,32 @@
     {
       alert("Incorrect Username or Password");
     }
+    // we would recieve a token from the webserver, and set this in the session
+    var returnToken = "asdlkasdn";
+    localStorage.setItem('username', username);
+    localStorage.setItem('token', returnToken);
+  }
+
+  function signupConfirm()
+  {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("pWord").value;
+    rdsLogin();
+
+    //Call function that sends password/email to backend 
+    // Currently am lazy so adding that would be a large amount of work
+  }
+
+  
+  function checkLogin()
+  {
+    var username = localStorage.getItem('username');
+    //var token = localStorage.setItem('token');
+
+    if (username != null)
+    {
+      window.location.href = 'home.html';
+    }
+    console.log('username: '+username);
   }
 </script>

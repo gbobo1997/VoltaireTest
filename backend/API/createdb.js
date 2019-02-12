@@ -1,7 +1,11 @@
 var db = require('./db');
 
 async function createDb(){
-    const connection = await db.connectToDb();
+    const conn_res = await db.connectToDb();
+    if (conn_res.isError()) return conn_res;
+
+    const connection = conn_res.getParam('connection');
+
     const query = createDbQuery();
     return result = await db.queryDb(connection, query);
 }
