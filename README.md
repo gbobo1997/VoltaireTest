@@ -32,3 +32,5 @@ Back End:
     - Name - string
 3. Logout
     - clear a cookie
+# Discord
+https://discord.gg/F3fBd3
