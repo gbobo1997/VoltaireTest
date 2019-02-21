@@ -43,7 +43,7 @@ Other than standard 404 errors, the back end will send 400 (validation - incorre
 
 ## Authentication
 ### Create An Account
-**Route**: /auth/sign-up
+**Route**: /auth/sign-up \
 **In:** 
 ```
 {
@@ -53,11 +53,10 @@ Other than standard 404 errors, the back end will send 400 (validation - incorre
 }
 ```
 right now there are no restrictions on names or passwords (except that the name cant match another in the database)
-**Out:** None
-We may want to return a token here so it acts as an immediate login
+**Out:** None (We may want to return a token here so it acts as an immediate login)
 
 ### Login
-**Route:** /auth/login
+**Route:** /auth/login \
 **In:**
 ```
 {
