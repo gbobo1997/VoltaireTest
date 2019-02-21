@@ -6,11 +6,6 @@
 	<link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />
   <body id="canvas">
-    <!--
-    JS function to determine logged in or not
-    redirects to main page if logged in
-    displays login area on button click for fancy fx
-     -->
      <div class="loginArea" id="loginArea2">
         <center>
           <h1>Welcome to Project Voltaire</h1><br>
@@ -40,8 +35,10 @@
     var username = document.getElementById("uName").value;
     var password = document.getElementById("pWord").value;
 
+    // This should generate the api request message
 
     // heres where we would have a database query that hashes the password string and compares it against the hash associated with the username
+    /*
     if(username == 'root' && password == 'test')
     {
       window.location.href = 'home.html';
@@ -50,8 +47,10 @@
     {
       alert("Incorrect Username or Password");
     }
-    // we would recieve a token from the webserver, and set this in the session
+    // we would recieve a token from the webserver, and set this in the session*/
     var returnToken = "asdlkasdn";
+
+
     localStorage.setItem('username', username);
     localStorage.setItem('token', returnToken);
   }
@@ -70,12 +69,36 @@
   function checkLogin()
   {
     var username = localStorage.getItem('username');
-    //var token = localStorage.setItem('token');
+    var token = localStorage.setItem('token');
 
     if (username != null)
     {
       window.location.href = 'home.html';
     }
     console.log('username: '+username);
+
+
+  }
+
+  function apiRequest()
+  {
+    const url = '/auth/login';
+    var data = {
+      name: username,
+      password: password
+    };
+
+    const otherParams = {
+      headers: {
+        "content-type":"application/json; charset=UTF-8"
+      },
+      body: data,
+      method: "POST"
+    };
+
+    fetch(url, otherParams)
+    .then(data=>{return data.json()})
+    .then(res=>{console.log(res)})
+    .catch(error=>console.log(error))
   }
 </script>
