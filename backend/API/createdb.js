@@ -7,17 +7,32 @@ async function createDb(){
     const connection = conn_res.getParam('connection');
 
     const query = createDbQuery();
-    return result = await db.queryDb(connection, query);
+    const result = await db.queryDb(connection, query);
+    console.log(result);
+    return result;
+    
 }
 
 
 function createDbQuery(){
-    return `CREATE TABLE Users (
+    return `CREATE TABLE IF NOT EXISTS Users (
         UserID int NOT NULL AUTO_INCREMENT,
         UserName varchar(32) NOT NULL,
         ScreenName varchar(32) NOT NULL,
         Password varchar(64) NOT NULL,
         PRIMARY KEY (UserID)
+    );
+    CREATE TABLE IF NOT EXISTS ChatGroup ( 
+        GroupID int NOT NULL AUTO_INCREMENT, 
+        GroupName varchar(64) NOT NULL, 
+        PRIMARY KEY (GroupID) 
+    );
+    CREATE TABLE IF NOT EXISTS GroupMembers (
+        GroupID int NOT NULL,
+        UserID int NOT NULL,
+        PRIMARY KEY(GroupID, UserID),
+        FOREIGN KEY(GroupID) REFERENCES ChatGroup(GroupID),
+        FOREIGN KEY(UserID) REFERENCES Users(UserID)
     )`;
 }
 

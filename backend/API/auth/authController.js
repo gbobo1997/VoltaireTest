@@ -30,8 +30,18 @@ async function verifyPassword(connection, name, password){
 }
 
 function createToken(id){
-    const token = jwt.sign({ userId : id }, process.env.SECRET, { expiresIn: "1h" });
-    return new Success({token});
+    const token = jwt.sign({ user_id : id }, process.env.SECRET, { expiresIn: "1h" });
+    return new Success({token, user_id : id});
+}
+
+function authToken(token){
+    try{
+        const decoded = jwt.verify(token, process.env.SECRET);
+        return new Success({id : decoded.user_id});
+    }
+    catch{
+        return new Error(401, 'auth error');
+    }
 }
 
 //database interaction methods
@@ -51,4 +61,4 @@ async function getUser(connection, name){
     return result = await queryDb(connection, query, name);
 }
 
-module.exports = { login, signUp, getUser, createUser, verifyPassword }
+module.exports = { login, signUp, getUser, createUser, verifyPassword, authToken }

@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const authRoutes = require('./auth/authRoute');
+const groupRoutes = require('./group/groupRoute');
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use((req, res, next) =>{
 });
 
 app.use('/auth', authRoutes);
+app.use('/group', groupRoutes);
+
 const server = app.listen(process.env.PORT || 3000, (error) =>{
     if (error) console.log('error');
     else console.log('running');
