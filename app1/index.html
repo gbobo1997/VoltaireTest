@@ -35,60 +35,15 @@
     var username = document.getElementById("uName").value;
     var password = document.getElementById("pWord").value;
 
-    // This should generate the api request message
-
-    // heres where we would have a database query that hashes the password string and compares it against the hash associated with the username
-    /*
-    if(username == 'root' && password == 'test')
-    {
-      window.location.href = 'home.html';
-    }
-    else
-    {
-      alert("Incorrect Username or Password");
-    }
-    // we would recieve a token from the webserver, and set this in the session*/
-    var returnToken = "asdlkasdn";
-
-
-    localStorage.setItem('username', username);
-    localStorage.setItem('token', returnToken);
-  }
-
-  function signupConfirm()
-  {
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("pWord").value;
-    rdsLogin();
-
-    //Call function that sends password/email to backend 
-    // Currently am lazy so adding that would be a large amount of work
-  }
-
-  
-  function checkLogin()
-  {
-    var username = localStorage.getItem('username');
-    var token = localStorage.setItem('token');
-
-    if (username != null)
-    {
-      window.location.href = 'home.html';
-    }
-    console.log('username: '+username);
-
-
-  }
-
-  function apiRequest()
-  {
-    const url = '/auth/login';
+    // login url
+    var URL = 'http://73.153.45.13:8080/home/robert/VoltaireTest/backend/auth/login';
+    // login params
     var data = 
     {
       name: username,
       password: password
     };
-
+    // header stuff with the body data 
     const otherParams = {
       headers: {
         "content-type":"application/json; charset=UTF-8"
@@ -97,9 +52,59 @@
       method: "POST"
     };
 
-    fetch(url, otherParams)
+    fetch(URL, otherParams)
     .then(data=>{return data.json()})
     .then(res=>{console.log(res)})
     .catch(error=>console.log(error))
+
+    // Assuming the correct data is returned, this should work. 
+    localStorage.setItem('user_id', data.user_id);
+    localStorage.setItem('token', data.token);
   }
+
+  function signupConfirm()
+  {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("pWord").value;
+    var screenName = "null for now";
+
+    // signup url
+    var URL = 'http://73.153.45.13:8080/home/robert/VoltaireTest/backend/auth/sign-up';
+    // signup params
+    var data = 
+    {
+      name: email,
+      screen_name: screenName,
+      password: password
+    };
+    // header stuff with the body data 
+    const otherParams = {
+      headers: {
+        "content-type":"application/json; charset=UTF-8"
+      },
+      body: data,
+      method: "POST"
+    };
+
+    fetch(URL, otherParams)
+    .then(data=>{return data.json()})
+    .then(res=>{console.log(res)})
+    .catch(error=>console.log(error))
+    console.log(data);
+
+    rdsLogin();
+  }
+
+  
+  function checkLogin()
+  {
+    var userID = localStorage.getItem('user_id');
+
+    if (userID != null)
+    {
+      window.location.href = 'home.html';
+    }
+    console.log('username: '+username);
+  }
+
 </script>
