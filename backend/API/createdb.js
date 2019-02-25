@@ -8,7 +8,6 @@ async function createDb(){
 
     const query = createDbQuery();
     const result = await db.queryDb(connection, query);
-    console.log(result);
     return result;
     
 }
@@ -37,5 +36,8 @@ function createDbQuery(){
 }
 
 createDb()
-    .then(result => console.log('database created'))
+    .then(result => {
+        if (result.isError()) console.log(result);
+        else console.log('database created')
+    })
     .catch(error => console.log(error));
