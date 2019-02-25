@@ -22,7 +22,7 @@ app.use((req, res, next) =>{
 app.use('/auth', authRoutes);
 app.use('/group', groupRoutes);
 
-const server = app.listen(process.env.PORT || 3000, (error) =>{
+const server = app.listen(3000, '0.0.0.0', (error) =>{
     if (error) console.log('error');
     else console.log('running');
 });
