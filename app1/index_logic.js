@@ -1,113 +1,107 @@
-checkLogin();
+
 function rdsLogin()
 {
-var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username:<input type="text" name="uName" id="uName"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
-document.getElementById("loginArea2").innerHTML = content;
+  var content = '<center><button type="button" onclick="homeLoad()">Back</button><h1>Login</h1><br><form><label>Email:</label><input type="text" name="uName" id="uName" required><br><label>Password:</label><input type="password" name="password" id="pWord" required><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
+  document.getElementById("loginArea2").innerHTML = content;
 }
 
 function rdsSignup()
 {
-var content = '<center><h1>Welcome to Project Voltaire</h1><br><form>Username (Email):<input type="text" name="email" id="email"><br>Password:<input type="text" name="password" id="pWord"><br><button type="button" onclick="signupConfirm()">Signup</button></form></center>';
-document.getElementById("loginArea2").innerHTML = content;
+  var content = '<center><button type="button" onclick="homeLoad()">Back</button><h1>Signup</h1><br><form><label>Screenname:</label><input type="text" name="screenName" id="screenName" required><br><label>Email:</label><input type="text" name="email" id="email"><br><label>Password:</label><input type="password" name="password" id="pWord"><br><button type="button" onclick="signupConfirm()">Signup</button></form></center>';
+  document.getElementById("loginArea2").innerHTML = content;
+}
+
+function homeLoad()
+{
+  var content = '<center><h1>Welcome to Project Voltaire</h1><br><button type="button" onclick="rdsLogin()">Login</button>  <button type="button" onclick="rdsSignup()">Signup</button></center>';
+  document.getElementById("loginArea2").innerHTML = content;
 }
 
 function loginConfirm()
 {
-var username = document.getElementById("uName").value;
-var password = document.getElementById("pWord").value;
+  var username = document.getElementById("uName").value;
+  var password = document.getElementById("pWord").value;
 
-// login url
-var URL = 'http://73.153.45.13:8080/auth/login';
-// login params
-var bodyData = 
-{
-  name: username,
-  password: password
-};
-console.log(bodyData);
-// header stuff with the body data 
-const otherParams = {
-  headers: {
-    "content-type":"application/json; charset=UTF-8"
-  },
-  body: JSON.stringify(bodyData),
-  method: "POST"
-};
+  // login url
+  var URL = 'http://73.153.45.13:8080/auth/login';
+  // login params
+  var bodyData = 
+  {
+    name: username,
+    password: password
+  };
+  console.log(bodyData);
 
+  fetch(URL, {
+    method: 'POST',
+    body: JSON.stringify(bodyData),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(response => {
+    var apiResponse = JSON.stringify(response);
 
-/*
-fetch(URL, otherParams)
-.then(data=>{return data.json()})
-.then(res=>{console.log('fetch 1: '+res)})
-.catch(error=>console.log(error));
-*/
-fetch(URL, otherParams)
-.then(function(response){
-  console.log(response.json());
-})
-.then(returnData => returnData.json());
- window.location.href = 'home.html';
+    var token = apiResponse.token;
+    var user_id = apiResponse.user_id;
 
-// Assuming the correct data is returned, this should work. 
-//localStorage.setItem('user_id', res.user_id);
-//localStorage.setItem('token', res.token);
+    localStorage.setItem('token', token);
+    localStorage.setItem('user_id', user_id);
+    checkLogin();
+  })
+  .catch(error => console.log('Error: ', error))
+  
 }
 
 function signupConfirm()
 {
-var email = document.getElementById("email").value;
-var password = document.getElementById("pWord").value;
-var screenName = "null for now";
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("pWord").value;
+  var screenName = document.getElementById("screenName").value;
 
-// signup url
-var URL = 'http://73.153.45.13:8080/auth/sign-up';
-// signup params
-var data = 
-{
-  name : email,
-  screen_name: screenName,
-  password: password
-};
-// header stuff with the body data 
-const otherParams = {
-  headers: {
-    "content-type":"application/json; charset=UTF-8"
-  },
-  body: data,
-  method: "POST"
-};
+  // signup url
+  var URL = 'http://73.153.45.13:8080/auth/sign-up'; 
 
-fetch(URL, otherParams)
-.then(data=>{return data.json()})
-.then(res=>{console.log(res)})
-.catch(error=>console.log(error))
-console.log(data);
+  var test_data =
+  {
+    name: email,
+    screen_name: screenName,
+    password: password 
+  };
 
-rdsLogin();
-/*
-fetch('http://73.153.45.13:8080/home/robert/test.json')
-.then(function(response) {
-  return response.json();
-})
-.then(function(myJson) {
-  console.log(JSON.stringify(myJson));
-});
-.then(res => )
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => res.json())
+  .then(response => {
+    var apiResponse = JSON.stringify(response);
+    console.log('Success: ', apiResponse);
+    localStorage.setItem('user_id', apiResponse.id);
+    rdsLogin();
 
-fetch('http://73.153.45.13:8080/home/robert/test.json')
-.then(res => res.text())
-.then(text => console.log(text))*/
+  })
+  .catch(error => console.log('Error: ', error))
+
+  //rdsLogin();
 
 }
 
 
 function checkLogin()
 {
-var userID = localStorage.getItem('user_id');
+  var userID = localStorage.getItem('user_id');
 
-if (userID != null)
-{
-  window.location.href = 'home.html';
-}
-console.log('username: '+userID);
+  if (userID != null)
+  {
+    //window.location.href = 'home.html';
+  }
+  console.log('username: '+userID);
 }
