@@ -1,3 +1,27 @@
+class Handler 
+{
+  // We may consider using a group class as well, to handle group
+  // operations but I am unsure. 
+  constructor(token, user_id)
+  {
+    this.token = token;
+    this.user_id = user_id;
+  }  
+  // To be written and used for the entire home.html interface
+  getGroups(token)
+  getGroupChats(group_id)
+  changeUsername()
+  changePassword()
+  createGroup(grup_name)
+  // etc...
+}
+
+// On run we want to generate the handler object by retrieving the token/user_id from the 
+// session storage. Because everything we do requires a token, we should route our
+// arguments via methods within a class where that token is an attribute, 
+// this is a good application of OOP. 
+// let current_user = Handler(a,b);
+
 listGroups();
 var span = document.getElementsByClassName("close")[0];
 var modal = document.getElementById('myModal');  
