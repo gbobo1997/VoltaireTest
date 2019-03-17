@@ -1,4 +1,4 @@
-class Handler 
+/*class Handler 
 {
   // We may consider using a group class as well, to handle group
   // operations but I am unsure. 
@@ -14,7 +14,7 @@ class Handler
   changePassword()
   createGroup(grup_name)
   // etc...
-}
+}*/
 
 // On run we want to generate the handler object by retrieving the token/user_id from the 
 // session storage. Because everything we do requires a token, we should route our
