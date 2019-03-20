@@ -42,8 +42,9 @@ Upon logging in, the backend will send a token that verifies the user's identity
 Other than standard 404 errors, the back end will send 400 (validation - incorrect or invalid parameters sent), 401 (authentication - eitehr no credentials were sent or those credentials were invalid), or 500 (internal database error, something went wrong on the backend).
 
 ## Authentication
+### Testing Status: Complete
 ### Create An Account
-**Route**: /auth/sign-up \
+**Route**: POST /auth/sign-up \
 **In:** 
 ```
 {
@@ -56,7 +57,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:** None (We may want to return a token here so it acts as an immediate login)
 
 ### Login
-**Route:** /auth/login \
+**Route:** POST /auth/login \
 **In:**
 ```
 {
@@ -69,5 +70,65 @@ right now there are no restrictions on names or passwords (except that the name 
 {
   token : token,
   user_id : int
+}
+```
+## Groups 
+### Testing Status: work with basic input, exhaustive tests not written
+### Create a Group
+**Route:** POST /group/create \
+**In:**
+```
+{
+  token : token,
+  user_id : int,
+  group_name : string
+}
+```
+**Out:**
+```
+{
+  group_id : int
+}
+```
+
+### Delete a Group
+**Route:** DELETE /group/delete
+**In:**
+```
+{
+  token : token,
+  group_id : int
+}
+```
+**Out:** no outgoing data
+
+### Change a group's name
+**Route:** PATCH /group/update
+**In:**
+```
+{
+  token : token,
+  group_id : int,
+  group_name : string
+}
+```
+**Out:** no outgoing data
+
+### Get all of a user's groups
+**Route:** POST /group/user_groups
+**In:**
+```
+{
+  token : token,
+  user_id : int
+}
+```
+**Out:** 
+```
+{
+  [
+    group_id : int,
+    group_name : string
+  ]
 }
 ```
