@@ -92,7 +92,7 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 
 ### Delete a Group
-**Route:** DELETE /group/delete
+**Route:** DELETE /group/delete \
 **In:**
 ```
 {
@@ -103,7 +103,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:** no outgoing data
 
 ### Change a group's name
-**Route:** PATCH /group/update
+**Route:** PATCH /group/update \
 **In:**
 ```
 {
@@ -115,7 +115,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:** no outgoing data
 
 ### Get all of a user's groups
-**Route:** POST /group/user_groups
+**Route:** POST /group/user_groups \
 **In:**
 ```
 {
