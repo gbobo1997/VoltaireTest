@@ -49,7 +49,7 @@ class UserModel extends DbModel{
 
     getValueString(){
         const props = ["'"+this.name+"'", "'"+this.screen_name+"'", "'"+this.password+"'"];
-        return DbModel.getValueString(props);
+        return [DbModel.getValueString(props)];
     }
 
     async encryptPassword(){
@@ -57,11 +57,11 @@ class UserModel extends DbModel{
     }
 
     static getDbName(){
-        return 'Users';
+        return ['Users'];
     }
 
     static getInsertColumns(){
-        return '(UserName, ScreenName, Password)';
+        return ['(UserName, ScreenName, Password)'];
     }
 
     static getInsertOrder(){
@@ -70,34 +70,51 @@ class UserModel extends DbModel{
 }
 UserModel.insert_id = 1;
 
-
-//this is a test model
-class DocumentModel extends DbModel{
-    constructor(name, content){
-        super(DocumentModel.insert_id + 1);
-        DocumentModel.insert_id++;
+class GroupModel extends DbModel{
+    constructor(name){
+        super(GroupModel.insert_id);
+        GroupModel.insert_id++;
 
         this.name = name;
-        this.content = content;
-        this.owner = [];
+        this.members = [];
     }
 
     hasValidAttributes(){
-        return (super.hasValidAttributes() && this.name != null && this.owner.length > 0);
+        return (super.hasValidAttributes() && this.name != null);
     }
 
-    hasValidRelationships(user_ids){
-        this.owner.forEach(o => {
-            if (!user_ids.includes(o)) return false;
+    hasValidRelationships(){
+        return this.members.length > 0;
+    }
+
+    addMember(user){
+        if (!(user instanceof UserModel)) throw new Error('group member must be a user');
+        this.members.push(user.getId());
+    }
+
+    getValueString(){
+        const chat_props = ["'"+this.name+"'"];
+        const member_props = [];
+
+        this.members.map(id =>{
+            const props = [this.id, id];
+            member_props.push(DbModel.getValueString(props));
         });
-        return true;
+        return [chat_props, member_props.join()];
     }
 
-    addOwner(user){
-        if (!(user instanceof UserModel)) throw new Error('document owner must be a user');
-        this.owner.push(user.getID());
+    static getDbName(){
+        return ['ChatGroup', 'GroupMembers'];
+    }
+
+    static getInsertColumns(){
+        return ['(GroupName)', '(GroupID, UserID)'];
+    }
+
+    static getInsertOrder(){
+        return 1;
     }
 }
-DocumentModel.insert_id = 1;
+GroupModel.insert_id = 1;
 
-module.exports = { TestModels, UserModel }
+module.exports = { TestModels, UserModel, GroupModel }

@@ -40,19 +40,6 @@ async function validateUpdateGroup(body, connection){
     return new Success();
 }
 
-async function validateDeleteGroup(body, connection){
-    if (body.group_id == null || !Number.isInteger(body.group_id) || body.token == null){
-        return new Error(400, 'validation error');
-    }
-    const token_result = authToken(body.token);
-    if (token_result.isError()) return token_result;
-
-    const token_id = token_result.getParam('id');
-    const member_result = await validateUserIsMemberOfGroup(token_id, body.group_id, connection);
-    if (member_result.isError()) return member_result;
-    return new Success();
-}
-
 async function validateGetUserGroups(body){
     if (body.user_id == null || !Number.isInteger(body.user_id) || body.token == null){
         return new Error(400, 'validation error');

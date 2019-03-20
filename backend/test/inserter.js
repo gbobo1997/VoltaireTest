@@ -56,21 +56,26 @@ class Inserter{
                 await model.encryptPassword();
             }
         }
-        const query = this.getModelTypeQuery(models, type);
+        const queries = this.getModelTypeQuery(models, type);
 
-        const result = await db.queryDb(this.connection, query);
-        if (result.isError()) throw new Error('error inserting models into db: '+result.getParams().error);
-        else return;
+        for (var query of queries){
+            const result = await db.queryDb(this.connection, query);
+            if (result.isError()) throw new Error('error inserting models into db: '+result.getParams().error);
+        }
     }
 
     getModelTypeQuery(models, type){
         if (models === null || models.length === 0) return;
 
-        const db_name = this.getDbName(type);
+        const db_names = this.getDbName(type);
         const columns = this.getInsertColumns(type);
         const values = this.getValueString(models);
 
-        return `INSERT INTO ${db_name} ${columns} VALUES ${values}`;
+        const queries = db_names.map((db_name, index) =>{
+            return `INSERT INTO ${db_name} ${columns[index]} VALUES ${values[index]}`;
+        })
+
+        return queries;
     }
 
     getDbName(type){

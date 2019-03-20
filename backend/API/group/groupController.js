@@ -1,6 +1,7 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
 
+
 async function createGroup(body, connection){
     const {user_id, group_name} = body;
     var query = 'INSERT INTO ChatGroup (GroupName) VALUES (?)';
@@ -40,7 +41,7 @@ async function updateGroup(body, connection){
 
 async function getUsersGroups(body, connection){
     const { user_id } = body;
-    var query = `SELECT GroupMembers.GroupID, GroupName FROM GroupMembers \
+    var query = `SELECT GroupMembers.GroupID AS group_id, GroupName As group_name FROM GroupMembers \
                     INNER JOIN ChatGroup ON ChatGroup.GroupID = GroupMembers.GroupID
                     WHERE UserID = ?`;
     var result = await queryDb(connection, query, user_id);
