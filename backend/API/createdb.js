@@ -29,9 +29,29 @@ function createDbQuery(){
     CREATE TABLE IF NOT EXISTS GroupMembers (
         GroupID int NOT NULL,
         UserID int NOT NULL,
-        PRIMARY KEY(GroupID, UserID),
-        FOREIGN KEY(GroupID) REFERENCES ChatGroup(GroupID),
-        FOREIGN KEY(UserID) REFERENCES Users(UserID)
+        PRIMARY KEY (GroupID, UserID),
+        FOREIGN KEY (GroupID) REFERENCES ChatGroup(GroupID),
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    );
+    CREATE TABLE IF NOT EXISTS Chat ( 
+        ChatID int NOT NULL AUTO_INCREMENT,
+        ChatName varchar(32) NOT NULL,
+        GroupID int NOT NULL,
+        PRIMARY KEY (ChatID),
+        FOREIGN KEY (GroupID) REFERENCES ChatGroup(GroupID)
+    );
+    CREATE TABLE IF NOT EXISTS Message (
+        MessageID int NOT NULL AUTO_INCREMENT,
+        MessageContent TEXT NOT NULL,
+        ChatID int NOT NULL,
+        PRIMARY KEY (MessageID),
+        FOREIGN KEY (ChatID) REFERENCES Chat(ChatID)
+    );
+    CREATE TABLE IF NOT EXISTS UserEdit (
+        EditID int NOT NULL,
+        UserID int NOT NULL,
+        EditContent int NOT NULL,
+        PRIMARY KEY (EditID, UserID)
     )`;
 }
 
