@@ -49,10 +49,20 @@ function createDbQuery(){
     );
     CREATE TABLE IF NOT EXISTS File (
         FileID int NOT NULL AUTO_INCREMENT,
-        FileName varchar(32) NOT NULL,
         GroupID int NOT NULL,
-        FileContent 
-    )
+        FileName varchar(32) NOT NULL,
+        FileContent text NOT NULL,
+        PRIMARY KEY (FileID),
+        FOREIGN KEY (GroupID) REFERENCES ChatGroup(GroupID)
+    );
+    CREATE TABLE IF NOT EXISTS FileLocks (
+        FileID int NOT NULL,
+        UserID int NOT NULL,
+        Expires Timestamp NOT NULL,
+        PRIMARY KEY (FileID),
+        FOREIGN KEY (FileID) REFERENCES File(FileID),
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    );
     CREATE TABLE IF NOT EXISTS UserUpdate (
         UpdateID int NOT NULL,
         UserID int NOT NULL,

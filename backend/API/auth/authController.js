@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
 
+const { createGroup } = require('../group/groupController');
+
 
 // high level route controllers
 async function login(body, connection){
@@ -53,6 +55,12 @@ async function createUser(connection, name, screen_name, password){
     const result = await queryDb(connection, query, [name, screen_name, enc_password]);
 
     if (result.isError()) return result;
+
+    //we need to create a personal group for each user so that they can keep personal files
+    const group_res = await createGroup({user_id : result.getAddedRowId(), group_name: 'personal'}, connection);
+    if (group_res.isError()) return result;
+
+
     else return new Success({id : result.getAddedRowId()});
 }
 
