@@ -63,10 +63,6 @@ class UserModel extends DbModel{
     static getInsertColumns(){
         return ['(UserName, ScreenName, Password)'];
     }
-
-    static getInsertOrder(){
-        return 0;
-    }
 }
 UserModel.insert_id = 1;
 
@@ -100,7 +96,7 @@ class GroupModel extends DbModel{
             const props = [this.id, id];
             member_props.push(DbModel.getValueString(props));
         });
-        return [chat_props, member_props.join()];
+        return [DbModel.getValueString(chat_props), member_props.join()];
     }
 
     static getDbName(){
@@ -110,11 +106,12 @@ class GroupModel extends DbModel{
     static getInsertColumns(){
         return ['(GroupName)', '(GroupID, UserID)'];
     }
-
-    static getInsertOrder(){
-        return 1;
-    }
 }
 GroupModel.insert_id = 1;
 
-module.exports = { TestModels, UserModel, GroupModel }
+function resetInsertIds(){
+    UserModel.insert_id = 1;
+    GroupModel.insert_id = 1;
+}
+
+module.exports = { TestModels, UserModel, GroupModel, resetInsertIds }

@@ -47,11 +47,18 @@ function createDbQuery(){
         PRIMARY KEY (MessageID),
         FOREIGN KEY (ChatID) REFERENCES Chat(ChatID)
     );
-    CREATE TABLE IF NOT EXISTS UserEdit (
-        EditID int NOT NULL,
+    CREATE TABLE IF NOT EXISTS File (
+        FileID int NOT NULL AUTO_INCREMENT,
+        FileName varchar(32) NOT NULL,
+        GroupID int NOT NULL,
+        FileContent 
+    )
+    CREATE TABLE IF NOT EXISTS UserUpdate (
+        UpdateID int NOT NULL,
         UserID int NOT NULL,
-        EditContent int NOT NULL,
-        PRIMARY KEY (EditID, UserID)
+        UpdateType int NOT NULL,
+        UpdateContent varchar(32) NOT NULL,
+        PRIMARY KEY (UpdateID, UserID)
     )`;
 }
 

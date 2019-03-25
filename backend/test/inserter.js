@@ -1,11 +1,11 @@
 const db = require('../API/db');
-const { UserModel } = require('./models');
+const { UserModel, GroupModel } = require('./models');
 
 class Inserter{
     constructor(models, connection){
         this.models = models;
         this.connection = connection;
-        this.classes = { UserModel }
+        this.classes = { UserModel, GroupModel }
     }
 
     async executeInsert(){
@@ -47,7 +47,18 @@ class Inserter{
     }
 
     compareTypes(a, b){
-        return a.constructor.getInsertOrder() - b.constructor.getInsertOrder();
+        return Inserter.getClassOrder(a) - Inserter.getClassOrder(b);
+    }
+
+    static getClassOrder(name){
+        switch(name){
+            case 'UserModel':
+                return 1;
+            case 'GroupModel':
+                return 2;
+            default:
+                return 0;
+        }
     }
 
     async insertModelType(models, type){
@@ -87,7 +98,13 @@ class Inserter{
     }
 
     getValueString(models){
-        return models.map(model => model.getValueString()).join();
+        const values = [];
+        const all_values = models.map(model => model.getValueString());
+        for (let index = 0; index < all_values[0].length; index++){
+            const query_values = all_values.map(value => value[index]).join();
+            values.push(query_values);
+        }
+        return values;
     }
 }
 

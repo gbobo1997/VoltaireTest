@@ -1,5 +1,5 @@
 const { chai, expect, Test, TestSuite, assertRouteResult, assertRouteError } = require('../test_suite');
-const { TestModels, UserModel } = require('../models');
+const { TestModels, UserModel, resetInsertIds } = require('../models');
 const {app} = require('../../API/index');
 
 function createAuthRouteSuite(){
@@ -63,6 +63,7 @@ function createSignUpRouteTests(){
 }
 
 function getDbModels(){
+    resetInsertIds();
     const users = [
         new UserModel('name', 'screen', 'test'),
         new UserModel('name2', 'screen2', 'test2'),

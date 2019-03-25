@@ -30,16 +30,16 @@ async function verifyPassword(connection, name, password){
 }
 
 function createToken(id){
-    const token = jwt.sign({ user_id : id }, process.env.SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ user_id : id }, 'secret', { expiresIn: "1h" });
     return new Success({token, user_id : id});
 }
 
 function authToken(token){
     try{
-        const decoded = jwt.verify(token, process.env.SECRET);
-        return new Success({id : decoded.user_id});
+        const decoded = jwt.verify(token, 'secret');
+        return new Success({id : decoded.userId});
     }
-    catch{
+    catch (error){
         return new Error(401, 'auth error');
     }
 }

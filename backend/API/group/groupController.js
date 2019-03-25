@@ -33,7 +33,8 @@ async function deleteGroup(body, connection){
 async function updateGroup(body, connection){
     const { group_id, group_name } = body;
     var query = 'UPDATE ChatGroup SET GroupName = ? WHERE GroupID = ?';
-    
+    if (group_id === undefined || group_name === undefined) return new Error(500, 'database error');
+
     var result = await queryDb(connection, query, [group_name, group_id]);
     if (result.isError()) return result;
     return new Success();

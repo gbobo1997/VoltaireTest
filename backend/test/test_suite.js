@@ -52,7 +52,7 @@ class Test{
     
             if(token_model == null) await internal_function(connection);
             else{
-                const token = test_db.getToken();
+                const token = test_db.getToken(token_model);
                 await internal_function(connection, token)
             }
             connection.end();

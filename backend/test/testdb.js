@@ -18,13 +18,13 @@ async function recreateDb(connection, models){
 async function resetDb(connection){
     if (process.env.DB_TYPE === 'Production') throw new Error('attempted to wipe production db');
 
-    const query = 'DELETE FROM Users; ALTER TABLE Users AUTO_INCREMENT = 0'
+    const query = `DELETE FROM GroupMembers; DELETE FROM ChatGroup;DELETE FROM Users; ALTER TABLE GroupMembers AUTO_INCREMENT = 0; \
+    ALTER TABLE ChatGroup AUTO_INCREMENT = 0; ALTER TABLE Users AUTO_INCREMENT = 0;`
     const result = await db.queryDb(connection, query);
-    if (result.isError()) throw new Error('error in clearing database '+result.getError());
+    if (result.isError()) throw new Error('error in clearing database '+result.getParams().error);
 
-    models.UserModel.insert_id = 1;
     return result;
-} 
+}
 
 async function populateDb(connection, models){
     const insert = new Inserter(models, connection);
@@ -32,8 +32,8 @@ async function populateDb(connection, models){
 }
 
 function getToken(token_model){
-    if (!(token_model instanceof UserModel)) throw new Error('cannot get a token from a non-UserModel');
-    return jwt.sign({ userId : id }, process.env.SECRET, { expiresIn: "1h" });
+    if (!(token_model instanceof models.UserModel)) throw new Error('cannot get a token from a non-UserModel');
+    return jwt.sign({ userId : token_model.id }, 'secret', { expiresIn: "1h" });
 }
 
 module.exports = { startConnection, recreateDb, getToken }

@@ -1,5 +1,5 @@
 const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite');
-const { TestModels, UserModel } = require('../models');
+const { TestModels, UserModel, resetInsertIds } = require('../models');
 const controller = require('../../API/auth/authController');
 const validator = require('../../API/auth/authValidation');
 
@@ -88,6 +88,7 @@ function validateSignUpTests(){
 }
 
 function getDbModels(){
+    resetInsertIds();
     const users = [
         new UserModel('name', 'screen', 'test'),
         new UserModel('name2', 'screen2', 'test2'),
