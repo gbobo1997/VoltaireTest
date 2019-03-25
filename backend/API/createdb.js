@@ -67,7 +67,8 @@ function createDbQuery(){
         UpdateID int NOT NULL,
         UserID int NOT NULL,
         UpdateType int NOT NULL,
-        UpdateContent varchar(32) NOT NULL,
+        UpdateTime Timestamp NOT NULL,
+        UpdateContent json NOT NULL,
         PRIMARY KEY (UpdateID, UserID)
     )`;
 }

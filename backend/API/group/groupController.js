@@ -50,4 +50,13 @@ async function getUsersGroups(body, connection){
     return new Success(result.getData());
 }
 
-module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups }
+//need to write tests
+async function getUsersInGroup(group_id, connection){
+    var query = 'SELECT UserID FROM GroupMembers WHERE GroupID = ?';
+
+    var result = await queryDb(connection, query, group_id);
+    if (result.isError()) return result;
+    return new Success(result.getData());
+}
+
+module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup }

@@ -80,10 +80,34 @@ async function removeFileLock(body, connection){
     else return new Success();
 }
 
-async function updateFile(body, connection){
+//also gets lock information
+async function getFile(body, connection){
+    const { file_id } = body;
+    var query = 'SELECT *, Expires, ScreenName FROM File '
+        + 'INNER JOIN FileLocks ON FileLocks.FileID = File.FileID '
+        + 'INNER JOIN Users ON Users.UserID = FileLocks.UserID WHERE FileID = ?';
 
+    var result = await queryDb(connection, query, file_id);
+    if (result.isError()) return result;
+    else return new Success(result.getData());
+}
+
+//putting this in the update table would take too much space so clients will just have to periodically query the file if they 
+//dont have a lock
+async function updateFile(body, connection){
+    const { file_id, file_name, file_content } = body;
+    var query = 'UPDATE File SET FileName = ?, FileContent = ? WHERE FileID = ?';
+
+    var result = await queryDb(connection, query, [file_name, file_content, file_id]);
+    if (result.isErorr()) return result;
+    else return new Success();
 }
 
 async function getGroupFiles(body, connection){
+    const { group_id } = body;
+    var query = 'SELECT FileID, FIleName FROM File WHERE GroupID = ?';
 
+    var result = await queryDb(connection, query, group_id);
+    if (result.isError()) return result;
+    else return new Success(result.getData());
 }
