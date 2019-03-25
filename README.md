@@ -73,7 +73,7 @@ right now there are no restrictions on names or passwords (except that the name 
 }
 ```
 ## Groups 
-### Testing Status: work with basic input, exhaustive tests not written
+### Testing Status: Complete
 ### Create a Group
 **Route:** POST /group/create \
 **In:**
