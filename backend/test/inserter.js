@@ -1,11 +1,11 @@
 const db = require('../API/db');
-const { UserModel, GroupModel } = require('./models');
+const { UserModel, GroupModel, FileModel } = require('./models');
 
 class Inserter{
     constructor(models, connection){
         this.models = models;
         this.connection = connection;
-        this.classes = { UserModel, GroupModel }
+        this.classes = { UserModel, GroupModel, FileModel }
     }
 
     async executeInsert(){
@@ -56,6 +56,8 @@ class Inserter{
                 return 1;
             case 'GroupModel':
                 return 2;
+            case 'FileModel':
+                return 3;
             default:
                 return 0;
         }
@@ -68,6 +70,11 @@ class Inserter{
             }
         }
         const queries = this.getModelTypeQuery(models, type);
+
+        for (var model of models){
+            const added_query = modelgetOptionalQuery();
+            if (added_query !== null) queries.push(added_query);
+        }
 
         for (var query of queries){
             const result = await db.queryDb(this.connection, query);

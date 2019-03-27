@@ -12,8 +12,15 @@ const update_type = {
     file_deleted : 6
 }
 
-async function getUserUpdates(){
-
+//tests
+// -invalid user
+// -valid user, no updates to show
+async function getUserUpdates(user_id, connection){
+    var query = 'SELECT UpdateType AS update_type, UpdateTime As update_time, UpdateContent as update_content \
+        FROM UserUpdates WHERE UserId = ?';
+    const result = await queryDb(connection, query, user_id);
+    if (result.isError()) return result;
+    return new Success(result.getData());
 }
 
 //tests
@@ -26,7 +33,9 @@ async function insertGroupUpdate(group_id, type, content, connection){
     if (user_result.isEmpty()) return new Error(400, 'there are no users in desired group');
 
     const users = user_result.getParams();
-    const time = Date.now().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    //for testing, commment the following line and uncomment the next
+    //const time = Date.now().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    const time = '2019-04-21 14:32:00';
     const values = users.map(user => [user.UserID, type, content, time]).flat();
     const value_string = users.map(user => '(?,?,?)').join
 
@@ -65,4 +74,4 @@ async function fileDeleted(group_id, file_id, connection){
     return insertGroupUpdate(group_id, type, content, connection);
 }
 
-module.exports = { getUserUpdates, invitedToGroup, chatCreated, chatDeleted, messageSent,fileCreated, fileDeleted, fileLockChanged, fileUpdated }
+module.exports = { getUserUpdates, invitedToGroup, chatCreated, chatDeleted, messageSent, fileCreated, fileDeleted }

@@ -24,6 +24,10 @@ class DbModel{
         return true;
     }
 
+    getOptionalQuery(){
+        return null;
+    }
+
     static getValueString(props){
         return '('+props.join()+')';
     }
@@ -109,9 +113,57 @@ class GroupModel extends DbModel{
 }
 GroupModel.insert_id = 1;
 
+class FileModel extends DbModel{
+    constructor(name, content){
+        super(FileModel.insert_id);
+        FileModel.insert_id++;
+        this.name = name;
+        this.content = content;
+        this.group_id = null;
+
+        this.lock_id = null;
+        this.lock_time = null;
+    }
+
+    hasValidAttributes(){
+        return (super.hasValidAttributes() && this.name != null && this.content != null);
+    }
+
+    hasValidRelationships(){
+        return this.group_id != null;
+    }
+
+    addToGroup(group){
+        this.group_id = group.id;
+    }
+
+    addLock(user, time){
+        this.lock_id = user.id;
+        this.lock_time = time;
+    }
+
+    getOptionalQuery(){
+        if (this.lock_id !== null && this.lock_time !== null){
+            return `INSERT INTO FileLocks (FileID, UserID, Expires) \
+                VALUES (${this.id}, ${this.lock_id} ${this.lock_time}`;
+        }
+        else return null;
+    }
+
+    static getDbName(){
+        return ['ChatGroup', 'GroupMembers'];
+    }
+
+    static getInsertColumns(){
+        return ['(GroupName)', '(GroupID, UserID)'];
+    }
+}
+FileModel.insert_id = 1;
+
 function resetInsertIds(){
     UserModel.insert_id = 1;
     GroupModel.insert_id = 1;
+    FileModel.insert_id = 1;
 }
 
-module.exports = { TestModels, UserModel, GroupModel, resetInsertIds }
+module.exports = { TestModels, UserModel, GroupModel, FileModel, resetInsertIds }

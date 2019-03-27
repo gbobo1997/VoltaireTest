@@ -1,5 +1,7 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
+//const { fileCreated, fileDeleted, fileLockChanged, fileUpdated } = require('../update/updateController');
+const udpater = require('../update/updateController');
 
 //tests
 // -non-existent user (should return db error)
@@ -10,11 +12,18 @@ async function createFile(body, connection){
 
     var result = await queryDb(connection, query, [group_id, file_name, file_content]);
     if (result.isError()) return result;
-    else return new Success({file_id : result.getAddedRowId()});
+
+    const file_id = result.getAddedRowId();
+    var update_result = await udpater.fileCreated(group_id, file_id, file_name, connection);
+    if (update_result.iSError()) return update_result;
+    return new Success({file_id});
 }
 
+//non-existent file (should do nothing)
 async function deleteFile(body, connection){
-    const { file_id } = body;
+    const { file_id, group_id } = body;
+    if (file_id == null || group_id == null) return new Error(500, 'database error');
+    
     var query = 'DELETE FROM FileLocks WHERE FileID = ?';
 
     var result = await queryDb(connection, query, file_id);
@@ -23,7 +32,10 @@ async function deleteFile(body, connection){
     query = 'DELETE FROM File WHERE FileID = ?';
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
-    else return new Success();
+
+    var update_result = await udpater.fileDeleted(group_id, file_id, connecion);
+    if (update_result.isError()) return update_result;
+    return new Success();
 }
 
 async function getFileLock(body, connection){
@@ -41,9 +53,9 @@ async function getFileLock(body, connection){
 // -expired lock
 // -existing lock from requesting user
 
-//need to push an update to the update table on success
 async function requestFileLock(body, connection){
     const { user_id, file_id } = body;
+    
     //check if there is currently a lock
     var query = 'SELECT UserID As user_id, Expires As expires FROM FileLocks WHERE FIleID = ?';
     const current_time = Date.now()
@@ -60,7 +72,9 @@ async function requestFileLock(body, connection){
 
     //add an hour to the current time and format it as YYYY-MM-DD HH:MM:SS
     const expired_time = current_time.getTime() + (60 * 60 * 1000);
-    const formatted_time = new Date(expired_time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    //comment the following for testing and uncomment the line after that 
+    //const formatted_time = new Date(expired_time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+    const formatted_time = '2020-01-01 12:00:01';
 
     query = 'INSERT INTO FileLocks (FileID, UserID, Expires) VALUES (?, ?, ?) '+
         'ON DUPLICATE KEY UPDATE UserID = ?, Expires = ?';
@@ -70,8 +84,7 @@ async function requestFileLock(body, connection){
     else return new Success({expiration : formatted_time});
 }
 
-//need to push an update to the update table on success
-async function removeFileLock(body, connection){
+async function deleteFileLock(body, connection){
     const { file_id }= body;
     var query = 'DELETE FROM FileLocks WHERE FileID = ?';
 
@@ -105,9 +118,11 @@ async function updateFile(body, connection){
 
 async function getGroupFiles(body, connection){
     const { group_id } = body;
-    var query = 'SELECT FileID, FIleName FROM File WHERE GroupID = ?';
+    var query = 'SELECT FileID, FileName FROM File WHERE GroupID = ?';
 
     var result = await queryDb(connection, query, group_id);
     if (result.isError()) return result;
     else return new Success(result.getData());
 }
+
+module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock }
