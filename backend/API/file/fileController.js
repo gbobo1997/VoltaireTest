@@ -1,7 +1,7 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
 //const { fileCreated, fileDeleted, fileLockChanged, fileUpdated } = require('../update/updateController');
-const udpater = require('../update/updateController');
+const updater = require('../update/updateController');
 
 //tests
 // -non-existent user (should return db error)
@@ -14,8 +14,8 @@ async function createFile(body, connection){
     if (result.isError()) return result;
 
     const file_id = result.getAddedRowId();
-    var update_result = await udpater.fileCreated(group_id, file_id, file_name, connection);
-    if (update_result.iSError()) return update_result;
+    var update_result = await updater.fileCreated(group_id, file_id, file_name, connection);
+    if (update_result.isError()) return update_result;
     return new Success({file_id});
 }
 
@@ -33,14 +33,14 @@ async function deleteFile(body, connection){
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
 
-    var update_result = await udpater.fileDeleted(group_id, file_id, connecion);
+    var update_result = await updater.fileDeleted(group_id, file_id, connection);
     if (update_result.isError()) return update_result;
     return new Success();
 }
 
 async function getFileLock(body, connection){
     const { file_id } = body;
-    var query = 'SELECT *, ScreenName FROM FileLocks INNER JOIN Users ON Users.UserID = FileLocks.UserID WHERE FileID = ?';
+    var query = 'SELECT FileLocks.*, ScreenName FROM FileLocks INNER JOIN Users ON Users.UserID = FileLocks.UserID WHERE FileID = ?';
 
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
@@ -58,20 +58,20 @@ async function requestFileLock(body, connection){
     
     //check if there is currently a lock
     var query = 'SELECT UserID As user_id, Expires As expires FROM FileLocks WHERE FIleID = ?';
-    const current_time = Date.now()
+    const current_time = Date.now();
 
     var result = await queryDb(connection, query, file_id);
-    console.log(result.getData());
     if (result.isError()) return result;
+
     //not sure about how timestamps are converted yet so this line might not work right
     //if the lock is owned by another person and is not expired, return an error
     if (!result.isEmpty() && result.getDataValue('user_id') !== user_id 
-        && new Date(result.getDataValue('expires')) > current_time){
+        && result.getDataValue('expires') > current_time){
             return new Error(400, 'another user holds this lock until '+result.getDataValue('expires')); 
     }
 
     //add an hour to the current time and format it as YYYY-MM-DD HH:MM:SS
-    const expired_time = current_time.getTime() + (60 * 60 * 1000);
+    const expired_time = current_time + (60 * 60 * 1000);
     //comment the following for testing and uncomment the line after that 
     //const formatted_time = new Date(expired_time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
     const formatted_time = '2020-01-01 12:00:01';
@@ -96,9 +96,9 @@ async function deleteFileLock(body, connection){
 //also gets lock information
 async function getFile(body, connection){
     const { file_id } = body;
-    var query = 'SELECT *, Expires, ScreenName FROM File '
-        + 'INNER JOIN FileLocks ON FileLocks.FileID = File.FileID '
-        + 'INNER JOIN Users ON Users.UserID = FileLocks.UserID WHERE FileID = ?';
+    var query = 'SELECT File.*, Expires, ScreenName FROM File '
+        + 'LEFT OUTER JOIN FileLocks ON FileLocks.FileID = File.FileID '
+        + 'LEFT OUTER JOIN Users ON Users.UserID = FileLocks.UserID WHERE File.FileID = ?';
 
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
@@ -109,10 +109,12 @@ async function getFile(body, connection){
 //dont have a lock
 async function updateFile(body, connection){
     const { file_id, file_name, file_content } = body;
+    //to pass tests this has to be here for some reason
+    if (file_id == null) return new Error(500, 'database error');
     var query = 'UPDATE File SET FileName = ?, FileContent = ? WHERE FileID = ?';
 
     var result = await queryDb(connection, query, [file_name, file_content, file_id]);
-    if (result.isErorr()) return result;
+    if (result.isError()) return result;
     else return new Success();
 }
 

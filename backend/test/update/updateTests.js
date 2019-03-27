@@ -26,8 +26,8 @@ function getUserUpdatesTests(){
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type : 1, update_time : '2019-04-21 14:32:00', update_content : '{test : \'value\'\}'},
-                {update_type : 2, update_time : '2019-04-21 14:32:00', update_content : '{test : \'value2\'\}'}]);
+            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'},
+                {update_type : 2, update_time : 1, update_content : '{"test":"value2"}'}]);
         }),
         new Test('returns no updates if the user has no updates', models, async (connection) =>{
             var result = await controller.getUserUpdates(1, connection);
@@ -36,10 +36,10 @@ function getUserUpdatesTests(){
         new Test('returns no updates given an invalid user', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(1, 1, JSON.stringify({test : 'value'}), connection);
             assertSuccess(result, null);
-            result = await controller.getUserUdpates(2, connection);
+            result = await controller.getUserUpdates(5, connection);
             assertSuccess(result, []);
         }),
-        new Test('returns a db error given an invalid parameter', mdoels, async (connection) =>{
+        new Test('returns a db error given an invalid parameter', models, async (connection) =>{
             var result = await controller.getUserUpdates(null, connection);
             assertError(result, 500, 'database error');
         })
@@ -55,29 +55,17 @@ function insertGroupUpdateTests(){
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type : 1, update_time : '2019-04-21 14:32:00', update_content : '{test : \'value\'\}'}]);
+            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'}]);
             
             result = await controller.getUserUpdates(2, connection);
-            assertSuccess(result, [{update_type : 1, update_time : '2019-04-21 14:32:00', update_content : '{test : \'value\'\}'}]);
-
-            result = await controller.getUserUpdates(3, connection);
-            assertSuccess(result, []);
-        }),
-        new Test('sends no updates if a group has no users', models, async (connection) =>{
-            var result = await controller.insertGroupUpdate(2, 1, JSON.stringify({test : 'value'}), connection);
-            assertSuccess(result, null);
-
-            result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, []);
-            
-            result = await controller.getUserUpdates(2, connection);
-            assertSuccess(result, []);
+            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'}]);
 
             result = await controller.getUserUpdates(3, connection);
             assertSuccess(result, []);
         }),
         new Test('sends no updates if a group does not exist', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(5, 1, JSON.stringify({test : 'value'}), connection);
+            console.log(result);
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);
@@ -89,8 +77,8 @@ function insertGroupUpdateTests(){
             result = await controller.getUserUpdates(3, connection);
             assertSuccess(result, []);
         }),
-        new Test('returns a db error given a null parameter', async (connection) =>{
-            var result = await controller.insertGroupUpdate(1, null, JSON.stringify({test : 'value'}), connection);
+        new Test('returns a db error given a null parameter', models, async (connection) =>{
+            var result = await controller.insertGroupUpdate(null, 1, JSON.stringify({test : 'value'}), connection);
             assertError(result, 500, 'database error');
         })
     ]);
@@ -120,8 +108,8 @@ function fileCreatedTests(){
             var result = await controller.fileCreated(1, 3, 'new_file', connection);
             assertSuccess(result, null);
             var result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, {update_type: 5, update_time : '2019-04-21 14:32:00', 
-                update_content : '{file_id : 3, file_name : \'new_file\'}'})
+            assertSuccess(result, [{update_type: 5, update_time : 1, 
+                update_content : '{"file_id":3,"file_name":"new_file"}'}])
         })
     ])
 }
@@ -132,8 +120,10 @@ function fileDeletedTests(){
     return new TestSuite('fileDeleted', [
         new Test('sends the update given correct parameters', models, async (connection) =>{
             var result = await controller.fileDeleted(1, 3, connection);
-            assertSuccess(result, {update_type: 6, update_time : '2019-04-21 14:32:00', 
-                update_content : '{file_id : 3}'})
+            assertSuccess(result, null);
+            var result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, [{update_type: 6, update_time : 1, 
+                update_content : '{"file_id":3}'}])
         })
     ])
 }
@@ -187,8 +177,7 @@ function getDbModelsFile(token_id=null){
     first_file.addToGroup(first_group);
     second_file.addToGroup(first_group);
 
-    const models = [first_user, second_user, third_user,
-        first_group, second_group, first_file, second_file];
+    const models = [first_user, first_group, first_file, second_file];
 
     if (token_id === null) return new TestModels(models);
     else return new TestModels(models, models[token_id-1]);

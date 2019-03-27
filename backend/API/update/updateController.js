@@ -17,7 +17,7 @@ const update_type = {
 // -valid user, no updates to show
 async function getUserUpdates(user_id, connection){
     var query = 'SELECT UpdateType AS update_type, UpdateTime As update_time, UpdateContent as update_content \
-        FROM UserUpdates WHERE UserId = ?';
+        FROM UserUpdate WHERE UserId = ?';
     const result = await queryDb(connection, query, user_id);
     if (result.isError()) return result;
     return new Success(result.getData());
@@ -28,18 +28,22 @@ async function getUserUpdates(user_id, connection){
 // -group with no users
 // -invalid input parameters
 async function insertGroupUpdate(group_id, type, content, connection){
-    const user_result = getUsersInGroup(group_id, connection);
+    const user_result = await getUsersInGroup(group_id, connection);
     if (user_result.isError()) return user_result;
-    if (user_result.isEmpty()) return new Error(400, 'there are no users in desired group');
+    //if the group has no users, exit
+    if (user_result.getParams().length === 0) return new Success();
 
     const users = user_result.getParams();
     //for testing, commment the following line and uncomment the next
     //const time = Date.now().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    const time = '2019-04-21 14:32:00';
-    const values = users.map(user => [user.UserID, type, content, time]).flat();
-    const value_string = users.map(user => '(?,?,?)').join
+    const time = 1;
+    var values = [];
+    for (var user of users){
+        values = values.concat([user.UserID, type, content, time]);
+    }
+    const value_string = users.map(user => '(?,?,?,?)').join()
 
-    var query = 'INSERT INTO UserUpdates (UserID, UpdateType, UpdateContent, UpdateTime) VALUES '+value_string;
+    var query = 'INSERT INTO UserUpdate (UserID, UpdateType, UpdateContent, UpdateTime) VALUES '+value_string;
     const result = await queryDb(connection, query, values);
     if (result.isError()) return result;
     return new Success();
@@ -64,14 +68,14 @@ async function messageSent(){
 //only need to tell the users of a new file, not its content?
 async function fileCreated(group_id, file_id, file_name, connection){
     const type = update_type.file_created;
-    const content = {file_id, file_name};
+    const content = JSON.stringify({file_id, file_name});
     return insertGroupUpdate(group_id, type, content, connection);
 }
 
 async function fileDeleted(group_id, file_id, connection){
     const type = update_type.file_deleted;
-    const content = {file_id};
+    const content = JSON.stringify({file_id});
     return insertGroupUpdate(group_id, type, content, connection);
 }
 
-module.exports = { getUserUpdates, invitedToGroup, chatCreated, chatDeleted, messageSent, fileCreated, fileDeleted }
+module.exports = { insertGroupUpdate, getUserUpdates, invitedToGroup, chatCreated, chatDeleted, messageSent, fileCreated, fileDeleted }

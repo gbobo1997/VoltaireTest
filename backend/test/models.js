@@ -144,18 +144,22 @@ class FileModel extends DbModel{
 
     getOptionalQuery(){
         if (this.lock_id !== null && this.lock_time !== null){
-            return `INSERT INTO FileLocks (FileID, UserID, Expires) \
-                VALUES (${this.id}, ${this.lock_id} ${this.lock_time}`;
+            return `INSERT INTO FileLocks (FileID, UserID, Expires) VALUES (${this.id}, ${this.lock_id}, '${this.lock_time}')`;
         }
         else return null;
     }
 
+    getValueString(){
+        const props = ["'"+this.group_id+"'", "'"+this.name+"'", "'"+this.content+"'"];
+        return [DbModel.getValueString(props)];
+    }
+
     static getDbName(){
-        return ['ChatGroup', 'GroupMembers'];
+        return ['File'];
     }
 
     static getInsertColumns(){
-        return ['(GroupName)', '(GroupID, UserID)'];
+        return ['(GroupID, FileName, FileContent)'];
     }
 }
 FileModel.insert_id = 1;

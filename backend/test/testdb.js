@@ -18,7 +18,8 @@ async function recreateDb(connection, models){
 async function resetDb(connection){
     if (process.env.DB_TYPE === 'Production') throw new Error('attempted to wipe production db');
 
-    const query = `DELETE FROM GroupMembers; DELETE FROM ChatGroup;DELETE FROM Users; ALTER TABLE GroupMembers AUTO_INCREMENT = 0; \
+    const query = `DELETE FROM UserUpdate; DELETE FROM GroupMembers; DELETE FROM FileLocks; DELETE FROM File; DELETE FROM ChatGroup; DELETE FROM Users; \
+    ALTER TABLE UserUpdate AUTO_INCREMENT = 0; ALTER TABLE GroupMembers AUTO_INCREMENT = 0; ALTER TABLE FileLocks AUTO_INCREMENT = 0; ALTER TABLE File AUTO_INCREMENT = 0; \
     ALTER TABLE ChatGroup AUTO_INCREMENT = 0; ALTER TABLE Users AUTO_INCREMENT = 0;`
     const result = await db.queryDb(connection, query);
     if (result.isError()) throw new Error('error in clearing database '+result.getParams().error);

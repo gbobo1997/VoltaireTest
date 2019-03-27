@@ -72,7 +72,7 @@ class Inserter{
         const queries = this.getModelTypeQuery(models, type);
 
         for (var model of models){
-            const added_query = modelgetOptionalQuery();
+            const added_query = model.getOptionalQuery();
             if (added_query !== null) queries.push(added_query);
         }
 

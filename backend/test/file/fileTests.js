@@ -32,13 +32,13 @@ function createFileTests(){
             assertSuccess(result, {file_id : 4});
 
             result = await controller.getFile({file_id : 4}, connection);
-            assertSuccess(result, {FileId : 4, FileName: 'new_name', FileContent: 'new_content'});
+            assertSuccess(result, [{FileID : 4, GroupID : 2, FileName: 'new_file', FileContent: 'new_content', ScreenName: null, Expires: null}]);
 
             result = await update_controller.getUserUpdates(2, connection);
-            assertSuccess(result, {update_type : 5, update_time : '2019-04-21 14:32:00', update_content : '{file_id : 4, file_name : \'new_file\'}'});
+            assertSuccess(result, [{update_type : 5, update_time : 1, update_content : '{"file_id":4,"file_name":"new_file"}'}]);
         }),
         new Test('returns an error given a null parameter', models, async (connection) =>{
-            result = await controller.createFile({group_id : 2, file_name : null, file_content: 'new_content'});
+            result = await controller.createFile({group_id : 2, file_name : null, file_content: 'new_content'}, connection);
             assertError(result, 500, 'database error');
         })
     ]);
@@ -56,17 +56,17 @@ function deleteFileTests(){
             assertSuccess(result, []);
 
             result = await update_controller.getUserUpdates(1, connection);
-            assertSuccess(result, {update_type : 6, update_time : '2019-04-21 14:32:00', update_content : '{file_id : 1}'});
+            assertSuccess(result, [{update_type : 6, update_time : 1, update_content : '{"file_id":1}'}]);
         }),
         new Test('does nothing with a non-existent file (but does send an update - will be fixed in validation)', models, async (connection) =>{
             var result = await controller.deleteFile({file_id : 4, group_id : 1}, connection);
             assertSuccess(result, null);
 
             result = await controller.getGroupFiles({group_id : 1}, connection);
-            assertSuccess(result, [{FileId: 1, FileName: 'test'}, {FileId: 2, FileName: 'test2'}]);
+            assertSuccess(result, [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}]);
         
             result = await update_controller.getUserUpdates(1, connection);
-            assertSuccess(result, {update_type : 6, update_time : '2019-04-21 14:32:00', update_content : '{file_id : 4}'});
+            assertSuccess(result, [{update_type : 6, update_time : 1, update_content : '{"file_id":4}'}]);
         }),
         new Test('returns a db error given an undefined parameter', models, async (connection) =>{
             var result = await controller.getGroupFiles({file_id : 1}, connection);
@@ -81,7 +81,7 @@ function getFileLockTests(){
     return new TestSuite('getFileLock', [
         new Test('gets the lock on a file given correct parameters', models, async (connection) =>{
             const result = await controller.getFileLock({file_id : 1}, connection);
-            assertSuccess(result, {FileId : 1, UserId : 1, ScreenName: 'user', Expires: '2019-01-01 12:00:00'});
+            assertSuccess(result, [{FileID : 1, UserID : 1, ScreenName: 'screen', Expires: 1546369200000}]);
         }),
         new Test('gets no lock when a file does not have one', models, async (connection) =>{
             const result = await controller.getFileLock({file_id : 3}, connection);
@@ -116,7 +116,7 @@ function requestFileLockTests(){
         }),
         new Test('does not grant the lock on a file that currently has a lock from another user', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 2, file_id : 2}, connection);
-            assertError(result, 400, 'another user holds this lock until 2020-01-01 12:00:00');
+            assertError(result, 400, 'another user holds this lock until 1577905200000');
         }),
         new Test('returns a db error when trying to lock a file that doesnt exist', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 1, file_id : 4}, connection);
@@ -151,14 +151,14 @@ function deleteFileLockTests(){
             result = await controller.getFileLock({file_id: 3}, connection);
             assertSuccess(result, []);
         }),
-        new Test('does nothing given an invalid file', model, async (connecton) =>{
+        new Test('does nothing given an invalid file', models, async (connection) =>{
             var result = await controller.deleteFileLock({file_id : 4}, connection);
             assertSuccess(result, null);
 
             result = await controller.getFileLock({file_id: 4}, connection);
             assertSuccess(result, []);
         }),
-        new Test('returns a db error given a null parameter', model, async (connection) =>{
+        new Test('returns a db error given a null parameter', models, async (connection) =>{
             var result = await controller.deleteFileLock({file_id : null}, connection);
             assertError(result, 500, 'database error');
         })
@@ -171,14 +171,14 @@ function getFileTests(){
     return new TestSuite('getFile', [
         new Test('gets the file given correct parameters', models, async (connection) =>{
             const result = await controller.getFile({file_id: 1}, connection);
-            assertSuccess(result, {FileId : 1, FileName: 'name', FileContent: 'content', 
-                ScreenName: 'name', Expires: '2019-01-01 12:00:00'});
+            assertSuccess(result, [{FileID : 1, GroupID : 1, FileName: 'name', FileContent: 'content', 
+                ScreenName: 'screen', Expires: 1546369200000}]);
         }),
         new Test('returns nothing given a file that doesnt exist', models, async (connection) =>{
             const result = await controller.getFile({file_id : 4}, connection);
             assertSuccess(result, []);
         }),
-        new Test('returns a database error given a null parameter', mdoels, async (connection) =>{
+        new Test('returns a database error given a null parameter', models, async (connection) =>{
             const result = await controller.getFile({}, connection);
             assertError(result, 500, 'database error');
         })
@@ -194,18 +194,18 @@ function updateFileTests(){
             assertSuccess(result, null);
 
             result = await controller.getFile({file_id: 1}, connection);
-            assertSuccess(result, {FileId : 1, FileName: 'new_name', FileContent: 'new_content', 
-                ScreenName: 'name', Expires: '2019-01-01 12:00:00'})
+            assertSuccess(result, [{FileID : 1, GroupID : 1, FileName: 'new_name', FileContent: 'new_content', 
+                ScreenName: 'screen', Expires: 1546369200000}])
         }),
         new Test('does nothing given a non-existent file', models, async (connection) =>{
             var result = await controller.updateFile({file_id : 4, file_name: 'new_name', file_content: 'new_content'}, connection);
             assertSuccess(result, null);
 
             result = await controller.getGroupFiles({group_id : 1}, connection);
-            assertSuccess(result, [{FileId: 1, FileName: 'test'}, {FileId: 2, FileName: 'test2'}]);
+            assertSuccess(result, [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}]);
         }),
-        new Test('returns an error when given an undefined parameter', models, async (connection) =>{
-            var result = await controller.updateFile({file_id: 1, file_name: 'new_name'}, connection);
+        new Test('returns an error when given a null parameter', models, async (connection) =>{
+            var result = await controller.updateFile({file_id : null, file_name: 'new_name', file_content: 'new_content'}, connection);
             assertError(result, 500, 'database error');
         })
     ]);
@@ -217,14 +217,14 @@ function getGroupFilesTests(){
     return new TestSuite('getGroupFiles', [
         new Test('returns all a groups files given correct parameters', models, async (connection) =>{
             const result = await controller.getGroupFiles({group_id : 1}, connection);
-            assertSuccess(result, [{FileId: 1, FileName: 'test'}, {FileId: 2, FileName: 'test2'}]);
+            assertSuccess(result, [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}]);
         }),
         new Test('returns no file given a group with no files', models, async (connection) =>{
             const result = await controller.getGroupFiles({group_id : 2}, connection);
             assertSuccess(result, []);
         }),
         new Test('returns no files given a non-existent group', models, async (connection) =>{
-            const result = await controller.getGroupFiles({group_id : 3}, connection);
+            const result = await controller.getGroupFiles({group_id : 4}, connection);
             assertSuccess(result, []);
         }),
         new Test('returns a db error given a null parameter', models, async (connection) =>{
@@ -252,8 +252,8 @@ Group 3:
 function getDbModels(token_id=null){
     resetInsertIds();
 
-    const first_user = new UserModel('name', 'screen', 'test');
-    const second_user = new UserModel('name2', 'screen2', 'test2');
+    const first_user = new UserModel('name', 'screen', 'name');
+    const second_user = new UserModel('name2', 'screen2', 'name2');
     const third_user = new UserModel('name3', 'screen3', 'test3');
 
     const first_group = new GroupModel('name');
@@ -274,8 +274,10 @@ function getDbModels(token_id=null){
     first_file.addToGroup(first_group);
     second_file.addToGroup(first_group);
     third_file.addToGroup(third_group);
-    first_file.addLock(first_user, '2019-01-01 12:00:00');
-    second_file.addLock(first_user, '2020-01-01 12:00:00');
+    // 1546369200000
+    first_file.addLock(first_user, 1546369200000);
+    // 1577905200000
+    second_file.addLock(first_user, 1577905200000);
 
     const models = [first_user, second_user, third_user,
         first_group, second_group, third_group, first_file, 
