@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const authRoutes = require('./auth/authRoute');
 const groupRoutes = require('./group/groupRoute');
+const chatRoutes = require('./chat/chatRoute');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use((req, res, next) =>{
 
 app.use('/auth', authRoutes);
 app.use('/group', groupRoutes);
+app.unsubscribe('/chat', chatRoutes);
 
 const server = app.listen(8080, '0.0.0.0', (error) =>{
     if (error) console.log('error');

@@ -59,4 +59,30 @@ async function getUsersInGroup(group_id, connection){
     return new Success(result.getData());
 }
 
-module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup }
+//tests
+// - null group id
+// -exists
+// -does not exist
+async function groupExists(group_id, connection){
+    if (group_id == null) return false;
+    const query = 'SELECT COUNT(*) FROM ChatGroup WHERE Group_ID = ?';
+    const result = await queryDb(connection, query, group_id);
+    if (result.isError()) return false;
+    return new result.getData() === 1;
+}
+
+//tests
+// - null params
+// - is a member
+// - is not a member
+// - user does not exist
+// - group does not exist 
+async function userIsAGroupMember(group_id, user_id, connection){
+    if (group_id == null || user_id == null) return false;
+    const query = 'SELECT COUNT(*) FROM GroupMembers WHERE GroupID = ? AND UserID = ?';
+    const result = await queryDb(connection, query, [group_id, user_id]);
+    if (result.isError()) return false;
+    return result.getData() === 1;
+}
+
+module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember }

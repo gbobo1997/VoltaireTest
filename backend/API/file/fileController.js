@@ -127,4 +127,30 @@ async function getGroupFiles(body, connection){
     else return new Success(result.getData());
 }
 
-module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock }
+//write tests
+// - null file id
+// - existing file
+// - not existing file
+async function fileExists(file_id, connection){ 
+    if (file_id == null) return false;
+    const query = 'SELECT COUNT(*) FROM File WHERE FileID = ?';
+    const result = await queryDb(connection, query, file_id);
+    if (result.isError()) return false;
+    return result.getData() === 1;
+}
+
+//tests
+// - null group-file
+// - belongs
+// - doesnt belong
+// - file does not exist
+// - group does not exist
+async function fileBelongsToGroup(group_id, file_id, connection){
+    if (group_id == null || file_id == null) return false;
+    const query = 'SELECT COUNT(*) FROM File WHERE FileID = ? AND GroupID = ?';
+    const result = await queryDb(connection, query, [file_id, group_id]);
+    if (result.isError()) return false;
+    return result.getData() === 1;
+}
+
+module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock, fileExists, fileBelongsToGroup }

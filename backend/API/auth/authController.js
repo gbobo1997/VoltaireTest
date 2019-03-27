@@ -5,49 +5,22 @@ const { Success, Error } = require('../common');
 
 const { createGroup } = require('../group/groupController');
 
-
-// high level route controllers
 async function login(body, connection){
-    const verify = await verifyPassword(connection, body.name, body.password);
-    if (verify.isError()) return verify;
-
-    return createToken(verify.getParam('id'));
-}
-
-async function signUp(body, connection){
-    return await createUser(connection, body.name, body.screen_name, body.password);
-}
-
-
-//token interaction methods
-async function verifyPassword(connection, name, password){
+    const { name, password } = body;
     const result = await getUser(connection, name);
     if (result.isError()) return result;
     if (result.isEmpty()) return new Error(401, 'authentication failed');
+    const id = result.getDataValue('UserID');
 
     const valid = await bcrypt.compare(password, result.getDataValue('Password'));
     if (!valid) return new Error(401, 'authentication failed');
 
-    return new Success({id : result.getDataValue('UserID')});
-}
-
-function createToken(id){
     const token = jwt.sign({ user_id : id }, 'secret', { expiresIn: "1h" });
     return new Success({token, user_id : id});
 }
 
-function authToken(token){
-    try{
-        const decoded = jwt.verify(token, 'secret');
-        return new Success({id : decoded.userId});
-    }
-    catch (error){
-        return new Error(401, 'auth error');
-    }
-}
-
-//database interaction methods
-async function createUser(connection, name, screen_name, password){
+async function signUp(body, connection){
+    const { name, screen_name, password } = body;
     const enc_password = await bcrypt.hash(password, 10);
     if(!enc_password) return new Error(500, 'password encryption failed');
 
@@ -69,4 +42,26 @@ async function getUser(connection, name){
     return result = await queryDb(connection, query, name);
 }
 
-module.exports = { login, signUp, getUser, createUser, verifyPassword, authToken }
+//need some tests 
+// - null user id
+// -exists
+// -doesnt exist
+async function userExists(user_id, connection){
+    if (user_id == null) false;
+    const query = `SELECT COUNT(*) FROM Users WHERE UserId = ?;`
+    const result = await queryDb(connection, query, user_id);
+    if (result.isError()) return false;
+    return result.getData() === 1;
+}
+
+function tokenValid(token){
+    try{
+        const decoded = jwt.verify(token, 'secret');
+        return {valid : true, user_id : decoded.userId};
+    }
+    catch (error){
+        return {valid : false, user_id : null};
+    }
+}
+
+module.exports = { login, signUp, getUser, createUser, verifyPassword, tokenValid, userExists }

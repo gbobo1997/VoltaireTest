@@ -1,64 +1,67 @@
 const controller = require('./groupController');
-const { authToken } = require('../auth/authController');
+const { tokenValid } = require('../auth/authController');
 const { Error, Success } = require('../common');
 
+//rewrite tests (user_id removed)
+// - invalid parameters
+// - invalid token
 function validateCreateGroup(body){
-    if (body.user_id == null || !Number.isInteger(body.user_id) || body.group_name == null || body.token == null){
-        return new Error(400, 'validation error');
+    if (body.group_name == null || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {group_name : string, token : token}');
     }
-    const token_result = authToken(body.token);
-    if (token_result.isError()) return token_result;
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
 
-    const token_id = token_result.getParam('id');
-    if (token_id !== body.user_id ) return new Error(400, 'tried to create a group for another user');
+    body.user_id = user_id
     return new Success();
 }
 
+//rewrite tests
+// - invalid parameters
+// - invalid token
+// - nonexistent group
+// - group the user is not a member of
 async function validateDeleteGroup(body, connection){
     if (body.group_id == null || !Number.isInteger(body.group_id) || body.token == null){
-        return new Error(400, 'validation error');
+        return new Error(400, 'invalid parameters, send the following body: {group_id : int, token : token}');
     }
-    const token_result = authToken(body.token);
-    if (token_result.isError()) return token_result;
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
 
-    const token_id = token_result.getParam('id');
-    const member_result = await validateUserIsMemberOfGroup(token_id, body.group_id, connection);
-    if (member_result.isError()) return member_result;
+    if (!controller.groupExists(body.group_id, connection)) return new Error(400, 'group does not exist');
+    if (!controller.userIsAGroupMember(body.group_id, user_id, connection)) return new Error(400, 'user is not a member of the group');
     return new Success();
 }
 
+//rewrite tests
+// - invalid parameters
+// - invalid token
+// - nonexistent group
+// - group the user is not a member of
 async function validateUpdateGroup(body, connection){
     if (body.group_id == null || !Number.isInteger(body.group_id) || body.group_name == null || body.token == null){
-        return new Error(400, 'validation error');
+        return new Error(400, 'invalid parameters, send the following body: {group_id : int, group_name : string, token : token}');
     }
-    const token_result = authToken(body.token);
-    if (token_result.isError()) return token_result;
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
 
-    const token_id = token_result.getParam('id');
-    const member_result = await validateUserIsMemberOfGroup(token_id, body.group_id, connection);
-    if (member_result.isError()) return member_result;
+    if (!controller.groupExists(body.group_id, connection)) return new Error(400, 'group does not exist');
+    if (!controller.userIsAGroupMember(body.group_id, user_id, connection)) return new Error(400, 'user is not a member of the group');
     return new Success();
 }
 
+//rewrite tests (user_id removed)
+// - invalid token
+// - invalid parameters
 async function validateGetUserGroups(body){
-    if (body.user_id == null || !Number.isInteger(body.user_id) || body.token == null){
-        return new Error(400, 'validation error');
+    if (body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {token : token}');
     }
-    const token_result = authToken(body.token);
-    if (token_result.isError()) return token_result;
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
 
-    const token_id = token_result.getParam('id');
-    if (token_id !== body.user_id) return new Error(400, 'tried to get groups from another user');
+    body.user_id = user_id;
     return new Success();
 }
 
-async function validateUserIsMemberOfGroup(user_id, group_id, connection){
-    const user_group_result = await controller.getUsersGroups({user_id}, connection);
-    if (user_group_result.isError()) return user_group_result;
-
-    const groups = user_group_result.getParams().map(result => result.group_id);
-    if (groups.length === 0 || !groups.includes(group_id)) return new Error(400, 'the user is not a member of the group or group does not exist');
-    return new Success();
-}
-
-module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups, validateUserIsMemberOfGroup }
+module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups }
