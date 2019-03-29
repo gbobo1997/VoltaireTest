@@ -48,10 +48,10 @@ async function getUser(connection, name){
 // -doesnt exist
 async function userExists(user_id, connection){
     if (user_id == null) false;
-    const query = `SELECT COUNT(*) FROM Users WHERE UserId = ?;`
+    const query = `SELECT COUNT(*) AS Count FROM Users WHERE UserId = ?;`
     const result = await queryDb(connection, query, user_id);
     if (result.isError()) return false;
-    return result.getData() === 1;
+    return (result.getData()[0].Count === 1);
 }
 
 function tokenValid(token){
@@ -64,4 +64,4 @@ function tokenValid(token){
     }
 }
 
-module.exports = { login, signUp, getUser, createUser, verifyPassword, tokenValid, userExists }
+module.exports = { login, signUp, getUser, tokenValid, userExists }

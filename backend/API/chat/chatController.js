@@ -50,10 +50,10 @@ async function getChatsInGroup(body, connection){
 // - existing
 async function chatExists(chat_id, connection){
     if (chat_id == null) return false;
-    const query = 'SELECT COUNT(*) FROM Chat WHERE ChatID = ?';
+    const query = 'SELECT COUNT(*) As Count FROM Chat WHERE ChatID = ?';
     const result = await queryDb(connection, query, chat_id);
     if (result.isError()) return false;
-    return result.getData() === 1;
+    return (result.getData()[0].Count === 1);
 }
 
 
@@ -65,11 +65,11 @@ async function chatExists(chat_id, connection){
 // - chat doesnt exist
 async function userHasAccessToChat(user_id, chat_id, connection){
     if (user_id == null || chat_id == null) return false;
-    const query = `SELECT COUNT(*) FROM Chat INNER JOIN GroupMembers ON Chat.GroupID = GroupMembers.GroupID 
+    const query = `SELECT COUNT(*) AS Count FROM Chat INNER JOIN GroupMembers ON Chat.GroupID = GroupMembers.GroupID 
         WHERE ChatID = ? AND UserID = ?`;
     const result = await queryDb(connection, query, [chat_id, group_id]);
     if (result.isError()) return false;
-    return result.getData() === 1;
+    return (result.getData()[0].Count === 1);
 }
 
 module.exports = { createChat, deleteChat, updateChat, getChatsInGroup, chatExists, userHasAccessToChat }

@@ -2,13 +2,15 @@ const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite')
 const { TestModels, UserModel, GroupModel, resetInsertIds } = require('../models');
 const controller = require('../../API/group/groupController');
 const validator = require('../../API/group/groupValidation');
+const { expect } = require('../test_suite');
 
 function createGroupControllerSuite(){
     return new TestSuite('groupController.js', [
-        createGroupTests(),
-        deleteGroupTests(),
-        updateGroupTests(),
-        getUsersGroupsTests()
+        //createGroupTests(),
+        //deleteGroupTests(),
+        //updateGroupTests(),
+        //getUsersGroupsTests(),
+        userIsAGroupMemberTests()
     ]);
 }
 
@@ -210,6 +212,42 @@ function validateUserIsMemberOfGroupTests(){
     ]);
 }
 
+function userIsAGroupMemberTests(){
+    const models = getDbModels();
+
+    return new TestSuite('userIsAGroupMember', [
+        new Test('returns true given a valid user and group that the user is a member of', models, async (connection) =>{
+            const result = await controller.userIsAGroupMember(1, 1, connection);
+            expect(result).to.be.true;
+        }),
+        new Test('returns false given a null parameter', models, async (connection) =>{
+            const result = await controller.userIsAGroupMember(null, 1, connection);
+            expect(result).to.be.false;
+        }),
+        new Test('return false given a valid user and group that the user is not a member of', models, async (connection) =>{
+            const result = await controller.userIsAGroupMember(2, 1, connection);
+            expect(result).to.be.false;
+        }),
+        new Test('return false given a nonexistant user', models, async (connection) =>{
+            const result = await controller.userIsAGroupMember(4, 1, connection);
+            expect(result).to.be.false;
+        }),
+        new Test('return false given a nonexistant group', models, async (connection) =>{
+            const result = await controller.userIsAGroupMember(1, 4, connection);
+            expect(result).to.be.false;
+        })
+    ]);
+}
+
+// group 1
+// - user 1
+// - user 2
+// - user 3
+// group 2
+// - user 2
+// - user 3
+// group 3
+// - user 3 
 function getDbModels(token_id=null){
     resetInsertIds();
 

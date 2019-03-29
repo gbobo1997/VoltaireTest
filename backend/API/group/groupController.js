@@ -65,10 +65,10 @@ async function getUsersInGroup(group_id, connection){
 // -does not exist
 async function groupExists(group_id, connection){
     if (group_id == null) return false;
-    const query = 'SELECT COUNT(*) FROM ChatGroup WHERE Group_ID = ?';
+    const query = 'SELECT COUNT(*) AS Count FROM ChatGroup WHERE Group_ID = ?';
     const result = await queryDb(connection, query, group_id);
     if (result.isError()) return false;
-    return new result.getData() === 1;
+    return new (result.getData()[0].Count === 1);
 }
 
 //tests
@@ -79,10 +79,10 @@ async function groupExists(group_id, connection){
 // - group does not exist 
 async function userIsAGroupMember(group_id, user_id, connection){
     if (group_id == null || user_id == null) return false;
-    const query = 'SELECT COUNT(*) FROM GroupMembers WHERE GroupID = ? AND UserID = ?';
+    const query = 'SELECT COUNT(*) As Count FROM GroupMembers WHERE GroupID = ? AND UserID = ?';
     const result = await queryDb(connection, query, [group_id, user_id]);
     if (result.isError()) return false;
-    return result.getData() === 1;
+    return (result.getData()[0].Count === 1);
 }
 
 module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember }
