@@ -5,6 +5,10 @@ const { Success, Error } = require('../common');
 
 const { createGroup } = require('../group/groupController');
 
+//tests
+// - valid
+// - nonexistent user
+// - invalid pass
 async function login(body, connection){
     const { name, password } = body;
     const result = await getUser(connection, name);

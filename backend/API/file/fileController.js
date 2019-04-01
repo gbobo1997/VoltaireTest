@@ -38,21 +38,11 @@ async function deleteFile(body, connection){
     return new Success();
 }
 
-async function getFileLock(body, connection){
-    const { file_id } = body;
-    var query = 'SELECT FileLocks.*, ScreenName FROM FileLocks INNER JOIN Users ON Users.UserID = FileLocks.UserID WHERE FileID = ?';
-
-    var result = await queryDb(connection, query, file_id);
-    if (result.isError()) return result;
-    else return new Success(result.getData());
-}
-
 //tests
 // -no existing lock
 // -existing lock
 // -expired lock
 // -existing lock from requesting user
-
 async function requestFileLock(body, connection){
     const { user_id, file_id } = body;
     
@@ -84,11 +74,30 @@ async function requestFileLock(body, connection){
     else return new Success({expiration : formatted_time});
 }
 
-async function deleteFileLock(body, connection){
-    const { file_id }= body;
-    var query = 'DELETE FROM FileLocks WHERE FileID = ?';
+async function getFileLock(body, connection){
+    const { file_id } = body;
+
+    var query = 'SELECT * FROM FIleLocks WHERE FileID = ?';
 
     var result = await queryDb(connection, query, file_id);
+    if (result.isError()) return result;
+    return new Success(result.getData());
+}
+
+//tests
+// - lock where another user holds it
+async function deleteFileLock(body, connection){
+    const { user_id, file_id }= body;
+
+    var query = 'SELECT UserID FROM FileLocks WHERE FileID = ?';
+
+    var result = await queryDb(connection, query, file_id);
+    if (result.isError()) return result;
+    if (!result.isEmpty() && result.getDataValue('UserID') !== user_id) return new Error(400, 'this lock belongs to another user');
+
+    query = 'DELETE FROM FileLocks WHERE FileID = ?';
+
+    result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
     else return new Success();
 }
@@ -133,7 +142,7 @@ async function getGroupFiles(body, connection){
 // - not existing file
 async function fileExists(file_id, connection){ 
     if (file_id == null) return false;
-    const query = 'SELECT COUNT(*) FROM File WHERE FileID = ?';
+    const query = 'SELECT COUNT(*) As Count FROM File WHERE FileID = ?';
     const result = await queryDb(connection, query, file_id);
     if (result.isError()) return false;
     return result.getData() === 1;
@@ -145,12 +154,12 @@ async function fileExists(file_id, connection){
 // - doesnt belong
 // - file does not exist
 // - group does not exist
-async function fileBelongsToGroup(group_id, file_id, connection){
-    if (group_id == null || file_id == null) return false;
-    const query = 'SELECT COUNT(*) FROM File WHERE FileID = ? AND GroupID = ?';
-    const result = await queryDb(connection, query, [file_id, group_id]);
+async function userHasAccessToFile(user_id, file_id, connection){
+    if (user_id == null || file_id == null) return false;
+    const query = 'SELECT COUNT(*) As Count FROM File INNER JOIN GroupMembers ON GroupMembers.GroupID = File.GroupID WHERE FileID = ? AND UserID = ?';
+    const result = await queryDb(connection, query, [file_id, user_id]);
     if (result.isError()) return false;
     return result.getData() === 1;
 }
 
-module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock, fileExists, fileBelongsToGroup }
+module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock, fileExists, userHasAccessToFile }

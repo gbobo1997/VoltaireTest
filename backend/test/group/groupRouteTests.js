@@ -18,23 +18,23 @@ function createCreateGroupTests(){
         new Test('it should create the group when given correct parameters', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/group/create')
-                .send({user_id : 1, token : token, group_name : 'test'});
+                .send({token : token, group_name : 'test'});
             
             assertRouteResult(result, 200, {group_id : 4});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/group/create')
-                .send({user_id : 2, token : token, group_name : 'test'});
+                .send({token : token, group_name : null});
         
-            assertRouteError(result, 400, 'tried to create a group for another user');
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {group_name : string, token : token}');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/group/create')
-                .send({user_id : 1, token : token.split("").reverse().join(""), group_name : 'test'});
+                .send({token : token.split("").reverse().join(""), group_name : 'test'});
             
-            assertRouteError(result, 401, 'auth error');
+            assertRouteError(result, 401, 'token invalid');
         })
     ]);
 }
@@ -53,16 +53,16 @@ function createDeleteGroupTests(){
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
                 .delete('/group/delete')
-                .send({goup_id : '2', token : token});
+                .send({goup_id : 2, token : token});
         
-            assertRouteError(result, 400, 'validation error');
+            assertRouteError(result, 400, 'user is not a member of the group');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
                 .delete('/group/delete')
                 .send({group_id : 1, token : token.split("").reverse().join("")});
             
-            assertRouteError(result, 401, 'auth error');
+            assertRouteError(result, 401, 'token invalid');
         })
     ]);
 }
@@ -82,14 +82,14 @@ function createUpdateGroupTests(){
                 .patch('/group/update')
                 .send({group_id : 5, token : token, group_name : 'test'});
         
-            assertRouteError(result, 400, 'the user is not a member of the group or group does not exist');
+            assertRouteError(result, 400, 'group does not exist');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
                 .patch('/group/update')
                 .send({group_id : 1, token : token.split("").reverse().join(""), group_name : 'test'});
             
-            assertRouteError(result, 401, 'auth error');
+            assertRouteError(result, 401, 'token invalid');
         })
     ]);
 }
@@ -109,14 +109,14 @@ function createGetUserGroupsTests(){
                 .post('/group/user_groups')
                 .send({user_id : 2, token : null});
         
-                assertRouteError(result, 400, 'validation error');
+                assertRouteError(result, 400, 'invalid parameters, send the following body: {token : token}');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/group/user_groups')
-                .send({user_id : 2, token : token});
+                .send({user_id : 2, token : token.split("").reverse().join("")});
             
-                assertRouteError(result, 400, 'tried to get groups from another user');
+                assertRouteError(result, 401, 'token invalid');
         })
     ]);
 }

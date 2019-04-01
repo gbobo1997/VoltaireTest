@@ -6,10 +6,12 @@ const { expect } = require('../test_suite');
 
 function createGroupControllerSuite(){
     return new TestSuite('groupController.js', [
-        //createGroupTests(),
-        //deleteGroupTests(),
-        //updateGroupTests(),
-        //getUsersGroupsTests(),
+        createGroupTests(),
+        deleteGroupTests(),
+        updateGroupTests(),
+        getUsersGroupsTests(),
+        userIsAGroupMemberTests(),
+        groupExists(),
         userIsAGroupMemberTests()
     ]);
 }
@@ -93,123 +95,23 @@ function getUsersGroupsTests(){
     ])
 }
 
-function validateCreateGroupTests(){
-    const models = getDbModels(1);
-
-    return new TestSuite('validateCreateGroup', [
-        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateCreateGroup({user_id : 1, group_name : 'test', token: token}, connection);
-            assertSuccess(result, null);
-        }),
-        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateCreateGroup({user_id: 1, token: token}, connection);
-            assertError(result, 400, 'validation error');
-        }),
-        new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateCreateGroup({user_id: 1, group_name: 'test', token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'auth error');
-        }),
-        new Test('fails validation given a miss-matched user id', models, async (connection, token)=>{
-            const result = await validator.validateCreateGroup({user_id: 2, group_name: 'test', token: token}, connection);
-            assertError(result, 400, 'tried to create a group for another user');
-        })
-    ]);
-}
-
-function validateDeleteGroupTests(){
-    const models = getDbModels(1);
-
-    return new TestSuite('validateDeleteGroup', [
-        new Test('successfully validates given correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateDeleteGroup({group_id: 1, token: token}, connection);
-            assertSuccess(result, null);
-        }),
-        new Test('fails validation given incomplete parameters', models, async (connection, token) =>{
-            const result = await validator.validateDeleteGroup({group_id: 'NaN', token: token}, connection);
-            assertError(result, 400, 'validation error');
-        }),
-        new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateDeleteGroup({group_id: 1, token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'auth error');
-        }),
-        new Test('fails validation if the user is not a member of the group', models, async (connection, token) =>{
-            const result = await validator.validateDeleteGroup({group_id: 2, token: token}, connection);
-            assertError(result, 400, 'the user is not a member of the group or group does not exist');
-        })
-    ]);
-}
-
-function validateUpdateGroupTests(){
-    const models = getDbModels(1);
-
-    return new TestSuite('validateUpdateGroup', [
-        new Test('successfully validates given correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateUpdateGroup({group_id: 1, group_name : 'test', token: token}, connection);
-            assertSuccess(result, null);
-        }),
-        new Test('fails validation given an incomplete parameter set',models, async (connection, token) =>{
-            const result = await validator.validateUpdateGroup({group_name: 'test', token: token}, connection);
-            assertError(result, 400, 'validation error');
-        }),
-        new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateUpdateGroup({group_id : 1, group_name: 'test', token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'auth error');
-        }),
-        new Test('fails validation if the user is not a member of the group', models, async (connection, token) =>{
-            const result = await validator.validateUpdateGroup({group_id : 2, group_name:'test', token : token}, connection);
-            assertError(result, 400, 'the user is not a member of the group or group does not exist');
-        })
-    ]);
-}
-
-function validateGetUserGroupsTests(){
-    const models = getDbModels(2);
-
-    return new TestSuite('validateGetUserGroups', [
-        new Test('successfully validates given a complete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateGetUserGroups({user_id : 2, token : token}, connection);
-            assertSuccess(result, null);
-        }),
-        new Test('fails validator given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateGetUserGroups({user_id : 'fail', token : token}, connection);
-            assertError(result, 400, 'validation error');
-        }),
-        new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateGetUserGroups({user_id: 2, token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'auth error');
-        }),
-        new Test('fails validation if the user_id does not match the token', models, async (connection, token) =>{
-            const result = await validator.validateGetUserGroups({user_id : 1, token : token}, connection);
-            assertError(result, 400, 'tried to get groups from another user');
-        })
-    ]);
-}
-
-function validateUserIsMemberOfGroupTests(){
+function groupExistsTests(){
     const models = getDbModels();
 
-    return new TestSuite('validateUserIsMemberOfGroup', [
-        new Test('successfully validates given correct parameters', models, async (connection) =>{
-            const result = await validator.validateUserIsMemberOfGroup(1, 1, connection);
-            assertSuccess(result, null);
+    return new TestSuite('groupExists', [
+        new Test('returns true given a valid group', models, async (connection) =>{
+            const result = await controller.groupExists(1, connection);
+            expect(result).to.be.true;
         }),
-        new Test('fails validation if given null parameters', models, async (connection) =>{
-            const result = await validator.validateUserIsMemberOfGroup(null, 1, connection);
-            assertError(result, 500, 'database error');
+        new Test('returns false given a non-existant group', models, async (connection) =>{
+            const result = await controller.groupExists(4, connection);
+            expect(result).to.be.false;
         }),
-        new Test('fails validation if the user does not exist', models, async (connection) =>{
-            const result = await validator.validateUserIsMemberOfGroup(5, 1, connection);
-            assertError(result, 400, 'the user is not a member of the group or group does not exist');
-        }),
-        new Test('fails validation if the group does not exist', models, async (connection) =>{
-            const result = await validator.validateUserIsMemberOfGroup(1, 5, connection);
-            assertError(result, 400, 'the user is not a member of the group or group does not exist');
-        }),
-        new Test('fails validation if the user is not a member of the group', models, async (connection)=>{
-            const result = await validator.validateUserIsMemberOfGroup(1, 2, connection);
-            assertError(result, 400, 'the user is not a member of the group or group does not exist');
+        new Test('returns false given a null group_id', models, async (connection) =>{
+            const result = await controller.groupExists(null, connection);
+            expect(result).to.be.false;
         })
-    ]);
+    ])
 }
 
 function userIsAGroupMemberTests(){
@@ -235,6 +137,98 @@ function userIsAGroupMemberTests(){
         new Test('return false given a nonexistant group', models, async (connection) =>{
             const result = await controller.userIsAGroupMember(1, 4, connection);
             expect(result).to.be.false;
+        })
+    ]);
+}
+
+function validateCreateGroupTests(){
+    const models = getDbModels(1);
+
+    return new TestSuite('validateCreateGroup', [
+        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateCreateGroup({group_name : 'test', token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateCreateGroup({token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {group_name : string, token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateCreateGroup({group_name: 'test', token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
+        })
+    ]);
+}
+
+function validateDeleteGroupTests(){
+    const models = getDbModels(1);
+
+    return new TestSuite('validateDeleteGroup', [
+        new Test('successfully validates given correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateDeleteGroup({group_id: 1, token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given incomplete parameters', models, async (connection, token) =>{
+            const result = await validator.validateDeleteGroup({group_id: 'NaN', token: token}, connection);
+            assertError(result, 400, 'validation error');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateDeleteGroup({group_id: 1, token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'auth error');
+        }),
+        new Test('fails validation if the group does not exist', models, async (connection, token) =>{
+            const result = await validator.validateDeleteGroup({group_id : 4, token : token}, connection);
+            assertError(Result, 400, 'group does not exist');
+        }),
+        new Test('fails validation if the user is not a member of the group', models, async (connection, token) =>{
+            const result = await validator.validateDeleteGroup({group_id: 2, token: token}, connection);
+            assertError(result, 400, 'user is not a member of the group');
+        })
+    ]);
+}
+
+function validateUpdateGroupTests(){
+    const models = getDbModels(1);
+
+    return new TestSuite('validateUpdateGroup', [
+        new Test('successfully validates given correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateUpdateGroup({group_id: 1, group_name : 'test', token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given an incomplete parameter set',models, async (connection, token) =>{
+            const result = await validator.validateUpdateGroup({group_id : null, group_name: 'test', token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {group_id : int, group_name : string, token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateUpdateGroup({group_id : 1, group_name: 'test', token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
+        }),
+        new Test('fails validation if the group does not exist', models, async (connection, token) =>{
+            const result = await validator.validateUpdateGroup({group_id : 5, group_name: 'test', token: token});
+            assertError(result, 400, 'group does not exist');
+        }),
+        new Test('fails validation if the user is not a member of the group', models, async (connection, token) =>{
+            const result = await validator.validateUpdateGroup({group_id : 2, group_name:'test', token : token}, connection);
+            assertError(result, 400, 'user is not a member of the group');
+        })
+    ]);
+}
+
+function validateGetUserGroupsTests(){
+    const models = getDbModels(2);
+
+    return new TestSuite('validateGetUserGroups', [
+        new Test('successfully validates given a complete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateGetUserGroups({token : token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validator given an incomplete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateGetUserGroups({token : null}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateGetUserGroups({user_id: 2, token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
         })
     ]);
 }

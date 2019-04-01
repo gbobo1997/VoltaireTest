@@ -28,8 +28,11 @@ async function validateDeleteGroup(body, connection){
     const {valid, user_id} = tokenValid(body.token);
     if (!valid) return new Error(401, 'token invalid');
 
-    if (!controller.groupExists(body.group_id, connection)) return new Error(400, 'group does not exist');
-    if (!controller.userIsAGroupMember(body.group_id, user_id, connection)) return new Error(400, 'user is not a member of the group');
+    const group = await controller.groupExists(body.group_id, connection);
+    if (!group) return new Error(400, 'group does not exist');
+
+    const member = await controller.userIsAGroupMember(body.group_id, user_id, connection);
+    if (!member) return new Error(400, 'user is not a member of the group');
     return new Success();
 }
 
@@ -45,8 +48,11 @@ async function validateUpdateGroup(body, connection){
     const {valid, user_id} = tokenValid(body.token);
     if (!valid) return new Error(401, 'token invalid');
 
-    if (!controller.groupExists(body.group_id, connection)) return new Error(400, 'group does not exist');
-    if (!controller.userIsAGroupMember(body.group_id, user_id, connection)) return new Error(400, 'user is not a member of the group');
+    const group = await controller.groupExists(body.group_id, connection);
+    if (!group) return new Error(400, 'group does not exist');
+
+    const member = await controller.userIsAGroupMember(body.group_id, user_id, connection);
+    if (!member) return new Error(400, 'user is not a member of the group');
     return new Success();
 }
 
