@@ -56,8 +56,11 @@ class Inserter{
                 return 1;
             case 'GroupModel':
                 return 2;
-            case 'FileModel':
+            case 'ChatModel':
                 return 3;
+            case 'FileModel':
+                return 4;
+            
             default:
                 return 0;
         }

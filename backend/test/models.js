@@ -113,6 +113,43 @@ class GroupModel extends DbModel{
 }
 GroupModel.insert_id = 1;
 
+class ChatModel extends DbModel{
+    constructor(group_id, name){
+        super(ChatModel.insert_id);
+        ChatModel.insert_id++;
+
+        this.name = name;
+        this.group_id = group_id;
+        this.members = GroupModel.members;
+    }
+
+    hasValidAttributes(){
+        return (super.hasValidAttributes() && this.group_id != null && this.name != null )
+    }
+
+    hasValidRelationships(){
+        return this.group_id != null;
+    }
+
+    addToGroup(group){
+        this.group_id = group.id;
+    }
+
+    getValueString(){
+        const chat_props = ["'"+this.group_id+"'","'"+this.name+"'"];
+        return [DbModel.getValueString(chat_props)];
+    }
+
+    static getDbName(){
+        return ['Chat'];
+    }
+
+    static getInsertColumns(){
+        return ['(GroupID, ChatName, ChatID)'];
+    }
+}
+ChatModel.insert_id = 1;
+
 class FileModel extends DbModel{
     constructor(name, content){
         super(FileModel.insert_id);
@@ -170,4 +207,4 @@ function resetInsertIds(){
     FileModel.insert_id = 1;
 }
 
-module.exports = { TestModels, UserModel, GroupModel, FileModel, resetInsertIds }
+module.exports = { TestModels, UserModel, GroupModel, ChatModel, FileModel, resetInsertIds }
