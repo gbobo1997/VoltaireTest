@@ -274,4 +274,4 @@ function getDbModels(token_id=null){
     else return new TestModels(models, models[token_id-1]);
 }
 
-module.exports = { createGroupControllerSuite, createGroupValidationSuite };
+module.exports = { createChatControllerSuite, createChatValidationSuite };
