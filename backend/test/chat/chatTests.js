@@ -1,5 +1,5 @@
 const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite');
-const { TestModels, UserModel, GroupModel, resetInsertIds } = require('../models');
+const { TestModels, UserModel, GroupModel, ChatModel, resetInsertIds } = require('../models');
 const controller = require('../../API/chat/chatController');
 const validator = require('../../API/chat/chatValidation');
 const { expect } = require('../test_suite');
@@ -29,16 +29,12 @@ function createChatTests(){
     return new TestSuite('createChat', [
         new Test('Successfully creates a chat with given parameters', models, async (connection) =>{
             const result = await controller.createChat({group_id: 2, chat_name: 'test'}, connection);
-            assertSuccess(result, {chat_id: 1});
+            assertSuccess(result, {chat_id: 4});
             const chat_result = await controller.getChatsInGroup({group_id: 2},connection);
-            assertSuccess(chat_result, [{chat_name: 'name', chat_id: 1}, {chat_name: 'test', chat_id: 1}]);
+            assertSuccess(chat_result, [{ChatName: 'chat2', GroupID: 2}, {ChatName: 'chat3', GroupID: 3}, {ChatName: 'test', GroupID: 4}]);
         }),
         new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
             const result = await controller.createChat({group_id: 2}, connection);
-            assertError(result, 500, 'database error');
-        }),
-        new Test('Returns a db error when given null parameters in the second query', models, async (connection) =>{
-            const result = await controller.createChat({chat_name: 'test'}, connection);
             assertError(result, 500, 'database error');
         })
     ]);
@@ -50,7 +46,7 @@ function deleteChatTests(){
         new Test('Successfully deletes a chat when given correct parameters', models, async (connection) =>{
             const result = await controller.deleteChat({chat_id : 1}, connection);
             assertSuccess(result);
-            const chat_result = await controller.getChatsInGroup({group_id: 2}, connection);
+            const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
             assertSuccess(chat_result, []);
         }),
         new Test('Returns a db error when given null parameter',  models, async (connection) =>{
@@ -67,8 +63,8 @@ function updateChatTests(){
         new Test('Successfully updates a chat name when given correct parameters', models, async (connection) =>{
             const result = await controller.updateChat({chat_id: 1, chat_name: 'test'}, connection);
             assertSuccess(result);
-            const chat_result = await controller.getChatsInGroup({group_id: 2}, connection);
-            assertSuccess(group_result, [{chat_id: 1, chat_name: 'test'}]);
+            const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
+            assertSuccess(chat_result, [{GroupID: 1, ChatName: 'test'}]);
         }),
         new Test('Returns a db error when given a null parameter', models, async (connection) =>{
             const result = await controller.updateChat({chat_name: 'test'}, connection);
@@ -109,7 +105,7 @@ function userHasAccessToChatTests(){
             expect(result).to.be.false;
         }),
         new Test('Return false given a valid user and chat that the user is not apart of', models, async (connection) =>{
-            const result = await controller.userHasAccessToChat(2, 1, connection);
+            const result = await controller.userHasAccessToChat(3, 1, connection);
             expect(result).to.be.false;
         }),
         new Test('Return false given a nonexistant user', models, async (connection) =>{
@@ -237,14 +233,18 @@ function validateGetChatsFromGroupTests(){
         })
     ]);
 }
-// chat 1
-// - group 1
-// chat 2 
-// - group 2
-// chat 3
-// - group 2
-// chat 4
-// - group 3 
+
+/*
+Group 1:
+    user 1
+    user 2
+    chat 1
+Group 2:
+    user 3
+    chat 2
+    chat 3
+*/
+
 function getDbModels(token_id=null){
     resetInsertIds();
 
@@ -254,17 +254,21 @@ function getDbModels(token_id=null){
 
     const first_group = new GroupModel('name');
     const second_group = new GroupModel('name2');
-    const third_group = new GroupModel('name3');
+
+    const first_chat = new ChatModel('chat');
+    const second_chat = new ChatModel('chat2');
+    const third_chat = new ChatModel('chat3');
 
     first_group.addMember(first_user);
     first_group.addMember(second_user);
-    first_group.addMember(third_user);
-    second_group.addMember(second_user);
     second_group.addMember(third_user);
-    third_group.addMember(third_user);
+
+    first_chat.addToGroup(first_group);
+    second_chat.addToGroup(second_group);
+    third_chat.addToGroup(second_group);
 
     const models = [first_user, second_user, third_user,
-        first_group, second_group, third_group];
+        first_group, second_group, first_chat, second_chat, third_chat];
 
     if (token_id === null) return new TestModels(models);
     else return new TestModels(models, models[token_id-1]);

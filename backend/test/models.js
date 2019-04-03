@@ -114,13 +114,12 @@ class GroupModel extends DbModel{
 GroupModel.insert_id = 1;
 
 class ChatModel extends DbModel{
-    constructor(group_id, name){
+    constructor(name){
         super(ChatModel.insert_id);
         ChatModel.insert_id++;
 
         this.name = name;
-        this.group_id = group_id;
-        this.members = GroupModel.members;
+        this.group_id = null;
     }
 
     hasValidAttributes(){
@@ -145,7 +144,7 @@ class ChatModel extends DbModel{
     }
 
     static getInsertColumns(){
-        return ['(GroupID, ChatName, ChatID)'];
+        return ['(GroupID, ChatName)'];
     }
 }
 ChatModel.insert_id = 1;
@@ -205,6 +204,7 @@ function resetInsertIds(){
     UserModel.insert_id = 1;
     GroupModel.insert_id = 1;
     FileModel.insert_id = 1;
+    ChatModel.insert_id = 1;
 }
 
 module.exports = { TestModels, UserModel, GroupModel, ChatModel, FileModel, resetInsertIds }
