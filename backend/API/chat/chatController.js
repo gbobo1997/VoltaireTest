@@ -67,7 +67,7 @@ async function userHasAccessToChat(user_id, chat_id, connection){
     if (user_id == null || chat_id == null) return false;
     const query = `SELECT COUNT(*) AS Count FROM Chat INNER JOIN GroupMembers ON Chat.GroupID = GroupMembers.GroupID 
         WHERE ChatID = ? AND UserID = ?`;
-    const result = await queryDb(connection, query, [chat_id, group_id]);
+    const result = await queryDb(connection, query, [chat_id, user_id]);
     if (result.isError()) return false;
     return (result.getData()[0].Count === 1);
 }

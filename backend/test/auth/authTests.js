@@ -24,10 +24,12 @@ function loginTests(){
 
     return new TestSuite('login', [
         new Test('logs in a user given a valid user', models, async (connection) =>{
-            const result = await controller.login({name : 'name', password: 'pass'}, connection);
-            expect(result).to.have.property('token');
-            expect(result).to.has.property('user_id');
-            expect(result.user_id).to.equal(4);
+            const result = await controller.login({name : 'name', password: 'test'}, connection);
+            
+            assertSuccess(result);
+            expect(result.getParams()).to.have.property('token');
+            expect(result.getParams()).to.have.property('user_id');
+            expect(result.getParams().user_id).to.equal(1);
         }),
         new Test('does not log in if the user does not exist', models, async (connection) =>{
             const result = await controller.login({name : 'name4', password : 'pass'}, connection);
@@ -49,7 +51,7 @@ function signUpTests(){
             assertSuccess(result, {id : 4});
 
             const user_result = await controller.userExists(4, connection);
-            expect(result).to.be.true;
+            expect(user_result).to.be.true;
 
             const group_result = await group_controller.getUsersGroups({user_id : 4}, connection);
             assertSuccess(group_result, [{group_name: 'personal', group_id: 1}]);
@@ -105,7 +107,7 @@ function validateSignUpTests(){
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection) =>{
             const result = await validator.validateSignUp({name : 'name4', screen_name : 'screen'}, connection);
-            assertError(result, 400, 'incorrect invalid parameters, send the following body: {name : string, screen_name : string, password : string}');
+            assertError(result, 400, 'invalid parameters, send the following body: {name : string, screen_name : string, password : string}');
         }),
         new Test('fails validation given a user that already exists', models, async (connection) =>{
             const result = await validator.validateSignUp({name: 'name', screen_name: 'screen4', password: 'test4'}, connection);

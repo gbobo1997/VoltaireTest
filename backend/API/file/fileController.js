@@ -77,7 +77,7 @@ async function requestFileLock(body, connection){
 async function getFileLock(body, connection){
     const { file_id } = body;
 
-    var query = 'SELECT * FROM FIleLocks WHERE FileID = ?';
+    var query = 'SELECT * FROM FileLocks WHERE FileID = ?';
 
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
@@ -144,8 +144,8 @@ async function fileExists(file_id, connection){
     if (file_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM File WHERE FileID = ?';
     const result = await queryDb(connection, query, file_id);
-    if (result.isError()) return false;
-    return result.getData() === 1;
+    if (result.isError() || result.isEmpty()) return false;
+    return result.getData()[0].Count === 1;
 }
 
 //tests
@@ -158,8 +158,8 @@ async function userHasAccessToFile(user_id, file_id, connection){
     if (user_id == null || file_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM File INNER JOIN GroupMembers ON GroupMembers.GroupID = File.GroupID WHERE FileID = ? AND UserID = ?';
     const result = await queryDb(connection, query, [file_id, user_id]);
-    if (result.isError()) return false;
-    return result.getData() === 1;
+    if (result.isError() || result.isEmpty()) return false;
+    return result.getData()[0].Count === 1;
 }
 
 module.exports = { getFile, getGroupFiles, createFile, deleteFile, updateFile, getFileLock, deleteFileLock, requestFileLock, fileExists, userHasAccessToFile }

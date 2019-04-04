@@ -26,7 +26,7 @@ function createLoginRouteTests(){
                 .post('/auth/login')
                 .send({name : 'name', password : null})
 
-            assertRouteError(result, 400, 'validation error');
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {name : string, password : string}');
 
         }),
         new Test('it should return a auth error given incorrect credentials', models, async () =>{
@@ -56,7 +56,7 @@ function createSignUpRouteTests(){
                 .post('/auth/sign-up')
                 .send({name : 'name', screen_name: 'screen', password : 'now'})
 
-            assertRouteError(result, 400, 'user exists');
+            assertRouteError(result, 400, 'user with the same name already exists');
         })
 
     ]);

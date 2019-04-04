@@ -1,11 +1,11 @@
 const db = require('../API/db');
-const { UserModel, GroupModel, FileModel } = require('./models');
+const { UserModel, GroupModel, FileModel, ChatModel } = require('./models');
 
 class Inserter{
     constructor(models, connection){
         this.models = models;
         this.connection = connection;
-        this.classes = { UserModel, GroupModel, FileModel }
+        this.classes = { UserModel, GroupModel, FileModel, ChatModel }
     }
 
     async executeInsert(){
@@ -60,7 +60,6 @@ class Inserter{
                 return 3;
             case 'FileModel':
                 return 4;
-            
             default:
                 return 0;
         }

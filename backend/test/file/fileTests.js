@@ -80,6 +80,29 @@ function deleteFileTests(){
     ]);
 }
 
+function getFileLockTests(){
+    const models = getDbModels();
+
+    return new TestSuite('getFileLock', [
+        new Test('gets the lock on a file given correct input', models, async (connection) =>{
+            var result = await controller.getFileLock({file_id : 1}, connection);
+            assertSuccess(result, [{FileID : 1, UserID : 1, Expires: 1546369200000}]);
+        }),
+        new Test('returns nothing given a file that has no lock', models, async (connection) =>{
+            var result = await controller.getFileLock({file_id : 3}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('returns nothing given a file that does not exist', models, async (connection) =>{
+            var result = await controller.getFileLock({file_id : 4}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('returns a db error given a null parameter', models, async (connection) =>{
+            var result = await controller.getFileLock({file_id : null}, connection);
+            assertError(result, 500, 'database error');
+        })
+    ]);
+}
+
 function requestFileLockTests(){
     const models = getDbModels();
 
@@ -128,10 +151,10 @@ function deleteFileLockTests(){
         }),
         new Test('does nothing if another user holds the lock', models, async (connection) =>{
             var result = await controller.deleteFileLock({user_id : 2, file_id : 1}, connection);
-            assertSuccess(result, null);
+            assertError(result, 400, 'this lock belongs to another user');
 
             result = await controller.getFileLock({file_id : 1}, connection);
-            assertSuccess(result, []);
+            assertSuccess(result, [{FileID : 1, UserID : 1, Expires : 1546369200000}]);
         }),
         new Test('does nothing to a file that has no lock', models, async (connection) =>{
             var result = await controller.deleteFileLock({user_id : 1, file_id : 3}, connection);
@@ -247,7 +270,7 @@ function userHasAccesToFileTests(){
 
     return new TestSuite('userHasAccessToFile', [
         new Test('returns true given a file that belongs to a group the user is a part of', models, async (connection) =>{
-            const result = await controller.userHasAccesToFile(1, 1, connection);
+            const result = await controller.userHasAccessToFile(1, 1, connection);
             expect(result).to.be.true;
         }),
         new Test('returns false given a file that does not belong to a group the user is a part of', models, async (connection) =>{
@@ -297,7 +320,7 @@ function valdiateFileIdTokenRouteTests(){
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateFileIdTokenRoute({file_id : 'one', token : token});
+            const result = await validator.validateFileIdTokenRoute({file_id : 'one', token : token}, connection);
             assertError(result, 400, 'invalid parameters, send the following body: {file_id : int, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
@@ -329,7 +352,7 @@ function validateUpdateFileTests(){
         }),
         new Test('fails validation given a invalid token', models, async (connection, token) =>{
             const result = await validator.validateUpdateFile({file_id: 1, file_name: 'new_name', file_content: 'new_content', token: token.split("").reverse().join("")}, connection);
-            assertError(result, 400, 'invalid token');
+            assertError(result, 401, 'token invalid');
         }),
         new Test('fails validation given a file that does not exist', models, async (connection, token) =>{
             const result = await validator.validateUpdateFile({file_id: 5, file_name: 'new_name', file_content: 'new_content', token : token}, connection);
@@ -348,6 +371,7 @@ function validateGetGroupFilesTests(){
     return new TestSuite('validateGetGroupFiles', [
         new Test('succeeds validation given valid parameters', models, async (connection, token) =>{
             const result = await validator.validateGetGroupFiles({group_id : 1, token : token}, connection);
+            console.log(result);
             assertSuccess(result, null);
         }),
         new Test('fails validation given a non-int group_id', models, async (connection, token) =>{
@@ -356,7 +380,7 @@ function validateGetGroupFilesTests(){
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateGetGroupFiles({group_id : 1, token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'invalid token');
+            assertError(result, 401, 'token invalid');
         }),
         new Test('fails validation given a non-existent group', models, async (connection, token) =>{
             const result = await validator.validateGetGroupFiles({group_id: 4, token : token}, connection);

@@ -65,7 +65,6 @@ function insertGroupUpdateTests(){
         }),
         new Test('sends no updates if a group does not exist', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(5, 1, JSON.stringify({test : 'value'}), connection);
-            console.log(result);
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);

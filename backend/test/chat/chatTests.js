@@ -4,7 +4,7 @@ const controller = require('../../API/chat/chatController');
 const validator = require('../../API/chat/chatValidation');
 const { expect } = require('../test_suite');
 
-function createChatContollerSuite(){
+function createChatControllerSuite(){
     return new TestSuite('chatContoller.js',[
         createChatTests(),
         deleteChatTests(),
@@ -31,7 +31,8 @@ function createChatTests(){
             const result = await controller.createChat({group_id: 2, chat_name: 'test'}, connection);
             assertSuccess(result, {chat_id: 4});
             const chat_result = await controller.getChatsInGroup({group_id: 2},connection);
-            assertSuccess(chat_result, [{ChatName: 'chat2', GroupID: 2}, {ChatName: 'chat3', GroupID: 3}, {ChatName: 'test', GroupID: 4}]);
+            assertSuccess(chat_result, [{ChatID : 2, ChatName: 'chat2', GroupID: 2}, {ChatID : 3, ChatName: 'chat3', GroupID: 2}, 
+                {ChatID : 4, ChatName: 'test', GroupID: 2}]);
         }),
         new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
             const result = await controller.createChat({group_id: 2}, connection);
@@ -64,10 +65,29 @@ function updateChatTests(){
             const result = await controller.updateChat({chat_id: 1, chat_name: 'test'}, connection);
             assertSuccess(result);
             const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
-            assertSuccess(chat_result, [{GroupID: 1, ChatName: 'test'}]);
+            assertSuccess(chat_result, [{ChatID : 1, GroupID: 1, ChatName: 'test'}]);
         }),
-        new Test('Returns a db error when given a null parameter', models, async (connection) =>{
+        new Test('does nothing when given a null parameter', models, async (connection) =>{
             const result = await controller.updateChat({chat_name: 'test'}, connection);
+            assertSuccess(result, null);
+        })
+    ])
+}
+
+function getChatsInGroupTests(){
+    const models = getDbModels();
+
+    return new TestSuite('getChatsInGroup', [
+        new Test('gets All the chats in a group given valid input', models, async (connection) =>{
+            const result = await controller.getChatsInGroup({group_id : 1}, connection);
+            assertSuccess(result, [{ChatID : 1, GroupID: 1, ChatName: 'chat'}]);
+        }),
+        new Test('gets no chats when given a group that does not exist', models, async (connection) =>{
+            const result = await controller.getChatsInGroup({group_id : 4}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('returns a db error when given a null parameter', models, async (connection) =>{
+            const result = await controller.getChatsInGroup({group_id : null}, connection);
             assertError(result, 500, 'database error');
         })
     ])
@@ -97,14 +117,14 @@ function userHasAccessToChatTests(){
 
     return new TestSuite('userHasAccessToChat', [
         new Test('Returns true given a valid user and chat that the user is a member of', models, async (connection) =>{
-            const result = await controller.userIsAGroupMember(1, 1, connection);
+            const result = await controller.userHasAccessToChat(1, 1, connection);
             expect(result).to.be.true;
         }),
         new Test('Returns false given a null parameter', models, async (connection) =>{
             const result = await controller.userHasAccessToChat(null, 1, connection);
             expect(result).to.be.false;
         }),
-        new Test('Return false given a valid user and chat that the user is not apart of', models, async (connection) =>{
+        new Test('Return false given a valid user and chat that the user is not a part of', models, async (connection) =>{
             const result = await controller.userHasAccessToChat(3, 1, connection);
             expect(result).to.be.false;
         }),
@@ -124,12 +144,12 @@ function validateCreateChatTests(){
     
     return new TestSuite('validateCreateChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateCreateChat({group_id: 2, chat_name : 'test', token: token}, connection);
+            const result = await validator.validateCreateChat({group_id: 1, chat_name : 'test', token: token}, connection);
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateCreateChat({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {group_id: int, chat_name : string, token : token}');
+            assertError(result, 400, 'invalid parameters, send the following body: {group_id : int, chat_name : string, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateCreateChat({group_id: 2, chat_name: 'test', token: token.split("").reverse().join("")}, connection);
@@ -152,7 +172,7 @@ function validateDeleteChatTests(){
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateDeleteChat({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {chat_name : string, token : token}');
+            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateDeleteChat({chat_id: 1, token: token.split("").reverse().join("")}, connection);
@@ -174,38 +194,15 @@ function validateUpdateChatTests(){
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {chat_name : string, token : token}');
+            const result = await validator.validateUpdateChat({chat_id : null, chat_name: 'test', token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, chat_name : string, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateUpdateChat({chat_id: 2, chat_name: 'test', token: token.split("").reverse().join("")}, connection);
             assertError(result, 401, 'token invalid');
         }),
-        new Test('fails validation given a non-existent chat_id', models, async(connection,token) =>{
-            const result = await validator.validateCreateChat({chat_id: 4, chat_name: 'test', token: token}, connection);
-            assertError(result, 400, 'chat does not exist');
-        })
-    ]);
-}
-    
-function validateUpdateChatTests(){
-    const models = getDbModels(1);
-    
-    return new TestSuite('validateUpdateChat', [
-        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({chat_id: 1, chat_name : 'test', token: token}, connection);
-            assertSuccess(result, null);
-        }),
-        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {chat_name : string, token : token}');
-        }),
-        new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({chat_id: 2, chat_name: 'test', token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'token invalid');
-        }),
-        new Test('fails validation given a non-existent chat_id', models, async(connection,token) =>{
-            const result = await validator.validateCreateChat({chat_id: 4, chat_name: 'test', token: token}, connection);
+        new Test('fails validation given a non-existent chat', models, async(connection,token) =>{
+            const result = await validator.validateUpdateChat({chat_id: 4, chat_name: 'test', token: token}, connection);
             assertError(result, 400, 'chat does not exist');
         })
     ]);
@@ -214,22 +211,22 @@ function validateUpdateChatTests(){
 function validateGetChatsFromGroupTests(){
     const models = getDbModels(1);
     
-    return new TestSuite('validateUpdateChat', [
+    return new TestSuite('validateGetChatsFromGroupChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({group_id: 1, token: token}, connection);
+            const result = await validator.validateGetChatsFromGroup({group_id: 1, token: token}, connection);
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {chat_name : string, token : token}');
+            const result = await validator.validateGetChatsFromGroup({token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {group_id : int, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.validateUpdateChat({group_id: 2, token: token.split("").reverse().join("")}, connection);
+            const result = await validator.validateGetChatsFromGroup({group_id: 2, token: token.split("").reverse().join("")}, connection);
             assertError(result, 401, 'token invalid');
         }),
-        new Test('fails validation given a non-existent group_id', models, async(connection,token) =>{
-            const result = await validator.validateCreateChat({group_id: 5, token: token}, connection);
-            assertError(result, 400, 'chat does not exist');
+        new Test('fails validation given a non-existent group', models, async(connection,token) =>{
+            const result = await validator.validateGetChatsFromGroup({group_id: 5, token: token}, connection);
+            assertError(result, 400, 'group does not exist');
         })
     ]);
 }

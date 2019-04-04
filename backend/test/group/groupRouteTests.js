@@ -48,12 +48,13 @@ function createDeleteGroupTests(){
                 .delete('/group/delete')
                 .send({group_id : 1, token : token});
             
+            console.log(result.body);
             assertRouteResult(result, 200);
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
                 .delete('/group/delete')
-                .send({goup_id : 2, token : token});
+                .send({group_id : 2, token : token});
         
             assertRouteError(result, 400, 'user is not a member of the group');
         }),
@@ -75,6 +76,8 @@ function createUpdateGroupTests(){
             const result = await chai.request(app)
                 .patch('/group/update')
                 .send({group_id : 1, token : token, group_name : 'test'});
+
+            console.log(result.body);
             assertRouteResult(result, 200);
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{

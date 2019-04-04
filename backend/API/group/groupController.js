@@ -65,10 +65,10 @@ async function getUsersInGroup(group_id, connection){
 // -does not exist
 async function groupExists(group_id, connection){
     if (group_id == null) return false;
-    const query = 'SELECT COUNT(*) AS Count FROM ChatGroup WHERE Group_ID = ?';
+    const query = 'SELECT COUNT(*) AS Count FROM ChatGroup WHERE GroupID = ?';
     const result = await queryDb(connection, query, group_id);
-    if (result.isError()) return false;
-    return new (result.getData()[0].Count === 1);
+    if (result.isError() || result.isEmpty()) return false;
+    return (result.getData()[0].Count === 1);
 }
 
 //tests
