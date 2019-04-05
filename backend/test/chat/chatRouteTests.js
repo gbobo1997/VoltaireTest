@@ -94,6 +94,32 @@ function createUpdateChatTests(){
     ]);
 }
 
+function createGetChatInGroupTests(){
+    const models = getDbModels(1);
+
+    return new TestSuite('PATCH /chat_groups', [
+        new Test('it should retrieve chats in a group when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/chat/chat_groups')
+                .send({group_id : 2, token : token});
+            assertRouteResult(result, 200);
+        }),
+        new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/chat/chat_groups')
+                .send({group_id : 4, token : token});
+        
+            assertRouteError(result, 400, 'group does not exist');
+        }),
+        new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/chat/chat_groups')
+                .send({group_id : 1, token : token.split("").reverse().join("")});
+            
+            assertRouteError(result, 401, 'token invalid');
+        })
+    ]);
+}
 
 function getDbModels(token_id=null){
     resetInsertIds();
