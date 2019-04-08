@@ -11,6 +11,9 @@
       <button type="button" onclick="logout()">Logout</button>
       <button type="button" onclick="addGroup()">Add Group</button>
       <button type="button" onclick="editGroup()">Edit Group</button>
+      <button type="button" onclick="createChat()">Create Chat</button>
+      <button type="button" onclick="editChat()">Edit Chat</button>
+      <button type="button" onclick="userOptions()">User Options</button>
     </div>
   	</section>
     <div id="myModal" class="modal">
@@ -18,11 +21,15 @@
     <!-- Modal content - popup menu for group -->
     <div class="modal-content">
       <span class="close">&times;</span>
-      <form id="groupAction "action="">
-      Group Name:<br>
-      <input id="groupNameForm" type="text" name="groupName" value="abcd">
-      <input id="gsb"type="submit" value="Create">
-      <input type="hidden" id="delete" value="Delete" onclick="">
+      <form id="groupAction"action="">
+        Group Name:<br>
+        <input id="groupNameForm" type="text" name="groupName" value="abcd">
+        <input id="gsb"type="submit" value="Create">
+        <input type="hidden" id="delete" value="Delete" onclick="">   
+
+        <label>Username: </label><input type="text" id="" value="current username"><br><label>Other Attributes: </label><input type="text" id="" value="eh">
+      
+
       </form>       
     </div>
 

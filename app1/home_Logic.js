@@ -34,16 +34,6 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
-
-
-var loremIpsum = require('lorem-ipsum');
-var output = loremIpsum(
-  {
-    count: 10,
-    units: 'paragraphs'
-  }
-);
-//document.getElementById("output").innerHTML += output;
   //austin test
 
 function logout()
@@ -67,7 +57,7 @@ function addGroup()
 {
   document.getElementById('delete').type = 'hidden';       
   modal.style.display = "block"; 
-  alert("Group name already taken.");
+  //alert("Group name already taken.");
 
 }
 
@@ -85,6 +75,31 @@ function editGroup()
   document.getElementById('gsb').value = 'Edit'; 
   document.getElementById('delete').type = 'Submit'; 
 
+}
+
+// Create Chat
+function createChat()
+{
+  var content = '<label>Groups: </label><select><option value="test">Group1</option><option value="test2">Group2</option></select><label>Chat Name: </label><input id="newChatName" value="chat name"></form><button type="button" onlick="">Create Chat</button>';
+  openModal(content);
+}
+
+function editChat()
+{
+  var content = '<label>Current Chat Name:</label><input type="text" name="chatName" value="chat name"><button type="button" onclick="">Change</button>';
+  openModal(content);
+}
+
+function userOptions() 
+{
+  var content = '<label>Username: </label><input type="text" id="" value="current username"><br><label>Other Attributes: </label><input type="text" id="" value="eh">';
+  openModal(content);
+}
+
+function openModal(content)
+{
+  document.getElementById('groupAction').innerHTML = content;
+  modal.style.display = "block"; 
 }
 
 function listGroups()
