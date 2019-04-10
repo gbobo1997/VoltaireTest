@@ -22,7 +22,7 @@ app.use((req, res, next) =>{
 
 app.use('/auth', authRoutes);
 app.use('/group', groupRoutes);
-app.unsubscribe('/chat', chatRoutes);
+app.use('/chat', chatRoutes);
 
 const server = app.listen(8080, '0.0.0.0', (error) =>{
     if (error) console.log('error');

@@ -20,14 +20,14 @@ function createCreateChatTests(){
                 .post('/chat/create')
                 .send({token : token, group_id: 1, chat_name : 'test'});
             
-            assertRouteResult(result, 200, {group_id : 4});
+            assertRouteResult(result, 200, {chat_id : 4});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/chat/create')
                 .send({token : token, group_id: 1, chat_name : null});
         
-            assertRouteError(result, 400, 'invalid parameters, send the following body: {chat_name : string, token : token}');
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {group_id : int, chat_name : string, token : token}');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -53,9 +53,9 @@ function createDeleteChatTests(){
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
                 .delete('/chat/delete')
-                .send({goup_id : 2, token : token});
+                .send({chat_id : 2, token : token});
         
-            assertRouteError(result, 400, 'user is not a member of the group');
+            assertRouteError(result, 400, 'user does not have access to this chat');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -82,7 +82,7 @@ function createUpdateChatTests(){
                 .patch('/chat/update')
                 .send({chat_id : 5, token : token, chat_name : 'test'});
         
-            assertRouteError(result, 400, 'group does not exist');
+            assertRouteError(result, 400, 'chat does not exist');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -97,23 +97,23 @@ function createUpdateChatTests(){
 function createGetChatInGroupTests(){
     const models = getDbModels(1);
 
-    return new TestSuite('PATCH /chat_groups', [
+    return new TestSuite('POST /chat_groups', [
         new Test('it should retrieve chats in a group when given correct parameters', models, async (c, token) =>{
             const result = await chai.request(app)
-                .patch('/chat/chat_groups')
-                .send({group_id : 2, token : token});
+                .post('/chat/chat_groups')
+                .send({group_id : 1, token : token});
             assertRouteResult(result, 200);
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
-                .patch('/chat/chat_groups')
+                .post('/chat/chat_groups')
                 .send({group_id : 4, token : token});
         
             assertRouteError(result, 400, 'group does not exist');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
-                .patch('/chat/chat_groups')
+                .post('/chat/chat_groups')
                 .send({group_id : 1, token : token.split("").reverse().join("")});
             
             assertRouteError(result, 401, 'token invalid');
