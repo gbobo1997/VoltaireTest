@@ -80,13 +80,13 @@ function editGroup()
 // Create Chat
 function createChat()
 {
-  var content = '<label>Groups: </label><select><option value="test">Group1</option><option value="test2">Group2</option></select><label>Chat Name: </label><input id="newChatName" value="chat name"></form><button type="button" onlick="">Create Chat</button>';
+  var content = '<label>Groups: </label><select><option value="test">Group1</option><option value="test2">Group2</option></select><label>Chat Name: </label><input id="newChatName" value="chat name"></form><button type="button" onlick="">Create Chat</button><br><div id="error" style="text-align:center; font-size=125%; color:red; display:none;">Error: error type</div>';
   openModal(content);
 }
 
 function editChat()
 {
-  var content = '<label>Current Chat Name:</label><input type="text" name="chatName" value="chat name"><button type="button" onclick="">Change</button>';
+  var content = '<label>Current Chat Name:</label><input type="text" name="chatName" value="chat name"><button type="button" onclick="">Change</button><button type="button" onclick="">Delete</button>';
   openModal(content);
 }
 
