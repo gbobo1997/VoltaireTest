@@ -86,7 +86,7 @@ function createChat()
 
 function editChat()
 {
-  var content = '<label>Current Chat Name:</label><input type="text" name="chatName" value="chat name"><button type="button" onclick="">Change</button><button type="button" onclick="">Delete</button>';
+  var content = '<label>Current Chat Name:</label><input type="text" name="chatName" value="chat name"><button type="button" onclick="">Change</button><button type="button" onclick="">Delete</button><br><div id="error" style="text-align:center; font-size=125%; color:red;">Error: error type</div>';
   openModal(content);
 }
 
@@ -124,3 +124,4 @@ function changeGroup(group)
 {
   currentGroup = group;
 }
+
