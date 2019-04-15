@@ -29,7 +29,6 @@ section:first-of-type .column:first-of-type {
 	flex-basis: 0;
 }
 
-
 .columnScroll {
 	margin: 0px;
 	height: 90vh;
@@ -59,8 +58,8 @@ section:first-of-type .column:first-of-type {
 }
 
 .columnScroll:first-of-type {
-	flex-grow: .75;
-	flex-shrink: .75;
+	flex-grow: .5;
+	flex-shrink: .5;
 	flex-basis: 0;
 }
 
