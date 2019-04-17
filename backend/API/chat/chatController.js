@@ -26,7 +26,7 @@ async function deleteChat(body, connection){
 async function updateChat(body, connection){
     const { chat_id, chat_name } = body;
     var query = 'UPDATE Chat SET ChatName = ? WHERE ChatID = ?';
-
+    
     var result = await queryDb(connection, query, [chat_name, chat_id]);
     if (result.isError()) return result;
     return new Success();
