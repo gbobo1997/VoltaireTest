@@ -1,5 +1,5 @@
 const { queryDb } = require('../db');
-const { Success, Error } = require('../common');
+const { Success} = require('../common');
 
 async function sendMessage(body, connection){
     const { user_id, content, time_sent, chat_id } = body;
@@ -17,10 +17,9 @@ async function getMessageInChat(body, connection){
     var query = 'SELECT Messages.*, ScreenName FROM Messages'
     + 'LEFT OUTER JOIN Users ON Users.UserID = Message.UserID WHERE Message.ChatID = ?';
 
-    var result = await queryDb(connection, query, [chat_id])
+    var result = await queryDb(connection, query, chat_id)
     if (result.isError()) return false;
-    return (result.getData()[0].Count === 1);
+    return new Success(result.getData());
 }
-
 
 module.exports = { sendMessage, getMessageInChat }
