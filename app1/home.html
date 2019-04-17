@@ -6,15 +6,22 @@
 	<link rel="stylesheet" href="styles2.css">
   <body id="body">
   	<section>
-  		<div class="column" id="menu_bar">
-      Menu Bar
-      <button type="button" onclick="logout()">Logout</button>
-      <button type="button" onclick="addGroup()">Add Group</button>
-      <button type="button" onclick="editGroup()">Edit Group</button>
-      <button type="button" onclick="createChat()">Create Chat</button>
-      <button type="button" onclick="editChat()">Edit Chat</button>
-      <button type="button" onclick="userOptions()">User Options</button>
-      <button type="button" onclick="toggleThird()">Toggle 3rd</button>
+  		<div id="menu_bar">
+        <div id="menu_column">
+          <button type="button" class="menu_button" onclick="userOptions()">User Options</button><br>              
+          <button type="button" class="menu_button" onclick="logout()">Logout</button>
+        </div>
+        <div id="menu_column">
+      <button type="button" class="menu_button" onclick="addGroup()">Add Group</button><br>
+      <button type="button" class="menu_button" onclick="editGroup()">Edit Group</button>
+    </div>
+    <div id="menu_column">
+      <button type="button" class="menu_button" onclick="createChat()">Create Chat</button><br>
+      <button type="button" class="menu_button" onclick="editChat()">Edit Chat</button>
+      </div>
+      <div id="menu_column">
+      <button type="button" class="menu_button" onclick="toggleThird()">Toggle 3rd</button>
+    </div>
     </div>
   	</section>
     <div id="myModal" class="modal">
@@ -35,7 +42,7 @@
     </div>
 
   </div>
-  	<section>
+  	<section id="non_menu">
   		<div class="columnScroll" id="columnOne">First</div>
   		<div class="columnScroll" id="fillMe">
         <section class="messaging"> 
@@ -47,8 +54,7 @@
           </form>
         </div>   
         </section>    
-      </div>
-      
+      </div>      
   		<div class="columnScroll" id="file_column">Third</div>
   	</section>
     <script src="home_Logic.js"></script>
