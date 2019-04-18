@@ -64,6 +64,7 @@ async function validateGetUserGroups(body){
         return new Error(400, 'invalid parameters, send the following body: {token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    console.log(user_id);
     if (!valid) return new Error(401, 'token invalid');
 
     body.user_id = user_id;

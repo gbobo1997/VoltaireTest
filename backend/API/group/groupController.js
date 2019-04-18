@@ -41,6 +41,7 @@ async function updateGroup(body, connection){
 }
 
 async function getUsersGroups(body, connection){
+    console.log(body);
     const { user_id } = body;
     var query = `SELECT GroupMembers.GroupID AS group_id, GroupName As group_name FROM GroupMembers \
                     INNER JOIN ChatGroup ON ChatGroup.GroupID = GroupMembers.GroupID
