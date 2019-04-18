@@ -42,7 +42,9 @@ function createDbQuery(){
     );
     CREATE TABLE IF NOT EXISTS Message (
         MessageID int NOT NULL AUTO_INCREMENT,
+        UserID int NOT NULL,
         MessageContent TEXT NOT NULL,
+        TimeSent bigint NOT NULL,
         ChatID int NOT NULL,
         PRIMARY KEY (MessageID),
         FOREIGN KEY (ChatID) REFERENCES Chat(ChatID)

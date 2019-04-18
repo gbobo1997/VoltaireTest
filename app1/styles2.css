@@ -1,32 +1,59 @@
+body {
+	margin: 0;
+	height: 99vh;
+}
+
 section {
 
 	margin: 0 auto;
 	display: flex;
 }
-
+/*
 section:first-of-type .column:first-of-type {
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
 	height: 10vh;
+}*/
+#menu_bar {
+	background-color: #36393F;
+	height: 60px;
+	width: 100%;
+	display: flex;
+}
+#columnOne {
+	background-color: #2F3136;
+}
+
+#non_menu {
+	height: 93%;
+}
+
+#menu_column {
+	flex-grow: .25;
+	flex-shrink: .25;
+	flex-direction: row;
+	background-color: #2F3136;
+}
+
+.menu_button {
+	text-align: center;
+	cursor: pointer;
+	background-color: white;
+	border-style: 1px solid;
+	border-color: green;
 }
 
 .column {
-	margin: 2px;
-	height: 80vh;
-	border-style: solid;
-	border-width: 3px;
+	margin: 0px;
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
 }
 
-
 .columnScroll {
-	margin: 2px;
-	height: 80vh;
-	border-style: solid;
-	border-width: 3px;
+	flex-direction: column;
+	margin: 0px;
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
@@ -53,8 +80,8 @@ section:first-of-type .column:first-of-type {
 }
 
 .columnScroll:first-of-type {
-	flex-grow: .75;
-	flex-shrink: .75;
+	flex-grow: 0.5;
+	flex-shrink: .5;
 	flex-basis: 0;
 }
 
@@ -73,9 +100,10 @@ section:first-of-type .column:first-of-type {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Modal Content/Box */
+/* Modal Content/Box background-color: #fefefe;*/
 .modal-content {
-  background-color: #fefefe;
+  background-color: #36393F;
+  color: #FFFFFF;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;

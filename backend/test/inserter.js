@@ -60,6 +60,8 @@ class Inserter{
                 return 3;
             case 'FileModel':
                 return 4;
+            case 'MessageModel':
+                return 5;
             default:
                 return 0;
         }

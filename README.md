@@ -1,3 +1,18 @@
+## To-Do
+### Back-end
+* finish file routes and file route tests
+* finish messages and message tests 
+* note: group invite update, timer update 
+* update routes on the readme
+
+### Front end
+* implement updated API on web-server
+* write correct fetch requests for everything
+* update UI (specifically group bar)
+* generate message presentation schema and message requests
+* timer for update requests (chat messages and file IO)
+* test... 
+
 # Overview
 The application is geared toward student collaboration within a team environment with a social media spin. The application will allow teams to communicate and share documents over a cloud platform, with their documents and communications saved for future reference. Teams will be able to edit documents using the same application they communicate with.  
 [Read More](https://github.com/gbobo1997/VoltaireTest/blob/master/BACS487_ProjectReport_AcademicCollaborationApp.pdf)
@@ -22,16 +37,6 @@ Back End:
 
 - Tyler Marler
 
-# Schedule
-1. Login Message
-    - Username - string
-    - Password - string
-2. Sign-up 
-    - Username - string
-    - Password - string
-    - Name - string
-3. Logout
-    - clear a cookie
 # Discord
 https://discord.gg/F3fBd3
 

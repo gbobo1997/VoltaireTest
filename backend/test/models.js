@@ -200,11 +200,51 @@ class FileModel extends DbModel{
 }
 FileModel.insert_id = 1;
 
+class MessageModel extends DbModel{
+    constructor(content){
+    super(MessageModel.insert_id);
+        MessageModel.insert_id++;;
+        this.content = content;
+        this.time_sent = null;
+
+        this.chat_id = null;
+        this.user_id = null;
+    }
+
+    hasValidAttributes(){
+        return (super.hasValidAttributes() && this.content != null);
+    }
+
+    hasValidRelationships(){
+        return this.chat_id != null;
+    }
+
+    addTime(user, time){
+        this.user_id = user.id;
+        this.time_sent = time;
+    }
+
+    getValueString(){
+        const props = ["'"+this.user_id+"'", "'"+this.chat_id+"'", "'"+this.content+"'"];
+        return [DbModel.getValueString(props)];
+    }
+
+    static getDbName(){
+        return ['Message'];
+    }
+
+    static getInsertColumns(){
+        return ['(ChatID, UserID, MessageContent)'];
+    }
+}
+MessageModel.insert_id = 1;
+
 function resetInsertIds(){
     UserModel.insert_id = 1;
     GroupModel.insert_id = 1;
     FileModel.insert_id = 1;
     ChatModel.insert_id = 1;
+    MessageModel.inser_id = 1;
 }
 
-module.exports = { TestModels, UserModel, GroupModel, ChatModel, FileModel, resetInsertIds }
+module.exports = { TestModels, UserModel, GroupModel, ChatModel, FileModel, MessageModel, resetInsertIds }
