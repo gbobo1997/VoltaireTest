@@ -133,3 +133,19 @@ function changeGroup(group)
   currentGroup = group;
 }
 
+function addMessage(user, type, content)
+{
+  if(type == 'incoming')
+  {
+    var newMessage = '<br><div id="message_incoming"><b>'+user+'</b><br>'+content+'</div><br>';
+  }
+  if(type == 'outgoing')
+  {
+    var newMessage = '<br><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div><br>';
+  }
+  document.getElementById('output').innerHTML+=newMessage;  
+}
+
+//addMessage("Robert", 'outgoing', 'this is a new message.');
+addMessage("Austen", 'incoming', 'this is a new incoming message.');
+
