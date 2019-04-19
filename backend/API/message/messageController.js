@@ -6,7 +6,7 @@ async function sendMessage(body, connection){
 
     var query = 'INSERT INTO Message (UserID, MessageContent, TimeSent, ChatID) VALUES (?, ?, ?, ?)';
 
-    var result = await queryDb(connection, query, [user_id, content, Date.now(), chat_id]);
+    var result = await queryDb(connection, query, [user_id, content, time, chat_id]);
     if (result.isError()) return result;
     const message_id = result.getAddedRowId();
 
