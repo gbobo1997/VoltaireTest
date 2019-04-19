@@ -16,7 +16,7 @@ async function validateGetMessageInChat(body, connection){
     if ( body.chat_id == null || !Number.isInteger(body.chat_id) || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {chat_id: int , token : token}');
     }
-    
+
     const {valid, user_id} = tokenValid(body.token);
     if (!valid) return new Error(401,'token invalid');
     body.user_id = user_id;
