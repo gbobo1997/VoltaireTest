@@ -1,6 +1,5 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
-//const { fileCreated, fileDeleted, fileLockChanged, fileUpdated } = require('../update/updateController');
 const updater = require('../update/updateController');
 
 //tests
@@ -74,6 +73,7 @@ async function requestFileLock(body, connection){
     else return new Success({expiration : formatted_time});
 }
 
+//this is pretty much just used for testing purposes
 async function getFileLock(body, connection){
     const { file_id } = body;
 

@@ -1,6 +1,6 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
-
+const updater = require('../update/updateController');
 
 async function createGroup(body, connection){
     const {user_id, group_name} = body;
@@ -41,7 +41,6 @@ async function updateGroup(body, connection){
 }
 
 async function getUsersGroups(body, connection){
-    console.log(body);
     const { user_id } = body;
     var query = `SELECT GroupMembers.GroupID AS group_id, GroupName As group_name FROM GroupMembers \
                     INNER JOIN ChatGroup ON ChatGroup.GroupID = GroupMembers.GroupID
@@ -51,9 +50,20 @@ async function getUsersGroups(body, connection){
     return new Success(result.getData());
 }
 
+//lots of tests are needed. yay
+async function inviteUserToGroup(body, connection){
+    const { user_id, invitee_id, group_id } = body;
+    //get the name of the user who sent hte invite
+    var query = 'SELECT ScreenName FROM Users WHERE UserID = ?';
+    var user_result = await queryDb(connection, query, user_id);
+
+    query = 'INSERT INTO GroupInvites (UserID, GroupID, SenderName) VALUES (?, ?, ?)'; 
+
+}
+
 //need to write tests
 async function getUsersInGroup(group_id, connection){
-    var query = 'SELECT UserID FROM GroupMembers WHERE GroupID = ?';
+    var query = 'SELECT UserID, ScreenName FROM GroupMembers OUTER JOIN GroupMembers.UserID = Users.UserID WHERE GroupID = ?';
 
     var result = await queryDb(connection, query, group_id);
     if (result.isError()) return result;

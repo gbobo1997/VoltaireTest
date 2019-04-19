@@ -72,6 +72,11 @@ function createDbQuery(){
         UpdateTime bigint NOT NULL,
         UpdateContent text NOT NULL,
         PRIMARY KEY (UpdateID)
+    );
+    CREATE TABLE IF NOT EXISTS GroupInvites (
+        UserID int NOT NULL,
+        GroupID int NOT NULL,
+        SenderName varchar(32) NOT NULL
     )`;
 }
 

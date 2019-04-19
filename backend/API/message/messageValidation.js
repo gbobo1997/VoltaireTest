@@ -22,7 +22,7 @@ async function validateSendMessage(body, connection){
 
 async function validateGetMessageInChat(body, connection){
     if ( body.chat_id == null || !Number.isInteger(body.chat_id) || body.token == null){
-        return new Error(400, 'invalid parameters, send the following body: {chat_id: int , token : token}');
+        return new Error(400, 'invalid parameters, send the following body: {chat_id: int, token : token}');
     }
 
     const {valid, user_id} = tokenValid(body.token);
@@ -38,7 +38,20 @@ async function validateGetMessageInChat(body, connection){
 }
 
 async function validateGetRecentMessages(body, connection){
-    
+    if (body.chat_id == null || !Number.isInteger(body.chat_id) || body.message_id == null || !Number.isInteger(body.message_id) || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {chat_id: int, message_id: int, token : token}');
+    }
+
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401,'token invalid');
+    body.user_id = user_id;
+
+    const chat = await chat_controller.chatExists(body.chat_id, connection);
+    if (!chat) return new Error(400, 'chat does not exist');
+
+    const member = await chat_controller.userHasAccessToChat(body.user_id, body.chat_id, conection);
+    if (!member) return new Error(400, 'user does not have access to chat');
+    return new Success();
 }
 
-module.exports = { validateSendMessage, validateGetMessageInChat, validateGetMessageInChat }
+module.exports = { validateSendMessage, validateGetMessageInChat, validateGetRecentMessages }
