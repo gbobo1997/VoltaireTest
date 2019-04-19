@@ -5,7 +5,7 @@ require('dotenv').config();
 const authRoutes = require('./auth/authRoute');
 const groupRoutes = require('./group/groupRoute');
 const chatRoutes = require('./chat/chatRoute');
-const messageRoutes = require('./message/messageRoute');
+//const messageRoutes = require('./message/messageRoute');
 
 const app = express();
 
