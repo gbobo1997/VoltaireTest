@@ -137,15 +137,19 @@ function addMessage(user, type, content)
 {
   if(type == 'incoming')
   {
-    var newMessage = '<br><div id="message_incoming"><b>'+user+'</b><br>'+content+'</div><br>';
+    var newMessage = '<div id="incoming_container"><div id="message_incoming"><b>'+user+'</b><br>'+content+'</div></div>';
   }
   if(type == 'outgoing')
   {
-    var newMessage = '<br><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div><br>';
+    var newMessage = '<div id="outgoing_container"><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div></div>';
   }
   document.getElementById('output').innerHTML+=newMessage;  
 }
 
-//addMessage("Robert", 'outgoing', 'this is a new message.');
-addMessage("Austen", 'incoming', 'this is a new incoming message.');
+for( var i = 0; i < 10; i++)
+{
+  addMessage("Robert", 'outgoing', 'this is a new message.');
+  addMessage("Austen", 'incoming', 'this is a new incoming message.');
+}
+
 
