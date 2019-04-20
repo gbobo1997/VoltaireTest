@@ -47,7 +47,7 @@
   		<div class="columnScroll" id="fillMe">
         <section class="messaging"> 
           <div class="row" id="output">
-            
+
           </div> 
         <div class="row">
           <form>
@@ -56,8 +56,30 @@
           </form>
         </div>   
         </section>    
-      </div>      
-  		<div class="columnScroll" id="file_column">Third</div>
+      </div>  
+
+  		<div class="columnScroll" id="file_column">
+          <div id="editor_header">
+            Filename: 
+            <div id="switch_container">
+              <label>Toggle Preview</label>
+              <!-- Rectangular switch -->
+              <label class="switch">
+                <input type="checkbox" onclick="togglePreview()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div id="md_editor">
+            <textarea class="left" id="md_input">Type **Markdown** here.</textarea>
+          </div>
+
+          <div id="md_preview">
+            
+          </div>
+
+      </div>
   	</section>
     <script src="home_Logic.js"></script>
 

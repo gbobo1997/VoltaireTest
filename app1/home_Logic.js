@@ -21,7 +21,7 @@
 // arguments via methods within a class where that token is an attribute, 
 // this is a good application of OOP. 
 // let current_user = Handler(a,b);
-
+var markdown = require( "markdown" ).markdown;
 listGroups();
 var span = document.getElementsByClassName("close")[0];
 var modal = document.getElementById('myModal');  
@@ -151,5 +151,35 @@ for( var i = 0; i < 10; i++)
   addMessage("Robert", 'outgoing', 'this is a new message.');
   addMessage("Austen", 'incoming', 'this is a new incoming message.');
 }
+addMessage("Austen", 'outgoing', 'this is a new incoming message.');
+addMessage("Robert", 'incoming', 'this is a new message.');
+var toggleCount = 0;
+function togglePreview()
+{
+  toggleCount++;
+  // check if even, if even -> want editor
+  // if odd -> want preview
+  if(toggleCount%2 == 0)
+  {
+    console.log("even show editor");
+    // hide preview
+    document.getElementById("md_preview").style.display = "none";
+    document.getElementById("md_preview").innerHTML = "";
+
+    // toggle editor    
+    document.getElementById("md_editor").style.display = "block";
+  }
+  else
+  {
+    console.log("odd show preview");
+    html_content = markdown.toHTML(document.getElementById("md_input").value);
+    // hide editor
+    document.getElementById("md_editor").style.display = "none";
+    // toggle preview
+    document.getElementById("md_preview").style.display = "block";
+    document.getElementById("md_preview").innerHTML = html_content;
+  }
+}
+
 
 
