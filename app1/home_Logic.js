@@ -21,6 +21,7 @@
 // arguments via methods within a class where that token is an attribute, 
 // this is a good application of OOP. 
 // let current_user = Handler(a,b);
+// md package we are using:  https://github.com/evilstreak/markdown-js
 var markdown = require( "markdown" ).markdown;
 listGroups();
 var span = document.getElementsByClassName("close")[0];
@@ -55,25 +56,20 @@ function sendMessage()
 
 function addGroup()
 {
-  document.getElementById('delete').type = 'hidden';       
-  modal.style.display = "block"; 
-  //alert("Group name already taken.");
+  var content = '<label>Group Name:</label><input type="text" name="groupName" '+
+  'value="group name"><button type="button" onclick="">Create</button><br><div id="error" style="text-align:center; font-size=125%;'+
+  ' color:red;">Error: error type</div>';
+  openModal(content);
 
 }
-
-function deleteGroup(groupID)
-{
-  document.getElementById(groupID).innerHTML = '';
-}
-
-//test by austin
 
 function editGroup()
 {
-  addGroup();
-  document.getElementById('groupNameForm').value = currentGroup;    
-  document.getElementById('gsb').value = 'Edit'; 
-  document.getElementById('delete').type = 'Submit'; 
+  var content = '<label>Current Group Name:</label><input type="text" name="groupName" '+
+  'value="group name"><button type="button" onclick="">Change</button><button type="button"'+
+  ' onclick="">Delete</button><br><div id="error" style="text-align:center; font-size=125%;'+
+  ' color:red;">Error: error type</div>';
+  openModal(content);
 
 }
 
@@ -112,20 +108,32 @@ function openModal(content)
 
 function listGroups()
 {
-  // would be used on document run to make an api call and load all user associated groups into first column
-  // will just do static for now
-  // was gonna use tuples here but JS doesnt have it ???
-  var content;
-  var testGroups = ['School', 'Work', 'Gaming'];
-  var tGImages = ['unco_logo_bear.jpg', 'google.jpg', '1_up.jpg'];
-  var i;
-  for (i = 0; i < testGroups.length; i++)
+  // basic output
+  // group name will be a link, on link click expand list and
+  // display associated chats
+  // data model
+  var data = [
+    {
+      "group_id" : 1,
+      "group_name" : "group 1"
+    },
+    {
+      "group_id" : 2,
+      "group_name" : "group 2"
+    },
+    {
+      "group_id" : 3,
+      "group_name" : "group 3"
+    }
+  ];
+  var content = '';
+  for(var i =0; i < data.length; i++)
   {
-      content+='<div id="'+testGroups[i]+'" onclick="changeGroup('+testGroups[i]+')">';
-      content+= '<img style="border-radius: 50%; height: 50px; width: 50px;" src="images/'+tGImages[i]+'" alt="Avatar"><br>'+testGroups[i]+'<br>';
-      content+='<hr></div>';
-  }
-  document.getElementById('columnOne').innerHTML+='<br><br>'+content;
+    content += '<br><button id="group_select_btn" value="'+data[i].group_id+'">'
+    +data[i].group_name+'</button><br>';
+  }  
+  
+  document.getElementById('columnOne').innerHTML+=content;
 }
 
 function changeGroup(group)

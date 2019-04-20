@@ -22,7 +22,7 @@ section:first-of-type .column:first-of-type {
 	display: flex;
 }
 #columnOne {
-	background-color: #2F3136;
+	background-color: grey;
 }
 
 #non_menu {
