@@ -78,7 +78,7 @@ right now there are no restrictions on names or passwords (except that the name 
 }
 ```
 ## Groups 
-### Testing Status: Complete
+### Testing Status: Complete except for group invite routes
 ### Create a Group
 **Route:** POST /group/create \
 **In:**
@@ -134,6 +134,196 @@ right now there are no restrictions on names or passwords (except that the name 
   [
     group_id : int,
     group_name : string
+  ]
+}
+```
+
+### Invite a User to a group
+**Route:** TODO \
+**In:** TODO \
+**Out:** TODO
+
+### Accept or Decline an invitation
+**Route:** TODO \
+**In:** TODO \
+**Out:** TODO
+
+## File
+### Testing Status: Done excpet routes
+### Get a File
+**Route:** POST /file/get_by_id \
+**In:**
+```
+{
+  token : token,
+  file_id : int
+}
+```
+**Out:**
+```
+{
+  [
+    FileID : int,
+    GroupID : int,
+    FileName : string,
+    FileContent : string,
+    ScreenName : string,
+    Expires : int (Unix time code)
+  ]
+}
+```
+
+### Create a File
+**Route:** POST /file/create
+**In:**
+```
+{
+  group_id : int,
+  file_name : string,
+  file_content : string,
+  token : token
+}
+```
+**Out:**
+```
+{
+  file_id : int
+}
+```
+
+### Delete a File
+**Route:** DELETE /file/delete \
+**In:**
+```
+{
+  token : token,
+  file_id : int
+}
+```
+
+**Out:** None
+
+### Update a file (content and/or name)
+**Route:** PATCH /file/update \
+**In:**
+```
+{
+  file_id : int,
+  file_name : string,
+  file_content : string,
+  token : token
+}
+```
+**Out:** None
+
+### Get Files from a Group
+**Route:** POST /file/group_files \
+**In:**
+```
+{
+  group_id : int,
+  token : null
+}
+```
+**Out:**
+```
+{
+  [
+    FileID : int,
+    GroupID : int,
+    FileName : string,
+    FileContent : string,
+    ScreenName : string,
+    Expires : int (Unix time code)
+  ]
+}
+```
+
+### Request a lock on a file
+**Route:** POST /file/lock \
+**In:**
+```
+{
+  file_id : int,
+  token : token
+}
+```
+**Out:**
+```
+{
+  expiration : string (YYY-MM-DD HH:mm:SS)
+}
+```
+
+### Release your own lock on a file
+**Route:** DELETE /file/delete_lock \
+**In:**
+```
+{
+  file_id : int,
+  token : token
+}
+```
+**Out:** NONE
+
+## Chat
+### Testing Status: Complete
+### Create a Chat
+**Route:** POST /chat/create \
+**In:**
+```
+{
+  group_id : int,
+  chat_name : string,
+  token : token
+}
+```
+**Out:**
+```
+{
+  chat_id : int
+}
+```
+
+### Delete a Chat
+**Route:** DELETE /chat/delete \
+**In:**
+```
+{
+  chat_id : int,
+  token : token
+}
+```
+**Out:** NONE
+
+### Update a Chat's name
+**Route:** PATCH /chat/update \
+**In:**
+```
+{
+  chat_id : int,
+  chat_name : string,
+  token : token
+}
+```
+**Out:** NONE
+
+### Get the chat's from a group
+**Route:** POST /chat/chat_groups \
+**In:**
+```
+{
+  group_id : int,
+  token : token
+}
+```
+**Out:**
+```
+{
+  [
+    ChatID : int,
+    GroupID : int,
+    ChatName : string
   ]
 }
 ```
