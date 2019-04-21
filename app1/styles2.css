@@ -220,7 +220,7 @@ message shit
 
 #message_incoming {
 	display: inline-block;
-	background-color: red;
+	background-color: #EEF1F2;
 	border-radius: 5px;
 	margin: 15px;
 	max-width: 50%;
@@ -231,7 +231,7 @@ message shit
 
 #message_outgoing {
 	display: inline-block;
-	background-color: blue;
+	background-color: #CEDFFA;
 	text-align: left;
 	border-radius: 5px;
 	margin: 15px;
@@ -269,3 +269,17 @@ textarea {
 	height: 90%;
 	overflow-y: auto;
 }
+
+#message_box {
+	border: 1px solid gray;
+	margin: auto;
+	width: 80%;
+	padding: 10px;
+	border-radius: 10px;
+	margin-top: 5px;
+}
+
+#message_button {
+	float: right;
+}
+
