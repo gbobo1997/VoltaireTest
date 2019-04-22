@@ -8,7 +8,7 @@ function createMessageControllerSuite(){
     return new TestSuite('chatContoller.js',[
         sendMessageTests(),
         getMessageInChatTests(),
-        getRecentMessages()
+        getRecentMessagesTests()
     ]);
 }
 
@@ -16,7 +16,7 @@ function createMessageValidationSuite(){
     return new TestSuite('messageValidation.js',[
         validateSendMessageTests(),
         validateGetMessageInChatTests(),
-        validateGetRecentMessages()
+        validateGetRecentMessagesTests()
     ]);
 }
 
@@ -38,6 +38,48 @@ function sendMessageTests(){
     ]);
 }
 
+function getMessageInChatTests(){
+    const models = getDbModels();
+
+    return new TestSuite('getMessageInChat', [
+        new Test('Succesfully gets all messages in chat with given parameters', models, async (connection) => {
+            const result = await controller.getMessageInChat({chat_id : 1}, connection);
+            assertSuccess(result, [{ChatID : 1, MessageID: 1, Content: 'test1', TimeSent:'0001', UserID: 1, ScreenName :'screen' },
+            {ChatID : 1, MessageID: 3, Content: 'test3', TimeSent:'0003', UserID: 2, ScreenName :'screen2' }]);
+            }),
+        new Test('gets no messages when given a chat that does not exist', models, async (connection) =>{
+            const result = await controller.getMessageInChat({chat_id : 3}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('returns a db error when given a null parameter', models, async (connection) =>{
+            const result = await controller.getMessageInChat({chat_id : null}, connection);
+            assertError(result, 500, 'database error');
+            })
+     ]);
+}
+
+function getRecentMessagesTests(){
+    const models = getDbModels();
+
+    return new TestSuite('getMessageInChat', [
+        new Test('Succesfully gets a recent message with given parameters', models, async (connection) => {
+            const result = await controller.getRecentInChat({chat_id : 1, message_id: 1}, connection);
+            assertSuccess(result, [{ChatID : 1, MessageID: 3, Content: 'test3', TimeSent:'0003', UserID: 2, ScreenName :'screen2' }]);
+        }),
+        new Test('gets no messages when given a chat that does not exist', models, async (connection) =>{
+            const result = await controller.getRecentMessagesInChat({chat_id : 3, message_id: 2}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('gets no messages when given a message that does not exist', models, async (connection) =>{
+            const result = await controller.getRecentMessagesInChat({chat_id : 2, message_id: 4}, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('returns a db error when given a null parameter', models, async (connection) =>{
+            const result = await controller.getRecentMessagesInChat({chat_id : null, message_id: null}, connection);
+            assertError(result, 500, 'database error');
+        })
+    ])
+}
 
 function getDbModels(token_id=null){
     resetInsertIds();
@@ -57,8 +99,8 @@ function getDbModels(token_id=null){
     const third_message = new MessageModel('test3', '0003');
 
     first_group.addMember(first_user);
+    second_group.addMember(second_user);
     first_group.addMember(second_user);
-  
 
     first_chat.addToGroup(first_group);
     second_chat.addToGroup(second_group);
@@ -67,7 +109,9 @@ function getDbModels(token_id=null){
     second_message.addToChat(second_chat);
     third_message.addToChat(first_chat);
 
-
+    first_message.addAuthor(first_user);
+    second_message.addAuthor(second_user);
+    third_message.addAuthor(second_user);
     const models = [first_user, second_user,
         first_group, second_group, first_chat, 
         second_chat, first_message, second_message, third_message];

@@ -201,11 +201,11 @@ class FileModel extends DbModel{
 FileModel.insert_id = 1;
 
 class MessageModel extends DbModel{
-    constructor(content, time_Sent){
+    constructor(content, time){
     super(MessageModel.insert_id);
         MessageModel.insert_id++;;
         this.content = content;
-        this.time_Sent = time_sent;
+        this.time_sent = time;
 
         this.chat_id = null;
         this.user_id = null;
@@ -219,9 +219,8 @@ class MessageModel extends DbModel{
         return this.chat_id != null;
     }
 
-    addTime(user, time){
+    addAuthor(user){
         this.user_id = user.id;
-        this.time_sent = time;
     }
 
     addToChat(chat){
