@@ -53,12 +53,34 @@ async function getUsersGroups(body, connection){
 //lots of tests are needed. yay
 async function inviteUserToGroup(body, connection){
     const { user_id, invitee_id, group_id } = body;
-    //get the name of the user who sent hte invite
+    //get the name of the user who sent the invite
     var query = 'SELECT ScreenName FROM Users WHERE UserID = ?';
     var user_result = await queryDb(connection, query, user_id);
+    if (user_result.isError()) return user_result;
+    if (user_result.isEmpty()) return new Error(400, 'user is not in the database');
+    const screen_name = user_result.getDataValue('ScreenName');
 
     query = 'INSERT INTO GroupInvites (UserID, GroupID, SenderName) VALUES (?, ?, ?)'; 
+    var result = await queryDb(connection, query, [invitee_id, group_id, screen_name]);
+    if (result.isError()) return result;
+    return new Success();
+}
 
+//wow look we need more tests
+async function respondToInvitation(body, connection){
+    const { user_id, group_id, confirmed } = body;
+
+    var query = 'DELETE FROM GroupInvites WHERE UserID = ? AND GroupID = ?';
+    var result = await queryDb(connection, query, [user_id, group_id]);
+    if (result.isError()) return result;
+
+    if (confirmed){
+        var query = 'INSERT INTO GroupMembers (GroupID, UserID) VALUES (?, ?)';
+        var result = await queryDb(connection, query, [group_id, user_id]);
+        if (result.isError()) return result;
+    }
+
+    return new Success();
 }
 
 //need to write tests
@@ -96,4 +118,13 @@ async function userIsAGroupMember(group_id, user_id, connection){
     return (result.getData()[0].Count === 1);
 }
 
-module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember }
+//tests bois
+async function userHasBeenInvitedToGroup(group_id, user_id, connection){
+    if (group_id == null || user_id == null) return false;
+    const query = 'SELECT COUNT(*) As Count FROM GroupInvites WHERE UserID = ? AND GroupID = ?';
+    const result = await queryDb(connection, query, [user_id, group_id]);
+    if (result.isError()) return false;
+    return (result.getDataValue('Count') === 1);
+}
+
+module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember, inviteUserToGroup, respondToInvitation, userHasBeenInvitedToGroup }
