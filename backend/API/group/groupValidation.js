@@ -1,4 +1,6 @@
 const controller = require('./groupController');
+const user_controller = require('../auth/authController');
+const group_controller = require('../group/groupController');
 const { tokenValid } = require('../auth/authController');
 const { Error, Success } = require('../common');
 
@@ -64,11 +66,59 @@ async function validateGetUserGroups(body){
         return new Error(400, 'invalid parameters, send the following body: {token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
-    console.log(user_id);
     if (!valid) return new Error(401, 'token invalid');
 
     body.user_id = user_id;
     return new Success();
 }
 
-module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups }
+//tests
+// - invalid parameters
+// - invalid token
+// - group that doesnt exist
+// - invitee that doesnt exist
+// - invitee that has already been sent an invite to the group
+async function valdiateInviteUserToGroup(body, connection){
+    if (body.invitee_id == null || !Number.isInteger(body.invitee_id) || body.group_id == null || !Number.isInteger(body.group_id) || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {token : token, invitee_id : int, group_id : int}');
+    }
+
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
+    body.user_id = user_id;
+
+    const group = await controller.groupExists(body.group_id, connection);
+    if (!group) return new Error(400, 'group does not exist');
+
+    const member = await controller.userIsAGroupMember(body.group_id, user_id, connection);
+    if (!member) return new Error(400, 'user is not a member of the group');
+
+    const invitee = await user_controller.userExists(invitee_id, connection);
+    if (!invitee) return new Error(400, 'invitee does not exist');
+
+    const prior_invitation = await group_controller.userHasBeenInvitedToGroup(body.group_id, body.invitee_id, connection);
+    if (prior_invitation) return new Error(400, 'invitee already has a invite to this group');
+
+    return new Success()
+}
+
+//tests
+// - invalid parameters
+// - invalid token
+// - invite doesnt exist
+async function validateRespondToinvitation(body, connection){
+    if (body.group_id == null || !Number.isInteger(body.group_id) || body.confirmed == null || typeof body.confirmed !== 'boolean' || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {token : token, confirmed : bool, group_id : int}')
+    }
+
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
+    body.user_id = user_id;
+
+    const prior_invitation = await group_controller.userHasBeenInvitedToGroup(body.group_id, user_id, connection);
+    if (!prior_invitation) return new Error(400, 'user has not been invited to the group');
+
+    return new Success()
+}
+
+module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups, valdiateInviteUserToGroup, validateRespondToinvitation }

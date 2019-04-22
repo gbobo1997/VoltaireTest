@@ -6,7 +6,7 @@ const {validateCreateFile, validateFileIdTokenRoute, validateUpdateFile, validat
 
 const router = express.Router();
 
-router.post('/get', (request, response) => executeRoute(request, response, getFile, validateFileIdTokenRoute));
+router.post('/get_by_id', (request, response) => executeRoute(request, response, getFile, validateFileIdTokenRoute));
 router.post('/create', (request, response) => executeRoute(request, response, createFile, validateCreateFile));
 router.patch('/update', (request, response) => executeRoute(request, response, updateFile, validateUpdateFile));
 router.delete('/delete', (request, response) => executeRoute(request, response, deleteFile, validateFileIdTokenRoute));
