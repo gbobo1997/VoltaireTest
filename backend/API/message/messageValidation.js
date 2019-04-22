@@ -3,7 +3,7 @@ const { tokenValid } = require('../auth/authController');
 const { Error, Success } = require('../common');
 
 async function validateSendMessage(body, connection){
-    if (body.content == null || !Number.isInteger(body.chat_id) || body.chat_id == null || !Number.isInteger(body.chat_id) || body.token == null){
+    if (body.content == null || body.chat_id == null || !Number.isInteger(body.chat_id) || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {content : string, chat_id: int, token : token}')
     }
 

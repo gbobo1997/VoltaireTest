@@ -165,7 +165,7 @@ function validateCreateChatTests(){
 function validateDeleteChatTests(){
     const models = getDbModels(1);
     
-    return new TestSuite('validateCreateChat', [
+    return new TestSuite('validateDeleteChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
             const result = await validator.validateDeleteChat({chat_id: 1, token: token}, connection);
             assertSuccess(result, null);
