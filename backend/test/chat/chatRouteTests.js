@@ -19,7 +19,6 @@ function createCreateChatTests(){
             const result = await chai.request(app)
                 .post('/chat/create')
                 .send({token : token, group_id: 1, chat_name : 'test'});
-            
             assertRouteResult(result, 200, {chat_id : 4});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{

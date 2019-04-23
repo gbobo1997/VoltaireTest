@@ -1,6 +1,5 @@
 const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
-const { getUsersInGroup } = require('../group/groupController');
 
 //all the following will be pushed to the update table, which will later be attached to incoming queries
 const update_type = {
@@ -14,17 +13,16 @@ const update_type = {
 async function getUserUpdates(user_id, connection){
     //get all the updates
     var query = 'SELECT UpdateType, UpdateTime, UpdateContent \
-        FROM UserUpdate WHERE UserId = ? ORDERBY UpdateTime DESC';
+        FROM UserUpdate WHERE UserId = ? ORDER BY UpdateTime DESC';
     const result = await queryDb(connection, query, user_id);
     if (result.isError()) return result;
 
     //delete the updates we just got
     query = 'DELETE FROM UserUpdate WHERE UserID = ?';
-    const result = await queryDb(connection, query, user_id);
-    if (result.isError()) return result;
-
+    const del_result = await queryDb(connection, query, user_id);
+    if (del_result.isError()) return result;
     //convert string content to JSON
-    for (var update in result.getData()){
+    for (var update of result.getData()){
         update.UpdateContent = JSON.parse(update.UpdateContent);
     }
     return new Success(result.getData());
@@ -55,25 +53,16 @@ async function insertGroupUpdate(group_id, type, content, connection){
 //tests
 // - valid parameters
 // - user that does not exist
-// - inviting user that does not exist
 // - group that does not exist
 // other validation should be covered at a higher level
-async function invitedToGroup(group_id, user_id, inviting_user_id, connection){
+async function invitedToGroup(group_id, user_id, inviting_user_name, connection){
     //get the name of the group for the invitation so that request does not have to be sent later
     var query = 'SELECT GroupName FROM ChatGroup WHERE GroupID = ?';
     const group_result = await queryDb(connection, query, group_id);
     if (group_result.isError()) return group_result;
-    if (group_result.getParams().length === 0) return new Error(400, 'group does not exist');
+    if (group_result.isEmpty()) return new Error(400, 'group does not exist');
 
     const group_name = group_result.getDataValue('GroupName');
-
-    //get the name of the sending user so that doesnt have to gotten later as well
-    query = 'SELECT ScreenName FROM Users WHERE UserID = ?';
-    const user_result = await queryDb(connection, query, inviting_user_id);
-    if (user_result.isError()) return user_result;
-    if (user_result.getParams().length === 0) return new Error(400, 'inviting user does not exist');
-
-    const inviting_user_name = user_result.getDataValue('ScreenName');
 
     const type = update_type.invited_to_group;
     const content = JSON.stringify({group_id, group_name, inviting_user_name});
@@ -97,7 +86,7 @@ async function chatCreated(group_id, chat_id, chat_name, connection){
 //does this need a chat name ?
 async function chatDeleted(group_id, chat_id, connection){
     const type = update_type.chat_deleted;
-    const content = JSON.stringify({chat_id, chat_name});
+    const content = JSON.stringify({chat_id});
     return insertGroupUpdate(group_id, type, content, connection);
 }
 
@@ -112,6 +101,16 @@ async function fileDeleted(group_id, file_id, connection){
     const type = update_type.file_deleted;
     const content = JSON.stringify({file_id});
     return insertGroupUpdate(group_id, type, content, connection);
+}
+
+
+//this is a copy of the function in the group controller, it is put here to avoid a circular depedency
+async function getUsersInGroup(group_id, connection){
+    var query = 'SELECT GroupMembers.UserID, ScreenName FROM GroupMembers LEFT OUTER JOIN Users ON GroupMembers.UserID = Users.UserID WHERE GroupID = ?';
+
+    var result = await queryDb(connection, query, group_id);
+    if (result.isError()) return result;
+    return new Success(result.getData());
 }
 
 module.exports = { insertGroupUpdate, getUserUpdates, invitedToGroup, chatCreated, chatDeleted, fileCreated, fileDeleted }

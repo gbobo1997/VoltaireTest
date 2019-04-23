@@ -105,14 +105,14 @@ function inviteUserToGroupTests(){
 
     return new TestSuite('inviteUserToGroup', [
         new Test('successfully invites a user to a group given correct parameters', models, async (connection) =>{
-            const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3});
+            const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertSuccess(result, null);
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
             assertSuccess(invite_result, [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]);
 
             const update_result = await update_controller.getUserUpdates(1, connection);
-            assertSuccess(update_result, [{group_id : 3, group_name : 'name', inviting_user_name : 'screen3'}]);
+            assertSuccess(update_result, [{UpdateTime : 1, UpdateType : 1, UpdateContent: {group_id : 3, group_name : 'name3', inviting_user_name : 'screen3'}}]);
         }),
         new Test('returns an error if the sending user does not exist', models, async (connection) =>{
             const result = await controller.inviteUserToGroup({user_id : 4, invitee_id : 1, group_id : 3}, connection);
@@ -123,10 +123,10 @@ function inviteUserToGroupTests(){
             assertError(result, 500, 'database error');
         }),
         new Test('returns a database error if the user has already been invited to the group', models, async (connection) =>{
-            const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3});
+            const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertSuccess(result, null);
 
-            const second_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3});
+            const second_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertError(second_result, 500, 'database error');
         })
     ])
@@ -284,7 +284,6 @@ function validateDeleteGroupTests(){
     return new TestSuite('validateDeleteGroup', [
         new Test('successfully validates given correct parameters', models, async (connection, token) =>{
             const result = await validator.validateDeleteGroup({group_id: 1, token: token}, connection);
-            console.log(result);
             assertSuccess(result, null);
         }),
         new Test('fails validation given incomplete parameters', models, async (connection, token) =>{
@@ -312,7 +311,6 @@ function validateUpdateGroupTests(){
     return new TestSuite('validateUpdateGroup', [
         new Test('successfully validates given correct parameters', models, async (connection, token) =>{
             const result = await validator.validateUpdateGroup({group_id: 1, group_name : 'test', token: token}, connection);
-            console.log(result);
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set',models, async (connection, token) =>{
@@ -362,11 +360,11 @@ function validateInviteUserToGroup(){
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
-            const result = await validator.valdiateInviteUserToGroup({token : token, group_id : '3', invitee_id : 1}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {token : token, confirmed : bool, group_id : int}');
+            const result = await validator.validateInviteUserToGroup({token : token, group_id : '3', invitee_id : 1}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {token : token, invitee_id : int, group_id : int}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
-            const result = await validator.valdiateInviteUserToGroup({token : token.split("").reverse().join(""), group_id : 3, invitee_id : 1}, connection);
+            const result = await validator.validateInviteUserToGroup({token : token.split("").reverse().join(""), group_id : 3, invitee_id : 1}, connection);
             assertError(result, 401, 'token invalid');
         }),
         new Test('fails validation given a group that doesnt exist', models, async (connection, token) =>{
@@ -403,25 +401,25 @@ function validateRespondToinvitation(){
             const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertSuccess(result, null);
 
-            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token});
+            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token}, connection);
             assertSuccess(s_result);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertSuccess(result, null);
 
-            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : 1, token : token});
+            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : 1, token : token}, connection);
             assertError(s_result, 400, 'invalid parameters, send the following body: {token : token, confirmed : bool, group_id : int}')
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
             assertSuccess(result, null);
 
-            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token.split("").reverse().join("")});
+            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token.split("").reverse().join("")}, connection);
             assertError(s_result, 401, 'token invalid')
         }),
         new Test('fails validation if the user has not been invited to the group', models, async (connection, token) =>{
-            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token, connection});
+            const s_result = await validator.validateRespondToinvitation({group_id: 3, confirmed : true, token : token, connection}, connection);
             assertError(s_result, 400, 'user has not been invited to the group')
         })
     ])

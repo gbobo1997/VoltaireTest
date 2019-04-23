@@ -53,8 +53,7 @@ async function userExists(user_id, connection){
 function tokenValid(token){
     try{
         const decoded = jwt.verify(token, 'secret');
-        console.log(decoded);
-        return {valid : true, user_id : decoded.user_id};
+        return {valid : true, user_id : decoded.userId};
     }
     catch (error){
         return {valid : false, user_id : null};

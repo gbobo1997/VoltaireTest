@@ -18,9 +18,15 @@ async function createChat(body, connection){
 
 async function deleteChat(body, connection){
     const { chat_id } = body;
-    var query = 'DELETE FROM Chat WHERE ChatID = ?';
-
+    //get the group the chat is in
+    var query = 'SELECT GroupID FROM Chat WHERE ChatID = ?';
     var result = await queryDb(connection, query, chat_id);
+    if (result.isError() || result.isEmpty()) return result;
+
+    const group_id = result.getDataValue('GroupID');
+
+    query = 'DELETE FROM Chat WHERE ChatID = ?';
+    result = await queryDb(connection, query, chat_id);
     if (result.isError()) return result;
 
     var update_result = await updater.chatDeleted(group_id, chat_id, connection);

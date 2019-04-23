@@ -36,7 +36,7 @@ function createChatTests(){
             assertSuccess(chat_result, [{ChatID : 2, ChatName: 'chat2', GroupID: 2}, {ChatID : 3, ChatName: 'chat3', GroupID: 2}, 
                 {ChatID : 4, ChatName: 'test', GroupID: 2}]);
 
-            const updater_result = await update_controller.getUserUpdates(1, connection);
+            const updater_result = await update_controller.getUserUpdates(3, connection);
             assertSuccess(updater_result, [{UpdateType: 2, UpdateTime: 1, UpdateContent: {chat_id : 4, chat_name : 'test'}}]);
         }),
         new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
@@ -56,7 +56,7 @@ function deleteChatTests(){
             assertSuccess(chat_result, []);
 
             const updater_result = await update_controller.getUserUpdates(1, connection);
-            assertSuccess(updater_result, [{UpdateType: 3, UpdateTime: 1, UpdateContent: {chat_id : 1, chat_name : 'test'}}]);
+            assertSuccess(updater_result, [{UpdateType: 3, UpdateTime: 1, UpdateContent: {chat_id : 1}}]);
         }),
         new Test('Returns a db error when given null parameter',  models, async (connection) =>{
             const result = await controller.deleteChat({}, connection);

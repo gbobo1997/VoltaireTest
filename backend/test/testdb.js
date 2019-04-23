@@ -6,7 +6,7 @@ const models = require('./models');
 
 async function startConnection(){
     const conn_res = await db.connectToDb();
-    if (conn_res.isError()) throw new Error('could not connect. Error: '+conn_res.getError());
+    if (conn_res.isError()) throw new Error('could not connect. Error: '+conn_res.getParams().error);
     return conn_res.getParam('connection');
 }
 
@@ -18,9 +18,9 @@ async function recreateDb(connection, models){
 async function resetDb(connection){
     if (process.env.DB_TYPE === 'Production') throw new Error('attempted to wipe production db');
 
-    const query = `DELETE FROM GroupInvites; DELETE FROM UserUpdate; DELETE FROM Chat; DELETE FROM GroupMembers; DELETE FROM FileLocks; DELETE FROM File; DELETE FROM ChatGroup; DELETE FROM Users; \
-    ALTER TABLE GroupInvites AUTO_INCREMENT = 0; ALTER TABLE UserUpdate AUTO_INCREMENT = 0; ALTER TABLE Chat AUTO_INCREMENT = 0; ALTER TABLE GroupMembers AUTO_INCREMENT = 0; ALTER TABLE FileLocks AUTO_INCREMENT = 0; \
-    ALTER TABLE File AUTO_INCREMENT = 0; ALTER TABLE ChatGroup AUTO_INCREMENT = 0; ALTER TABLE Users AUTO_INCREMENT = 0;`
+    const query = `DELETE FROM GroupInvites; DELETE FROM UserUpdate; DELETE FROM Message; DELETE FROM Chat; DELETE FROM GroupMembers; DELETE FROM FileLocks; DELETE FROM File; DELETE FROM ChatGroup; \
+    DELETE FROM Users; ALTER TABLE GroupInvites AUTO_INCREMENT = 0; ALTER TABLE UserUpdate AUTO_INCREMENT = 0; ALTER TABLE Chat AUTO_INCREMENT = 0; ALTER TABLE GroupMembers AUTO_INCREMENT = 0; \
+    ALTER TABLE FileLocks AUTO_INCREMENT = 0; ALTER TABLE File AUTO_INCREMENT = 0; ALTER TABLE ChatGroup AUTO_INCREMENT = 0; ALTER TABLE Users AUTO_INCREMENT = 0; ALTER TABLE Message AUTO_INCREMENT = 0`
     const result = await db.queryDb(connection, query);
     if (result.isError()) throw new Error('error in clearing database '+result.getParams().error);
 

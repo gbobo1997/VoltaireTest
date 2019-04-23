@@ -76,7 +76,8 @@ function createDbQuery(){
     CREATE TABLE IF NOT EXISTS GroupInvites (
         UserID int NOT NULL,
         GroupID int NOT NULL,
-        SenderName varchar(32) NOT NULL
+        SenderName varchar(32) NOT NULL,
+        PRIMARY KEY (UserID, GroupID)
     )`;
 }
 

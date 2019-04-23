@@ -63,6 +63,9 @@ async function inviteUserToGroup(body, connection){
     query = 'INSERT INTO GroupInvites (UserID, GroupID, SenderName) VALUES (?, ?, ?)'; 
     var result = await queryDb(connection, query, [invitee_id, group_id, screen_name]);
     if (result.isError()) return result;
+
+    update_result = await updater.invitedToGroup(group_id, invitee_id, screen_name, connection);
+    if (update_result.isError()) return error;
     return new Success();
 }
 
@@ -94,7 +97,7 @@ async function getAllInvitations(body, connection){
 }
 
 async function getUsersInGroup(group_id, connection){
-    var query = 'SELECT UserID, ScreenName FROM GroupMembers OUTER JOIN GroupMembers.UserID = Users.UserID WHERE GroupID = ?';
+    var query = 'SELECT GroupMembers.UserID, ScreenName FROM GroupMembers LEFT OUTER JOIN Users ON GroupMembers.UserID = Users.UserID WHERE GroupID = ?';
 
     var result = await queryDb(connection, query, group_id);
     if (result.isError()) return result;

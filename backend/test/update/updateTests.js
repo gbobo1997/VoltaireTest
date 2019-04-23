@@ -26,8 +26,8 @@ function getUserUpdatesTests(){
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'},
-                {update_type : 2, update_time : 1, update_content : '{"test":"value2"}'}]);
+            assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {test:"value"}},
+                {UpdateType : 2, UpdateTime : 1, UpdateContent : {test:"value2"}}]);
         }),
         new Test('returns no updates if the user has no updates', models, async (connection) =>{
             var result = await controller.getUserUpdates(1, connection);
@@ -55,10 +55,10 @@ function insertGroupUpdateTests(){
             assertSuccess(result, null);
 
             result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'}]);
+            assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {test:"value"}}]);
             
             result = await controller.getUserUpdates(2, connection);
-            assertSuccess(result, [{update_type : 1, update_time : 1, update_content : '{"test":"value"}'}]);
+            assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {test:"value"}}]);
 
             result = await controller.getUserUpdates(3, connection);
             assertSuccess(result, []);
@@ -107,8 +107,8 @@ function fileCreatedTests(){
             var result = await controller.fileCreated(1, 3, 'new_file', connection);
             assertSuccess(result, null);
             var result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type: 5, update_time : 1, 
-                update_content : '{"file_id":3,"file_name":"new_file"}'}])
+            assertSuccess(result, [{UpdateType: 4, UpdateTime : 1, 
+                UpdateContent : {file_id: 3, file_name: "new_file"}}])
         })
     ])
 }
@@ -121,8 +121,8 @@ function fileDeletedTests(){
             var result = await controller.fileDeleted(1, 3, connection);
             assertSuccess(result, null);
             var result = await controller.getUserUpdates(1, connection);
-            assertSuccess(result, [{update_type: 6, update_time : 1, 
-                update_content : '{"file_id":3}'}])
+            assertSuccess(result, [{UpdateType: 5, UpdateTime : 1, 
+                UpdateContent : {file_id: 3}}])
         })
     ])
 }

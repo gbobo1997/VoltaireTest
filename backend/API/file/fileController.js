@@ -61,7 +61,7 @@ async function requestFileLock(body, connection){
     
     result = await queryDb(connection, query, [file_id, user_id, formatted_time, user_id, formatted_time]);
     if (result.isError()) return result;
-    else return new Success({expiration : formatted_time});
+    return new Success({expiration : formatted_time});
 }
 
 //this is pretty much just used for testing purposes
@@ -110,7 +110,7 @@ async function updateFile(body, connection){
     //to pass tests this has to be here for some reason
     if (file_id == null) return new Error(500, 'database error');
     //request lock before updating
-    const lock_result = requestFileLock({ user_id, file_id});
+    const lock_result = await requestFileLock({user_id, file_id}, connection);
     if (lock_result.isError()) return lock_result;
     const expiration = lock_result.getParam('expiration');
 
