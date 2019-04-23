@@ -1,5 +1,5 @@
 const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite');
-const { TestModels, UserModel, ChatModel, MessageModel, resetInsertIds } = require('../models');
+const { TestModels, GroupModel, UserModel, ChatModel, MessageModel, resetInsertIds } = require('../models');
 const controller = require('../../API/message/messageController');
 const validator = require('../../API/message/messageValidation');
 const { expect } = require('../test_suite');
@@ -25,14 +25,14 @@ function sendMessageTests(){
 
     return new TestSuite('sendMessage', [
         new Test('Successfully sends a message with given parameters', models, async (connection) =>{
-            const result = await controller.sendMessage({user_id = 1, content = 'Hello_ppl', chat_id = 2 }, connection);
+            const result = await controller.sendMessage({ user_id : 1, content : 'Hello', chat_id : 2 }, connection);
             assertSuccess(result, {message_id: 4});
             const message_result = await controller.getMessageInChat({chat_id: 1},connection);
             assertSuccess(message_result, [{MessageID : 1, Content: 'test1', ChatID: 1}, {MessageID : 2, Content: 'test2', ChatID: 2}, 
             {MessageID: 3, Content: 'test3', ChatID: 1}, {MessageID : 4, Content: 'Hello_ppl', ChatID: 2}]);
         }),
         new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
-            const result = await controller.sendMessage({user_id: 2, content = 'test'}, connection);
+            const result = await controller.sendMessage({user_id: 2, content: 'test'}, connection);
             assertError(result, 500, 'database error');
         })
     ]);
@@ -81,6 +81,80 @@ function getRecentMessagesTests(){
     ])
 }
 
+function validateSendMessageTests(){
+    const models = getDbModels(1);
+    
+    return new TestSuite('validateSendMessage', [
+        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateSendMessage({ content: 'test', chat_id : 2, token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateSendMessage({token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {content : string, chat_id : int, token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateSendMessage({content: 'test', chat_id: 1, token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
+        }),
+        new Test('fails validation given a non-existent chat_id', models, async(connection,token) =>{
+            const result = await validator.validateSendMessage({content: 'test', chat_id: 4, token: token}, connection);
+            assertError(result, 400, 'chat does not exist');
+        })
+    ]);
+}
+
+function validateGetMessageInChatTests(){
+    const models = getDbModels(1);
+    
+    return new TestSuite('validateGetMessagesInChat', [
+        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateGetMessageInChat({chat_id: 1, token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateGetMessageInChat({token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateGetMessageInChat({chat_id: 2, token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
+        }),
+        new Test('fails validation given a non-existent chat', models, async(connection,token) =>{
+            const result = await validator.validateGetMessageInChat({chat_id: 4, token: token}, connection);
+            assertError(result, 400, 'chat does not exist');
+        })
+    ]);
+}
+
+function validateGetRecentMessagesTests(){
+    const models = getDbModels(1);
+    
+    return new TestSuite('validateGetRecentMessages', [
+        new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
+            const result = await validator.validateGetRecentMessages({chat_id: 1, message_id: 1, token: token}, connection);
+            assertSuccess(result, null);
+        }),
+        new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
+            const result = await validator.validateGetRecentMessages({token: token}, connection);
+            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
+        }),
+        new Test('fails validation given an invalid token', models, async (connection, token) =>{
+            const result = await validator.validateGetRecentMessages({chat_id: 2,message_id: 2, token: token.split("").reverse().join("")}, connection);
+            assertError(result, 401, 'token invalid');
+        }),
+        new Test('fails validation given a non-existent chat', models, async(connection,token) =>{
+            const result = await validator.validateGetRecentMessages({chat_id: 4, message_id: 2, token: token}, connection);
+            assertError(result, 400, 'chat does not exist');
+        }),
+        new Test('fails validation given a non-existent message', models, async(connection,token) =>{
+            const result = await validator.validateGetRecentMessages({chat_id: 1, message_id: 5, token: token}, connection);
+            assertError(result, 400, 'message does not exist');
+        })
+
+    ]);
+}
+
 function getDbModels(token_id=null){
     resetInsertIds();
 
@@ -119,3 +193,4 @@ function getDbModels(token_id=null){
     if (token_id === null) return new TestModels(models);
     else return new TestModels(models, models[token_id-1]);
 }
+module.exports = { createMessageControllerSuite, createMessageValidationSuite};

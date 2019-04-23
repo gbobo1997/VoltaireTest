@@ -237,7 +237,7 @@ class MessageModel extends DbModel{
     }
 
     static getInsertColumns(){
-        return ['(ChatID, UserID, MessageContent)'];
+        return ['(UserID, ChatID, MessageContent)'];
     }
 }
 MessageModel.insert_id = 1;
