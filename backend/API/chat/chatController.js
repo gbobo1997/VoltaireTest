@@ -2,7 +2,6 @@ const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
 const updater = require('../update/updateController');
 
-//update tests to reflect the fact that the updater has been added
 async function createChat(body, connection){
     const { group_id, chat_name } = body;
     var query = 'INSERT INTO Chat (ChatName, GroupID) VALUES (?, ?)';
@@ -17,7 +16,6 @@ async function createChat(body, connection){
     return new Success({chat_id : chat_id});
 }
 
-//update tests due to the addition of the updater
 async function deleteChat(body, connection){
     const { chat_id } = body;
     var query = 'DELETE FROM Chat WHERE ChatID = ?';

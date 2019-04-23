@@ -6,6 +6,7 @@ const { createChatControllerSuite, createChatValidationSuite } = require('./chat
 const { createChatRouteSuite } = require('./chat/chatRouteTests');
 const { createUpdateControllerSuite } = require('./update/updateTests');
 const { createFileControllerSuite, createFileValidationSuite } = require('./file/fileTests');
+const { createFileRouteSuite } = require('./file/fileRouteTests');
 const { TestSuite } = require('./test_suite');
 const {app, server} = require('../API/index');
 
@@ -18,9 +19,10 @@ const suite = new TestSuite('app tests', [
     createGroupRouteSuite(),
     createChatControllerSuite(),
     createChatValidationSuite(),
-    createUpdateControllerSuite(),
+    createChatRouteSuite(),
     createFileControllerSuite(),
     createFileValidationSuite(),
-    createChatRouteSuite()
+    createFileRouteSuite(),
+    createUpdateControllerSuite()
 ]);
 TestSuite.executeTestSuite(suite, server);

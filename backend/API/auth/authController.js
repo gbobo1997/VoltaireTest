@@ -5,10 +5,6 @@ const { Success, Error } = require('../common');
 
 const { createGroup } = require('../group/groupController');
 
-//tests
-// - valid
-// - nonexistent user
-// - invalid pass
 async function login(body, connection){
     const { name, password } = body;
     const result = await getUser(connection, name);
@@ -46,10 +42,6 @@ async function getUser(connection, name){
     return result = await queryDb(connection, query, name);
 }
 
-//need some tests 
-// - null user id
-// -exists
-// -doesnt exist
 async function userExists(user_id, connection){
     if (user_id == null) false;
     const query = `SELECT COUNT(*) AS Count FROM Users WHERE UserId = ?;`

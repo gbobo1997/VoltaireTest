@@ -50,9 +50,9 @@ async function getUsersGroups(body, connection){
     return new Success(result.getData());
 }
 
-//lots of tests are needed. yay
 async function inviteUserToGroup(body, connection){
     const { user_id, invitee_id, group_id } = body;
+
     //get the name of the user who sent the invite
     var query = 'SELECT ScreenName FROM Users WHERE UserID = ?';
     var user_result = await queryDb(connection, query, user_id);
@@ -66,7 +66,6 @@ async function inviteUserToGroup(body, connection){
     return new Success();
 }
 
-//wow look we need more tests
 async function respondToInvitation(body, connection){
     const { user_id, group_id, confirmed } = body;
 
@@ -83,7 +82,17 @@ async function respondToInvitation(body, connection){
     return new Success();
 }
 
-//need to write tests
+//this is only for testing right now so i dont know if we need it
+async function getAllInvitations(body, connection){
+    const { user_id } = body;
+
+    var query = 'SELECT * FROM GroupInvites WHERE UserID = ?';
+    var result = await queryDb(connection, query, user_id);
+    if (result.isError()) return result;
+
+    return new Success(result.getData());
+}
+
 async function getUsersInGroup(group_id, connection){
     var query = 'SELECT UserID, ScreenName FROM GroupMembers OUTER JOIN GroupMembers.UserID = Users.UserID WHERE GroupID = ?';
 
@@ -92,10 +101,6 @@ async function getUsersInGroup(group_id, connection){
     return new Success(result.getData());
 }
 
-//tests
-// - null group id
-// -exists
-// -does not exist
 async function groupExists(group_id, connection){
     if (group_id == null) return false;
     const query = 'SELECT COUNT(*) AS Count FROM ChatGroup WHERE GroupID = ?';
@@ -104,12 +109,6 @@ async function groupExists(group_id, connection){
     return (result.getData()[0].Count === 1);
 }
 
-//tests
-// - null params
-// - is a member
-// - is not a member
-// - user does not exist
-// - group does not exist 
 async function userIsAGroupMember(group_id, user_id, connection){
     if (group_id == null || user_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM GroupMembers WHERE GroupID = ? AND UserID = ?';
@@ -118,7 +117,6 @@ async function userIsAGroupMember(group_id, user_id, connection){
     return (result.getData()[0].Count === 1);
 }
 
-//tests bois
 async function userHasBeenInvitedToGroup(group_id, user_id, connection){
     if (group_id == null || user_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM GroupInvites WHERE UserID = ? AND GroupID = ?';
@@ -127,4 +125,4 @@ async function userHasBeenInvitedToGroup(group_id, user_id, connection){
     return (result.getDataValue('Count') === 1);
 }
 
-module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember, inviteUserToGroup, respondToInvitation, userHasBeenInvitedToGroup }
+module.exports = { createGroup, deleteGroup, updateGroup, getUsersGroups, getUsersInGroup, groupExists, userIsAGroupMember, inviteUserToGroup, respondToInvitation, userHasBeenInvitedToGroup, getAllInvitations }

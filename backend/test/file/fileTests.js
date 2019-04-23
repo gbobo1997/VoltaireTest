@@ -109,15 +109,19 @@ function requestFileLockTests(){
     return new TestSuite('requestFileLock', [
         new Test('grants the lock on an unlocked file', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 1, file_id : 3}, connection);
-            assertSuccess(result, {expiration: '2020-01-01 12:00:01'});
+            assertSuccess(result, {expiration: 1546369200001});
         }),
         new Test('grants the lock on a file with an expired lock', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 2, file_id : 1}, connection);
-            assertSuccess(result, {expiration: '2020-01-01 12:00:01'});
+            assertSuccess(result, {expiration: 1546369200001});
         }),
         new Test('grants the lock when the same user currently has the lock', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 1, file_id : 2}, connection);
-            assertSuccess(result, {expiration: '2020-01-01 12:00:01'});
+            assertSuccess(result, {expiration: 1546369200001});
+        }),
+        new Test('grants the lock when the same user has the lock and it is expired', models, async (connection) =>{
+            var result = await controller.requestFileLock({user_id : 1, file_id : 1}, connection);
+            assertSuccess(result, {expiration: 1546369200001});
         }),
         new Test('does not grant the lock on a file that currently has a lock from another user', models, async (connection) =>{
             var result = await controller.requestFileLock({user_id : 2, file_id : 2}, connection);
@@ -200,14 +204,34 @@ function getFileTests(){
 function updateFileTests(){
     const models = getDbModels();
 
-    return new TestSuite('udpateFile', [
-        new Test('updates the file given correct parameters', models, async (connection) =>{
-            var result = await controller.updateFile({file_id : 1, file_name: 'new_name', file_content: 'new_content'}, connection);
-            assertSuccess(result, null);
+    return new TestSuite('updateFile', [
+        new Test('updates the file given correct parameters (also the user has a lock on the file)', models, async (connection) =>{
+            var result = await controller.updateFile({user_id: 1, file_id : 1, file_name: 'new_name', file_content: 'new_content'}, connection);
+            assertSuccess(result, {expiration: 1546369200001});
 
             result = await controller.getFile({file_id: 1}, connection);
             assertSuccess(result, [{FileID : 1, GroupID : 1, FileName: 'new_name', FileContent: 'new_content', 
-                ScreenName: 'screen', Expires: 1546369200000}])
+                ScreenName: 'screen', Expires: 1546369200001}])
+        }),
+        new Test('updates the file if the updating user has an expired lock on the file', models, async (connection) =>{
+            var result = await controller.updateFile({user_id: 1, file_id : 2, file_name: 'new_name', file_content: 'new_content'}, connection);
+            assertSuccess(result, {expiration: 1546369200001});
+
+            result = await controller.getFile({file_id: 1}, connection);
+            assertSuccess(result, [{FileID : 2, GroupID : 1, FileName: 'new_name', FileContent: 'new_content', 
+                ScreenName: 'screen', Expires: 1546369200001}])
+        }),
+        new Test('updates the file if another user has an expired lock on the file', models, async (connection) =>{
+            var result = await controller.updateFile({user_id: 2, file_id : 2, file_name: 'new_name', file_content: 'new_content'}, connection);
+            assertSuccess(result, {expiration: 1546369200001});
+
+            result = await controller.getFile({file_id: 1}, connection);
+            assertSuccess(result, [{FileID : 2, GroupID : 1, FileName: 'new_name', FileContent: 'new_content', 
+                ScreenName: 'screen2', Expires: 1546369200001}])
+        }),
+        new Test('returns an error if another user has a lock on the file', models, async (connection) =>{
+            var result = await controller.updateFile({user_id: 2, file_id : 1, file_name: 'new_name', file_content: 'new_content'}, connection);
+            assertError(result, 400, 'another user holds this lock until ');
         }),
         new Test('does nothing given a non-existent file', models, async (connection) =>{
             var result = await controller.updateFile({file_id : 4, file_name: 'new_name', file_content: 'new_content'}, connection);
@@ -304,9 +328,17 @@ function validateCreateFileTests(){
             const result = await validator.validateCreateFile({group_id : 1, file_name: 'new_name', file_content: 'content'}, connection);
             assertError(result, 400, 'invalid parameters, send the following body: {group_id : int, file_name : string, file_content : string, token : token}');
         }),
+        new Test('fails validation given a group that does not exist', models, async (connection, token) =>{
+            const result = await validator.validateCreateFile({group_id : 4, file_name: 'new_name', file_content: 'content', token : token}, connection);
+            assertError(result, 400, 'group does not exist');
+        }),
+        new Test('fails validation given a group the user is not a member of', models, async (connection, token) =>{
+            const result = await validator.validateCreateFile({group_id : 2, file_name: 'new_name', file_content: 'content', token : token}, connection);
+            assertError(result, 400, 'group does not exist');
+        }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateCreateFile({group_id: 1, file_name: 'new_name', file_content: 'content', token: token.split("").reverse().join("")}, connection);
-            assertError(result, 401, 'token invalid');
+            assertError(result, 401, 'user is not a member of the group');
         })
     ]);
 }

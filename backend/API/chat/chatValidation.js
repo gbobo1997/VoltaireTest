@@ -3,7 +3,6 @@ const { Error, Success } = require('../common');
 const group = require('../group/groupController');
 const controller = require('../chat/chatController');
 
-//rewrite tests (user_id removed?)
 async function validateCreateChat(body, connection){
     if (body.group_id == null || !Number.isInteger(body.group_id) || body.chat_name == null || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, chat_name : string, token : token}');
@@ -19,7 +18,6 @@ async function validateCreateChat(body, connection){
     return new Success();
 }
 
-//rewrite tests (group_id removed)
 async function validateDeleteChat(body, connection){
     if (body.chat_id == null || !Number.isInteger(body.chat_id) || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
@@ -35,7 +33,6 @@ async function validateDeleteChat(body, connection){
     return new Success();
 }
 
-//rewrite tests (group_id removed)
 async function validateUpdateChat(body, connection){
     if (body.chat_id == null || !Number.isInteger(body.chat_id) || body.chat_name == null || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {chat_id : int, chat_name : string, token : token}');
@@ -51,7 +48,6 @@ async function validateUpdateChat(body, connection){
     return new Success();
 }
 
-//rewrite tests
 async function validateGetChatsFromGroup(body, connection){
     if (body.group_id == null || !Number.isInteger(body.group_id) || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, token : token}');

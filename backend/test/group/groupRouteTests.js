@@ -1,5 +1,6 @@
 const { chai, expect, Test, TestSuite, assertRouteResult, assertRouteError } = require('../test_suite');
 const { TestModels, UserModel, GroupModel, resetInsertIds } = require('../models');
+const controller = require('../../API/group/groupController');
 const {app} = require('../../API/index');
 
 function createGroupRouteSuite(){
@@ -7,7 +8,9 @@ function createGroupRouteSuite(){
         createCreateGroupTests(),
         createDeleteGroupTests(),
         createUpdateGroupTests(),
-        createGetUserGroupsTests()
+        createGetUserGroupsTests(),
+        inviteUserToGroupTests(),
+        respondToInvitationTests()
     ]);
 }
 
@@ -122,6 +125,88 @@ function createGetUserGroupsTests(){
                 assertRouteError(result, 401, 'token invalid');
         })
     ]);
+}
+
+function inviteUserToGroupTests(){
+    const models = getDbModels(3);
+
+    return new TestSuite('POST /invite', [
+        new Test('it should invite the user to the group given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/group/invite')
+                .send({token : token, invitee_id : 1, group_id : 3});
+
+                assertRouteResult(result, 200);
+        }),
+        new Test('it should return a validation error given incorrect input (a string instead of an int)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/group/invite')
+                .send({token : token, invitee_id : 'one', group_id : 3});
+
+                assertRouteError(result, 400, 'invalid parameters, send the following body: {token : token, invitee_id : int, group_id : int}');
+        }),
+        new Test('it should return a validation given other erroneous input (invitee is already a member of the group', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/group/invite')
+                .send({token : token, invitee_id : 1, group_id : 1});
+
+                assertRouteError(result, 400, 'invitee is already a member of the group');
+        }),
+        new Test('it should return an auth error gien an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/group/invite')
+                .send({token : token.split("").reverse().join(""), invitee_id : 1, group_id : 3})
+
+                assertRouteError(result, 401, 'token invalid');
+        })
+    ])
+}
+
+function respondToInvitationTests(){
+    const models = getDbModels(1);
+
+    return new TestSuite('POST /respond', [
+        new Test('it should respond to an invitation given correct parameters', models, async (c, token) =>{
+            const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
+            assertSuccess(invite_result, null);
+
+            const result = await chai.request(app)
+                .post('/group/respond')
+                .send({token : token, confirmed : false, group_id : 3});
+
+                assertRouteResult(result, 200);
+        }),
+        new Test('it should return a validation error given incorrect input (a string instead of a bool)', models, async (c, token) =>{
+            const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
+            assertSuccess(invite_result, null);
+            
+            const result = await chai.request(app)
+                .post('/group/respond')
+                .send({token : token, confirmed : 'false', group_id : 3});
+
+                assertRouteError(result, 400, 'invalid parameters, send the following body: {token : token, confirmed : bool, group_id : int}');
+        }),
+        new Test('it should return a validation given other erroneous input (user has not been invited to the group)', models, async (c, token) =>{
+            const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 2}, connection);
+            assertSuccess(invite_result, null);
+            
+            const result = await chai.request(app)
+                .post('/group/respond')
+                .send({token : token, confirmed : false, group_id : 3});
+
+                assertRouteError(result, 400, 'user has not been invited to the group');
+        }),
+        new Test('it should return an auth error gien an invalid token', models, async (c, token) =>{
+            const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
+            assertSuccess(invite_result, null);
+            
+            const result = await chai.request(app)
+                .post('/group/respond')
+                .send({token : token.split("").reverse().join(""), confrimed : false, group_id : 3})
+
+                assertRouteError(result, 401, 'token invalid');
+        })
+    ])
 }
 
 function getDbModels(token_id=null){

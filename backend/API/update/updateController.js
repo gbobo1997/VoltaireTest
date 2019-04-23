@@ -11,10 +11,6 @@ const update_type = {
     file_deleted : 5
 }
 
-//tests
-// -invalid user
-// -valid user, no updates to show
-// -multiple updates
 async function getUserUpdates(user_id, connection){
     //get all the updates
     var query = 'SELECT UpdateType, UpdateTime, UpdateContent \
@@ -34,10 +30,6 @@ async function getUserUpdates(user_id, connection){
     return new Success(result.getData());
 }
 
-//tests
-// -group that doesnt exist
-// -group with no users
-// -invalid input parameters
 async function insertGroupUpdate(group_id, type, content, connection){
     const user_result = await getUsersInGroup(group_id, connection);
     if (user_result.isError()) return user_result;

@@ -26,7 +26,7 @@ app.use('/auth', authRoutes);
 app.use('/group', groupRoutes);
 app.use('/chat', chatRoutes);
 app.use('/file', fileRoutes);
-app.use('/message', messageRoutes);
+//app.use('/message', messageRoutes);
 
 const server = app.listen(8080, '0.0.0.0', (error) =>{
     if (error) console.log('error');

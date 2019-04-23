@@ -1,5 +1,5 @@
 const { chai, expect, Test, TestSuite, assertRouteResult, assertRouteError } = require('../test_suite');
-const { TestModels, UserModel, GroupModel, ChatModel, resetInsertIds } = require('../models');
+const { TestModels, UserModel, GroupModel, FileModel, resetInsertIds } = require('../models');
 const {app} = require('../../API/index');
 
 function createFileRouteSuite(){
@@ -9,37 +9,255 @@ function createFileRouteSuite(){
         updateChatTests(),
         deleteChatTests(),
         getGroupFilesTests(),
-        getFileLockTests(),
+        requestFileLockTests(),
         deleteFileLockTests()
     ])
 }
 
 function getChatByIdTests(){
+    const models = getDbModels(1);
 
+    return new TestSuite('POST /get_by_id', [
+        new Test('it should get a file when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/get_by_id')
+                .send({token: token, file_id: 1});
+            
+            assertRouteResult(result, 200, [{FileID : 1, GroupID : 1, FileName: 'name', FileContent: 'content', 
+                ScreenName: 'screen', Expires: 1546369200000}]);
+        }),
+        new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/get_by_id')
+                .send({token : token, file_id: '1'});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {file_id : int, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (non-existant file)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/get_by_id')
+                .send({token : token, file_id: 4});
+            
+            assertRouteResult(result, 400, 'file does not exist');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/get_by_id')
+                .send({token : token.split("").reverse().join(""), file_id: 1});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 function createChatTests(){
+    const models = getDbModels(1);
 
+    return new TestSuite('POST /create', [
+        new Test('it should create a file when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/create')
+                .send({token: token, group_id: 1, file_name: 'name', file_content: 'content'});
+            
+            assertRouteResult(result, 200, {file_id : 4});
+        }),
+        new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/create')
+                .send({token : token, group_id: 1, file_content: 'content'});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {group_id : int, file_name : string, file_content : string, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (group user does not have access to)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/create')
+                .send({token : token, group_id: 2, file_name: 'name', file_content: 'content'});
+            
+            assertRouteResult(result, 400, 'user is not a member of the group');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/create')
+                .send({token : token.split("").reverse().join(""), group_id: 1, file_name: 'name', file_content: 'content'});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 function updateChatTests(){
+    const models = getDbModels(2);
 
+    return new TestSuite('PATCH /update', [
+        new Test('it should update a file name when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/file/update')
+                .send({token: token, file_id: 1, file_name: 'new_name', file_content: 'content'});
+            
+            assertRouteResult(result, 200, {expiration: 1546369200001});
+        }),
+        new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/file/update')
+                .send({token : token, file_id: 'one', file_name: 'new_name', file_content: 'content'});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {file_id : int, file_name : string, file_content : string, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (another user holds lock on file)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/file/update')
+                .send({token : token, file_id: 2, file_name: 'new_name', file_content: 'content'});
+            
+            assertRouteResult(result, 400, 'another user holds this lock until ');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .patch('/file/update')
+                .send({token : token.split("").reverse().join(""), file_id: 1, file_name: 'new_name', file_content: 'content'});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 function deleteChatTests(){
+    const models = getDbModels(1);
 
+    return new TestSuite('DELETE /delete', [
+        new Test('it should delete a file when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .delete('/file/delete')
+                .send({token: token, file_id: 1});
+            
+            assertRouteResult(result, 200);
+        }),
+        new Test('it should send a validation error given an invalid parameter set (issing parameter)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .result('/file/delete')
+                .send({token : token});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {file_id : int, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (user doesnt have access to file)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .result('/file/delete')
+                .send({token : token, file_id: 3});
+            
+            assertRouteResult(result, 400, 'user cannot access this file');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .result('/file/delete')
+                .send({token : token.split("").reverse().join(""), file_id: 1});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 function getGroupFilesTests(){
+    const models = getDbModels(1);
 
+    return new TestSuite('POST /group_files', [
+        new Test('it should get all group files when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/group_files')
+                .send({token: token, group_id: 1});
+            
+            assertRouteResult(result, 200, [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}]);
+        }),
+        new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/group_files')
+                .send({token : token, group_id: 'nope'});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {group_id : int, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (group does not exist)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/group_files')
+                .send({token : token, group_id : 4});
+            
+            assertRouteResult(result, 400, 'group does not exist');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/group_files')
+                .send({token : token.split("").reverse().join(""), file_id: 1});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
-function getFileLockTests(){
+function requestFileLockTests(){
+    const models = getDbModels(2);
 
+    return new TestSuite('POST /lock', [
+        new Test('it should get a valid lock when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/lock')
+                .send({token: token, file_id: 1});
+            
+            assertRouteResult(result, 200, {expiration: 1546369200001});
+        }),
+        new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/lock')
+                .send({token : token});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {file_id : int, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (another user holds the lock)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/lock')
+                .send({token : token, file_id : 2});
+            
+            assertRouteResult(result, 400, 'another user holds this lock until ');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .post('/file/lock')
+                .send({token : token.split("").reverse().join(""), file_id: 1});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 function deleteFileLockTests(){
+    const models = getDbModels(1);
 
+    return new TestSuite('DELETE /delete_lock', [
+        new Test('it should delete a lock when given correct parameters', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .delete('/file/delete_lock')
+                .send({token: token, file_id: 2});
+            
+            assertRouteResult(result, 200);
+        }),
+        new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .delete('/file/delete_lock')
+                .send({file_id : 1});
+
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {file_id : int, token : token}');
+        }),
+        new Test('it should send a validation error given other validation error (file does not exist)', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .delete('/file/delete_lock')
+                .send({token : token, file_id : 4});
+            
+            assertRouteResult(result, 400, 'file does not exist');
+        }),
+        new Test('it should send an auth error given an invalid token', models, async (c, token) =>{
+            const result = await chai.request(app)
+                .delete('/file/delete_lock')
+                .send({token : token.split("").reverse().join(""), file_id: 1});
+        
+            assertRouteResult(result, 401, 'token invalid');
+        }) 
+    ])
 }
 
 /*
@@ -93,3 +311,5 @@ function getDbModels(token_id=null){
     if (token_id === null) return new TestModels(models);
     else return new TestModels(models, models[token_id-1]);
 }
+
+module.exports = { createFileRouteSuite }

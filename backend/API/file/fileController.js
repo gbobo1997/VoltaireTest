@@ -2,9 +2,6 @@ const { queryDb } = require('../db');
 const { Success, Error } = require('../common');
 const updater = require('../update/updateController');
 
-//tests
-// -non-existent user (should return db error)
-// -non-existent group (should return db error)
 async function createFile(body, connection){
     const {group_id, file_name, file_content} = body;
     var query = 'INSERT INTO File (GroupID, FileName, FileContent) Values (?, ?, ?)';
@@ -18,7 +15,6 @@ async function createFile(body, connection){
     return new Success({file_id});
 }
 
-//non-existent file (should do nothing)
 async function deleteFile(body, connection){
     const { file_id, group_id } = body;
     if (file_id == null || group_id == null) return new Error(500, 'database error');
@@ -37,11 +33,6 @@ async function deleteFile(body, connection){
     return new Success();
 }
 
-//tests
-// -no existing lock
-// -existing lock
-// -expired lock
-// -existing lock from requesting user
 async function requestFileLock(body, connection){
     const { user_id, file_id } = body;
     
@@ -62,8 +53,8 @@ async function requestFileLock(body, connection){
     //add an hour to the current time and format it as YYYY-MM-DD HH:MM:SS
     const expired_time = current_time + (60 * 60 * 1000);
     //comment the following for testing and uncomment the line after that 
-    //const formatted_time = new Date(expired_time).toISOString().replace(/T/, ' ').replace(/\..+/, '');
-    const formatted_time = '2020-01-01 12:00:01';
+    //const formatted_time = new Date(expired_time);
+    const formatted_time = 1546369200001;
 
     query = 'INSERT INTO FileLocks (FileID, UserID, Expires) VALUES (?, ?, ?) '+
         'ON DUPLICATE KEY UPDATE UserID = ?, Expires = ?';
@@ -84,8 +75,6 @@ async function getFileLock(body, connection){
     return new Success(result.getData());
 }
 
-//tests
-// - lock where another user holds it
 async function deleteFileLock(body, connection){
     const { user_id, file_id }= body;
 
@@ -117,14 +106,20 @@ async function getFile(body, connection){
 //putting this in the update table would take too much space so clients will just have to periodically query the file if they 
 //dont have a lock
 async function updateFile(body, connection){
-    const { file_id, file_name, file_content } = body;
+    const { user_id, file_id, file_name, file_content } = body;
     //to pass tests this has to be here for some reason
     if (file_id == null) return new Error(500, 'database error');
+    //request lock before updating
+    const lock_result = requestFileLock({ user_id, file_id});
+    if (lock_result.isError()) return lock_result;
+    const expiration = lock_result.getParam('expiration');
+
     var query = 'UPDATE File SET FileName = ?, FileContent = ? WHERE FileID = ?';
 
     var result = await queryDb(connection, query, [file_name, file_content, file_id]);
     if (result.isError()) return result;
-    else return new Success();
+
+    else return new Success({expiration});
 }
 
 async function getGroupFiles(body, connection){
@@ -136,10 +131,6 @@ async function getGroupFiles(body, connection){
     else return new Success(result.getData());
 }
 
-//write tests
-// - null file id
-// - existing file
-// - not existing file
 async function fileExists(file_id, connection){ 
     if (file_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM File WHERE FileID = ?';
@@ -148,12 +139,6 @@ async function fileExists(file_id, connection){
     return result.getData()[0].Count === 1;
 }
 
-//tests
-// - null group-file
-// - belongs
-// - doesnt belong
-// - file does not exist
-// - group does not exist
 async function userHasAccessToFile(user_id, file_id, connection){
     if (user_id == null || file_id == null) return false;
     const query = 'SELECT COUNT(*) As Count FROM File INNER JOIN GroupMembers ON GroupMembers.GroupID = File.GroupID WHERE FileID = ? AND UserID = ?';

@@ -10,6 +10,12 @@ async function validateCreateFile(body, connection){
 
     const {valid, user_id} = tokenValid(body.token);
     if (!valid) return new Error(401, 'token invalid');
+
+    const group = await group_controller.groupExists(body.group_id, connection);
+    if (!group) return new Error(400, 'group does not exist');
+
+    const member = await group_controller.userIsAGroupMember(body.group_id, user_id, connection);
+    if (!member) return new Error(400, 'user is not a member of the group');
     return new Success();
 }
 
@@ -17,7 +23,6 @@ async function validateCreateFile(body, connection){
 // - delete file
 // - request file lock
 // - delete file lock
-// - get file
 async function validateFileIdTokenRoute(body, connection){
     if (body.file_id == null || !Number.isInteger(body.file_id) || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {file_id : int, token : token}');
@@ -49,6 +54,8 @@ async function validateUpdateFile(body, connection){
 
     const access = await controller.userHasAccessToFile(user_id, body.file_id, connection);
     if (!access) return new Error(400, 'user cannot access this file');
+
+    //handles lock issues in the controller function
     return new Success();
 }
 

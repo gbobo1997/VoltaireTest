@@ -2,6 +2,7 @@ const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite')
 const { TestModels, UserModel, GroupModel, ChatModel, resetInsertIds } = require('../models');
 const controller = require('../../API/chat/chatController');
 const validator = require('../../API/chat/chatValidation');
+const update_controller = require('../../API/update/updateController');
 const { expect } = require('../test_suite');
 
 function createChatControllerSuite(){
@@ -30,9 +31,13 @@ function createChatTests(){
         new Test('Successfully creates a chat with given parameters', models, async (connection) =>{
             const result = await controller.createChat({group_id: 2, chat_name: 'test'}, connection);
             assertSuccess(result, {chat_id: 4});
+
             const chat_result = await controller.getChatsInGroup({group_id: 2},connection);
             assertSuccess(chat_result, [{ChatID : 2, ChatName: 'chat2', GroupID: 2}, {ChatID : 3, ChatName: 'chat3', GroupID: 2}, 
                 {ChatID : 4, ChatName: 'test', GroupID: 2}]);
+
+            const updater_result = await update_controller.getUserUpdates(1, connection);
+            assertSuccess(updater_result, [{UpdateType: 2, UpdateTime: 1, UpdateContent: {chat_id : 4, chat_name : 'test'}}]);
         }),
         new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
             const result = await controller.createChat({group_id: 2}, connection);
@@ -49,6 +54,9 @@ function deleteChatTests(){
             assertSuccess(result);
             const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
             assertSuccess(chat_result, []);
+
+            const updater_result = await update_controller.getUserUpdates(1, connection);
+            assertSuccess(updater_result, [{UpdateType: 3, UpdateTime: 1, UpdateContent: {chat_id : 1, chat_name : 'test'}}]);
         }),
         new Test('Returns a db error when given null parameter',  models, async (connection) =>{
             const result = await controller.deleteChat({}, connection);
