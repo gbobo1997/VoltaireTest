@@ -1,14 +1,14 @@
 const { Test, TestSuite, assertSuccess, assertError } = require('../test_suite');
-const { TestModels, UserModel, GroupModel, FileModel, resetInsertIds } = require('../models');
+const { TestModels, UserModel, GroupModel, FileModel, ChatModel, resetInsertIds } = require('../models');
 const controller = require('../../API/update/updateController');
 
 function createUpdateControllerSuite(){
     return new TestSuite('updateController.js', [
         getUserUpdatesTests(),
         insertGroupUpdateTests(),
-        //invitedToGroupTests(),
-        //chatCreatedTests(),
-        //chatDeletedTests(),
+        invitedToGroupTests(),
+        chatCreatedTests(),
+        chatDeletedTests(),
         //messageSentTests(),
         fileCreatedTests(),
         fileDeletedTests()
@@ -84,15 +84,86 @@ function insertGroupUpdateTests(){
 }
 
 function invitedToGroupTests(){
+    const models = getDbModelsGroup();
 
+    return new TestSuite('invitedToGroup', [
+        new Test('successfully inserts updates given correct parameters', models, async (connection) =>{
+            var result = await controller.invitedToGroup(1, 3, 'screen', connection);
+            assertSuccess(result, null);
+
+            result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, []);
+
+            result = await controller.getUserUpdates(3, connection);
+            assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {group_id : 1, group_name : 'name', inviting_user_name : 'screen'}}]);
+        }),
+        new Test('should not send an update if the group does not exist', models, async (connection) =>{
+            var result = await controller.invitedToGroup(4, 3, 'screen', connection);
+            assertError(result, 400, 'group does not exist');
+
+            result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, []);
+
+            result = await controller.getUserUpdates(3, connection);
+            assertSuccess(result, []);
+        }),
+        new Test('should not send an update if the invitee does not exist', models, async (connection) =>{
+            var result = await controller.invitedToGroup(1, 4, 'screen', connection);
+            assertError(result, 500, 'database error');
+
+            result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, []);
+
+            result = await controller.getUserUpdates(3, connection);
+            assertSuccess(result, []);
+        })
+    ])
 }
 
 function chatCreatedTests(){
+    const models = getDbModelsChat();
 
+    return new TestSuite('chatCreated', [
+        new Test('successfully sends updates given correct input', models, async (connection) =>{
+            var result = await controller.chatCreated(1, 3, 'new_chat', connection);
+            assertSuccess(result, null);
+
+            var result = await controller.chatCreated(2, 4, 'other_new_chat', connection);
+            assertSuccess(result, null);
+
+            result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, [{UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 3, chat_name : 'new_chat'}}, {UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 4, chat_name : 'other_new_chat'}}]);
+            
+            result = await controller.getUserUpdates(2, connection);
+            assertSuccess(result, [{UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 3, chat_name : 'new_chat'}}]);
+
+            result = await controller.getUserUpdates(3, connection);
+            assertSuccess(result, [{UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 4, chat_name : 'other_new_chat'}}]);
+        })
+    ])
 }
 
 function chatDeletedTests(){
+    const models = getDbModelsChat();
 
+    return new TestSuite('chatDeleted', [
+        new Test('successfully sends updates given correct input', models, async (connection) =>{
+            var result = await controller.chatDeleted(1, 3, connection);
+            assertSuccess(result, null);
+
+            var result = await controller.chatDeleted(2, 4, connection);
+            assertSuccess(result, null);
+
+            result = await controller.getUserUpdates(1, connection);
+            assertSuccess(result, [{UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 3}}, {UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 4}}]);
+            
+            result = await controller.getUserUpdates(2, connection);
+            assertSuccess(result, [{UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 3}}]);
+
+            result = await controller.getUserUpdates(3, connection);
+            assertSuccess(result, [{UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 4}}]);
+        })
+    ])
 }
 
 function messageSentTests(){
@@ -149,15 +220,29 @@ function getDbModelsGroup(token_id=null){
     else return new TestModels(models, models[token_id-1]);
 }
 
-function getDbModelsUpdate(token_id=null){
+function getDbModelsChat(token_id=null){
     resetInsertIds();
 
     const first_user = new UserModel('name', 'screen', 'test');
+    const second_user = new UserModel('name2', 'screen2', 'test2');
+    const third_user = new UserModel('name3', 'screen3', 'test3');
+
     const first_group = new GroupModel('name');
+    const second_group = new GroupModel('name2');
+
+    const first_chat = new ChatModel('chat');
+    const second_chat = new ChatModel('chat2');
 
     first_group.addMember(first_user);
+    first_group.addMember(second_user);
+    second_group.addMember(first_user);
+    second_group.addMember(third_user);
 
-    const models = [first_user, second_user, first_group];
+    first_chat.addToGroup(first_group);
+    second_chat.addToGroup(first_group);
+
+    const models = [first_user, second_user, third_user,
+        first_group, second_group, first_chat, second_chat];
 
     if (token_id === null) return new TestModels(models);
     else return new TestModels(models, models[token_id-1]);

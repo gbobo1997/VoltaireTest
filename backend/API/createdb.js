@@ -71,7 +71,8 @@ function createDbQuery(){
         UpdateType int NOT NULL,
         UpdateTime bigint NOT NULL,
         UpdateContent text NOT NULL,
-        PRIMARY KEY (UpdateID)
+        PRIMARY KEY (UpdateID),
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
     );
     CREATE TABLE IF NOT EXISTS GroupInvites (
         UserID int NOT NULL,
