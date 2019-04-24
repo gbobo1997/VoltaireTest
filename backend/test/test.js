@@ -26,8 +26,8 @@ const suite = new TestSuite('app tests', [
     createFileValidationSuite(),
     createFileRouteSuite(),
     createUpdateControllerSuite(),
-    //createMessageControllerSuite(),
-    //createMessageValidationSuite(),
-    //createMessageRouteSuite()
+    createMessageControllerSuite(),
+    createMessageValidationSuite(),
+    createMessageRouteSuite()
 ]);
 TestSuite.executeTestSuite(suite, server);

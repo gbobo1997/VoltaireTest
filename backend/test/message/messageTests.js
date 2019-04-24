@@ -15,7 +15,7 @@ function createMessageControllerSuite(){
 function createMessageValidationSuite(){
     return new TestSuite('messageValidation.js',[
         validateSendMessageTests(),
-        validateGetMessageInChatTests(),
+        validateGetMessagesTests(),
         validateGetRecentMessagesTests()
     ]);
 }
@@ -27,11 +27,12 @@ function sendMessageTests(){
         new Test('Successfully sends a message with given parameters', models, async (connection) =>{
             const result = await controller.sendMessage({ user_id : 1, content : 'Hello', chat_id : 2 }, connection);
             assertSuccess(result, {message_id: 4});
-            const message_result = await controller.getMessageInChat({chat_id: 1},connection);
-            assertSuccess(message_result, [{MessageID : 1, Content: 'test1', ChatID: 1}, {MessageID : 2, Content: 'test2', ChatID: 2}, 
-            {MessageID: 3, Content: 'test3', ChatID: 1}, {MessageID : 4, Content: 'Hello_ppl', ChatID: 2}]);
+
+            const message_result = await controller.getMessageInChat({chat_id: 2}, connection);
+            assertSuccess(message_result, [{MessageID : 4, MessageContent: 'Hello', ChatID: 2, ScreenName: 'screen', TimeSent : 1, UserID : 1}, 
+                {MessageID : 2, MessageContent: 'test2', ChatID: 2, ScreenName: 'screen2', TimeSent: 2, UserID : 2}]);
         }),
-        new Test('Returns a db error when given null parameters in the first query', models, async (connection) =>{
+        new Test('Returns a db error when given null parameters', models, async (connection) =>{
             const result = await controller.sendMessage({user_id: 2, content: 'test'}, connection);
             assertError(result, 500, 'database error');
         })
@@ -44,9 +45,9 @@ function getMessageInChatTests(){
     return new TestSuite('getMessageInChat', [
         new Test('Succesfully gets all messages in chat with given parameters', models, async (connection) => {
             const result = await controller.getMessageInChat({chat_id : 1}, connection);
-            assertSuccess(result, [{ChatID : 1, MessageID: 1, Content: 'test1', TimeSent:'0001', UserID: 1, ScreenName :'screen' },
-            {ChatID : 1, MessageID: 3, Content: 'test3', TimeSent:'0003', UserID: 2, ScreenName :'screen2' }]);
-            }),
+            assertSuccess(result, [{ChatID : 1, MessageID: 1, MessageContent: 'test1', TimeSent:1, UserID: 1, ScreenName :'screen' },
+                {ChatID : 1, MessageID: 3, MessageContent: 'test3', TimeSent:3, UserID: 2, ScreenName :'screen2' }]);
+        }),
         new Test('gets no messages when given a chat that does not exist', models, async (connection) =>{
             const result = await controller.getMessageInChat({chat_id : 3}, connection);
             assertSuccess(result, []);
@@ -61,22 +62,22 @@ function getMessageInChatTests(){
 function getRecentMessagesTests(){
     const models = getDbModels();
 
-    return new TestSuite('getMessageInChat', [
+    return new TestSuite('getRecentMessages', [
         new Test('Succesfully gets a recent message with given parameters', models, async (connection) => {
-            const result = await controller.getRecentInChat({chat_id : 1, message_id: 1}, connection);
-            assertSuccess(result, [{ChatID : 1, MessageID: 3, Content: 'test3', TimeSent:'0003', UserID: 2, ScreenName :'screen2' }]);
+            const result = await controller.getRecentMessages({chat_id : 1, message_id: 1}, connection);
+            assertSuccess(result, [{ChatID : 1, MessageID: 3, MessageContent: 'test3', TimeSent:3, UserID: 2, ScreenName :'screen2' }]);
         }),
         new Test('gets no messages when given a chat that does not exist', models, async (connection) =>{
-            const result = await controller.getRecentMessagesInChat({chat_id : 3, message_id: 2}, connection);
+            const result = await controller.getRecentMessages({chat_id : 3, message_id: 2}, connection);
             assertSuccess(result, []);
         }),
         new Test('gets no messages when given a message that does not exist', models, async (connection) =>{
-            const result = await controller.getRecentMessagesInChat({chat_id : 2, message_id: 4}, connection);
+            const result = await controller.getRecentMessages({chat_id : 2, message_id: 4}, connection);
             assertSuccess(result, []);
         }),
-        new Test('returns a db error when given a null parameter', models, async (connection) =>{
-            const result = await controller.getRecentMessagesInChat({chat_id : null, message_id: null}, connection);
-            assertError(result, 500, 'database error');
+        new Test('returns nothing when given a null parameter', models, async (connection) =>{
+            const result = await controller.getRecentMessages({chat_id : null, message_id: null}, connection);
+            assertSuccess(result, []);
         })
     ])
 }
@@ -86,7 +87,7 @@ function validateSendMessageTests(){
     
     return new TestSuite('validateSendMessage', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
-            const result = await validator.validateSendMessage({ content: 'test', chat_id : 2, token: token}, connection);
+            const result = await validator.validateSendMessage({ content: 'test', chat_id : 1, token: token}, connection);
             assertSuccess(result, null);
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
@@ -104,7 +105,7 @@ function validateSendMessageTests(){
     ]);
 }
 
-function validateGetMessageInChatTests(){
+function validateGetMessagesTests(){
     const models = getDbModels(1);
     
     return new TestSuite('validateGetMessagesInChat', [
@@ -137,7 +138,7 @@ function validateGetRecentMessagesTests(){
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateGetRecentMessages({token: token}, connection);
-            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
+            assertError(result, 400, 'invalid parameters, send the following body: {chat_id : int, message_id : int, token : token}');
         }),
         new Test('fails validation given an invalid token', models, async (connection, token) =>{
             const result = await validator.validateGetRecentMessages({chat_id: 2,message_id: 2, token: token.split("").reverse().join("")}, connection);
@@ -168,9 +169,9 @@ function getDbModels(token_id=null){
     const first_chat = new ChatModel('chat');
     const second_chat = new ChatModel('chat2');
 
-    const first_message = new MessageModel('test1','0001');
-    const second_message = new MessageModel('test2','0002');
-    const third_message = new MessageModel('test3', '0003');
+    const first_message = new MessageModel('test1',1);
+    const second_message = new MessageModel('test2',2);
+    const third_message = new MessageModel('test3', 3);
 
     first_group.addMember(first_user);
     second_group.addMember(second_user);

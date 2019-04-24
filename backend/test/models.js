@@ -212,11 +212,11 @@ class MessageModel extends DbModel{
     }
 
     hasValidAttributes(){
-        return (super.hasValidAttributes() && this.content != null);
+        return super.hasValidAttributes();
     }
 
     hasValidRelationships(){
-        return this.chat_id != null;
+        return (this.chat_id != null && this.user_id != null);
     }
 
     addAuthor(user){
@@ -228,7 +228,7 @@ class MessageModel extends DbModel{
     }
 
     getValueString(){
-        const props = ["'"+this.user_id+"'", "'"+this.chat_id+"'", "'"+this.content+"'"];
+        const props = ["'"+this.user_id+"'", "'"+this.chat_id+"'", "'"+this.content+"'", "'"+this.time_sent+"'"];
         return [DbModel.getValueString(props)];
     }
 
@@ -237,7 +237,7 @@ class MessageModel extends DbModel{
     }
 
     static getInsertColumns(){
-        return ['(UserID, ChatID, MessageContent)'];
+        return ['(UserID, ChatID, MessageContent, TimeSent)'];
     }
 }
 MessageModel.insert_id = 1;

@@ -26,7 +26,7 @@ function createSendMessageTests(){
                 .post('/message/send')
                 .send({token : token, content : null, chat_id:1});
         
-            assertRouteError(result, 400, 'invalid parameters, send the following body: {content : string, chat_id: int, token : token}');
+            assertRouteError(result, 400, 'invalid parameters, send the following body: {content : string, chat_id : int, token : token}');
         }),
         new Test('it should return a auth error given incorrect credentials', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -46,6 +46,7 @@ function createGetMessagesInChatTests(){
             const result = await chai.request(app)
                 .post('/message/messages')
                 .send({chat_id : 1, token : token});
+            console.log(result.body);
             assertRouteResult(result, 200);
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
