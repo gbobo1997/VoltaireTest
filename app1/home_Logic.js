@@ -157,9 +157,9 @@ function addMessage(user, type, content)
 for( var i = 0; i < 10; i++)
 {
   addMessage("Robert", 'outgoing', 'this is a new message.');
-  addMessage("Austen", 'incoming', 'this is a new incoming message.');
+  addMessage("Austin", 'incoming', 'this is a new incoming message.');
 }
-addMessage("Austen", 'outgoing', 'this is a new incoming message.');
+addMessage("Austin", 'outgoing', 'this is a new incoming message.');
 addMessage("Robert", 'incoming', 'this is a new message.');
 
 var toggle = false;
