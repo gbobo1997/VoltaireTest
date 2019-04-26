@@ -40,11 +40,19 @@ function loginConfirm()
       'Content-Type':'application/json'
     }
   })
-  .then(res => res.json())
+  .then(res => 
+    {
+      var status = res.status;
+      console.log('status: '+status);
+      res.json();
+    })
   .then(response => {
-    console.log(response.status);
+    //console.log('status: '+status);
+    //console.log('status: '+response.status);
     var apiResponse = JSON.stringify(response);
+    console.log('stringified: '+apiResponse);
     apiResponse = JSON.parse(apiResponse);
+    console.log('parsed: '+apiResponse);
     var token = apiResponse.token;  
     var user_id = apiResponse.user_id;    
 
