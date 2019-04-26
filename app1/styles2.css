@@ -1,6 +1,6 @@
 body {
 	margin: 0;
-	height: 99vh;
+	
 }
 
 section {
@@ -17,17 +17,14 @@ section:first-of-type .column:first-of-type {
 }*/
 #menu_bar {
 	background-color: #36393F;
-	height: 60px;
 	width: 100%;
 	display: flex;
-	padding-bottom: 10px;
 }
 #columnOne {
 	background-color: grey;
 }
-
 #non_menu {
-	height: 93%;
+	
 }
 
 #menu_column {
@@ -55,24 +52,38 @@ section:first-of-type .column:first-of-type {
   	color: white;
 }
 
-.column {
-	margin: 0px;
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-basis: 0;
+.column1 {
+	margin-right: 0px;
+	top: 0;
+	bottom: 0;
+	width: 30%;
 }
 
-.columnScroll {
+.column2 {
+	top: 0;
+	bottom: 0;
+	width: 80%
+}
+
+.column3 {
+	top: 0;
+	bottom: 0;
+	width: 80%;
+}
+
+
+/*.columnScroll {
 	flex-direction: column;
 	margin: 0px;
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
 }
+*/
 .messaging {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+	top: 0;
+	height: 88.5vh;
+	overflow-y: auto;
 }
 .row {
 	
@@ -86,12 +97,6 @@ section:first-of-type .column:first-of-type {
 .row:second-of-type {
 	flex-grow: 1;
 	border-color: green;
-}
-
-.columnScroll:first-of-type {
-	flex-grow: 0.5;
-	flex-shrink: .5;
-	flex-basis: 0;
 }
 
 
@@ -164,6 +169,7 @@ switch box styling shit
 *****************************************************************/
 #switch_container {
 	float: right;
+	padding-right: 1px;
 }
 /* The switch - the box around the slider */
 .switch {
@@ -263,7 +269,6 @@ message shit
 	background-color: grey;
 	display: inline-block;
 	width: 100%;
-	border-top: 5px solid grey;
 }
 
 /* editor textarea */
@@ -274,7 +279,6 @@ textarea {
 }
 
 #md_preview {
-	height: 90%;
 	overflow-y: auto;
 	margin-left: 5px;
 }
@@ -282,12 +286,9 @@ textarea {
 #message_box {
 	border: 1px solid gray;
 	margin: auto;
-	width: 80%;
 	padding: 10px;
 	border-radius: 10px;
-	margin-top: 5px;
-	position: absolute;
-	bottom: 10px;
+	position: relative;
 }
 
 #message_button {

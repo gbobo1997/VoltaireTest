@@ -37,26 +37,25 @@
 
   </div>
   	<section id="non_menu">
-  		<div class="columnScroll" id="columnOne">
+  		<div class="column1" id="columnOne">
         <button type="button" class="menu_button" onclick="addGroup()">Add Group</button>
       </div>
-  		<div class="columnScroll" id="fillMe">
-        <section class="messaging"> 
-          <div class="row" id="output">
 
-          </div>
-        <div class="row" id="message_box">
+  		<div class="column2" id="fillMe">
+        <div class="messaging" id="output">
+
+        </div>
+        <div id="message_box">
           <form>
             <input type="text"  name="textInput" id="tInput" placeholder="Message..." size="35">
             <input id="message_button" type="button" value="Send" onclick="sendMessage()">
-          </form>
-        </div>   
-        </section>    
+          </form> 
+        </div>    
       </div>  
 
-  		<div class="columnScroll" id="file_column">
+  		<div class="column3" id="file_column">
           <div id="editor_header">
-            Filename: 
+            Filename:
             <div id="switch_container">
               <label>Toggle Preview</label>
               <!-- Rectangular switch -->
