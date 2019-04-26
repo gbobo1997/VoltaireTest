@@ -1,4 +1,4 @@
-
+checkLogin();
 function rdsLogin()
 {
   var content = '<center><button type="button" onclick="homeLoad()">Back</button><h1>Login</h1><br><form><label>Email:</label><input type="text" name="uName" id="uName" required><br><label>Password:</label><input type="password" name="password" id="pWord" required><br><button type="button" onclick="loginConfirm()">Login</button></form></center>';
@@ -30,7 +30,7 @@ function loginConfirm()
     name: username,
     password: password
   };
-  console.log(bodyData);
+  //console.log(bodyData);
 
   fetch(URL, {
     method: 'POST',
@@ -42,13 +42,14 @@ function loginConfirm()
   })
   .then(res => res.json())
   .then(response => {
+    console.log(response.status);
     var apiResponse = JSON.stringify(response);
+    apiResponse = JSON.parse(apiResponse);
+    var token = apiResponse.token;  
+    var user_id = apiResponse.user_id;    
 
-    var token = apiResponse.token;
-    var user_id = apiResponse.user_id;
-
-    localStorage.setItem('token', token);
-    localStorage.setItem('user_id', user_id);
+    localStorage.setItem('token', String(token));
+    localStorage.setItem('user_id', String(user_id));
     checkLogin();
   })
   .catch(error => console.log('Error: ', error))
@@ -70,6 +71,7 @@ function signupConfirm()
     screen_name: screenName,
     password: password 
   };
+  print(test_data);
 
   fetch(URL, 
   {
@@ -90,7 +92,7 @@ function signupConfirm()
   })
   .catch(error => console.log('Error: ', error))
 
-  //rdsLogin();
+  rdsLogin();
 
 }
 
@@ -99,9 +101,15 @@ function checkLogin()
 {
   var userID = localStorage.getItem('user_id');
 
-  if (userID != null)
+  if (userID == null || userID == undefined)
   {
+    console.log('user not logged in');
     //window.location.href = 'home.html';
   }
-  console.log('username: '+userID);
+  else
+  {
+    console.log('username: '+userID);
+    //window.location.href = 'home.html';
+  }
+  
 }
