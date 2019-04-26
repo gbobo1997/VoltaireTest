@@ -162,6 +162,8 @@ for( var i = 0; i < 10; i++)
 addMessage("Austin", 'outgoing', 'this is a new incoming message.');
 addMessage("Robert", 'incoming', 'this is a new message.');
 
+
+
 var toggle = false;
 function togglePreview()
 {
