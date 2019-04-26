@@ -62,4 +62,6 @@ async function validateGetRecentMessages(body, connection){
     return new Success();
 }
 
+
+
 module.exports = { validateSendMessage, validateGetMessageInChat, validateGetRecentMessages }

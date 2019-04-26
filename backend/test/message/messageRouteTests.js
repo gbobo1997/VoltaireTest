@@ -60,7 +60,6 @@ function createGetMessagesInChatTests(){
             const result = await chai.request(app)
                 .post('/message/messages')
                 .send({chat_id : 1, token : token.split("").reverse().join("")});
-            
             assertRouteError(result, 401, 'token invalid');
         })
     ]);

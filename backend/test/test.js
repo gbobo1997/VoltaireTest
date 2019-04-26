@@ -13,7 +13,7 @@ const { TestSuite } = require('./test_suite');
 const {app, server} = require('../API/index');
 
 const suite = new TestSuite('app tests', [
-    createAuthControllerSuite(),
+    /*createAuthControllerSuite(),
     createAuthValidationSuite(),
     createAuthRouteSuite(),
     createGroupControllerSuite(),
@@ -25,7 +25,7 @@ const suite = new TestSuite('app tests', [
     createFileControllerSuite(),
     createFileValidationSuite(),
     createFileRouteSuite(),
-    createUpdateControllerSuite(),
+    createUpdateControllerSuite(),*/ 
     createMessageControllerSuite(),
     createMessageValidationSuite(),
     createMessageRouteSuite()
