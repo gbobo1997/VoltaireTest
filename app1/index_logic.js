@@ -31,7 +31,7 @@ function loginConfirm()
     password: password
   };
   //console.log(bodyData);
-
+/*
   fetch(URL, {
     method: 'POST',
     body: JSON.stringify(bodyData),
@@ -60,7 +60,22 @@ function loginConfirm()
     localStorage.setItem('user_id', String(user_id));
     checkLogin();
   })
-  .catch(error => console.log('Error: ', error))
+  .catch(error => console.log('Error: ', error))*/
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(bodyData),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  }).then(function(response)
+  {
+    console.log('Status' +response.status);   
+    console.log('Response '+response);
+    console.log('stringified '+JSON.stringify(response)); 
+  }).catch(error => console.log('Error: ', error));
   
 }
 

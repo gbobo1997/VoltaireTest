@@ -7,21 +7,15 @@
   <body id="body">
   	<section>
   		<div id="menu_bar">
-        <div id="menu_column">
-          <button type="button" class="menu_button" onclick="userOptions()">User Options</button><br>              
-          <button type="button" class="menu_button" onclick="logout()">Logout</button>
-        </div>
-        <div id="menu_column">
-      <button type="button" class="menu_button" onclick="addGroup()">Add Group</button><br>
-      <button type="button" class="menu_button" onclick="editGroup()">Edit Group</button>
-    </div>
-    <div id="menu_column">
-      <button type="button" class="menu_button" onclick="createChat()">Create Chat</button><br>
-      <button type="button" class="menu_button" onclick="editChat()">Edit Chat</button>
+        <button id="settings_button">
+          <img src="images/settings.png" alt="Settings" id="settings_image">
+        </button>
+        <button id="logout_button" onclick="logout()">
+          Logout
+        </button>
       </div>
-      <div id="menu_column">
-      <button type="button" class="menu_button" onclick="toggleThird()">Toggle 3rd</button>
-    </div>
+
+          
     </div>
   	</section>
     <div id="myModal" class="modal">
@@ -47,7 +41,7 @@
         </div>
         <div id="message_box">
           <form>
-            <input type="text"  name="textInput" id="tInput" placeholder="Message..." size="35">
+            <input type="text"  name="textInput" id="tInput" placeholder="Message..." size="25">
             <input id="message_button" type="button" value="Send" onclick="sendMessage()">
           </form> 
         </div>    

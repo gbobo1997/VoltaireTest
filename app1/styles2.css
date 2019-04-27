@@ -1,6 +1,5 @@
 body {
 	margin: 0;
-	
 }
 
 section {
@@ -15,6 +14,36 @@ section:first-of-type .column:first-of-type {
 	flex-basis: 0;
 	height: 10vh;
 }*/
+#settings_image {
+	width: 40px;
+	height: 40px;
+}
+
+#settings_button {
+	background-color: #36393F;
+	border: none;
+	cursor: pointer;
+}
+#settings_button:hover {
+	background-color: grey;
+}
+
+#logout_button {
+	background-color: #36393F;
+	border: none;
+	cursor: pointer;
+	color: white;
+	float: right;
+}
+#logout_button:hover {
+	background-color: grey;
+}
+
+#group_select_btn {
+	border: none;
+	cursor: pointer;
+	
+}
 #menu_bar {
 	background-color: #36393F;
 	width: 100%;
@@ -285,6 +314,7 @@ textarea {
 
 #message_box {
 	border: 1px solid gray;
+	width: 80%;
 	margin: auto;
 	padding: 10px;
 	border-radius: 10px;
