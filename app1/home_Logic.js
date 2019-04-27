@@ -50,8 +50,9 @@ all of the needed info and then post the request to the
 webserver but for now this works as a base lol */
 function sendMessage()
 {
-  document.getElementById('output').innerHTML += document.getElementById('tInput').value;
-  document.getElementById('tInput').value= '';
+  
+  var content = document.getElementById('textAreaInput').value;
+  document.getElementById('textAreaInput').value = '';
 }
 
 function addGroup()
@@ -129,11 +130,11 @@ function listGroups()
   var content = '';
   for(var i =0; i < data.length; i++)
   {
-    content += '<br><button id="group_select_btn" value="'+data[i].group_id+'">'
-    +data[i].group_name+'</button><br>';
+    content += '<br><button id="group_select_btn" value="'+data[i].group_id+'"><i>'
+    +data[i].group_name+'</i></button><br>';
   }  
   
-  document.getElementById('columnOne').innerHTML+=content;
+  document.getElementById('columnOne_two').innerHTML+=content;
 }
 
 function changeGroup(group)

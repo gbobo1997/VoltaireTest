@@ -14,15 +14,16 @@ section:first-of-type .column:first-of-type {
 	flex-basis: 0;
 	height: 10vh;
 }*/
-#settings_image {
-	width: 40px;
-	height: 40px;
-}
 
 #settings_button {
 	background-color: #36393F;
 	border: none;
+	color: white;
 	cursor: pointer;
+	padding-top: 12px;
+	padding-left: 12px;
+	padding-bottom: 12px;
+	padding-right: 6px;
 }
 #settings_button:hover {
 	background-color: grey;
@@ -31,9 +32,12 @@ section:first-of-type .column:first-of-type {
 #logout_button {
 	background-color: #36393F;
 	border: none;
-	cursor: pointer;
 	color: white;
-	float: right;
+	cursor: pointer;	
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 6px;
+	padding-right: 12px;
 }
 #logout_button:hover {
 	background-color: grey;
@@ -41,13 +45,29 @@ section:first-of-type .column:first-of-type {
 
 #group_select_btn {
 	border: none;
-	cursor: pointer;
-	
+	cursor: pointer;	
+	display: inline-block;
+	background-color: grey;
+	text-decoration: underline;
+
+}
+#group_select_btn:hover {
+	background-color: #36393F;
+}
+#column_buttons {
+	text-align: center;
+	margin: auto;
+}
+#add_group_btn {
+	border: none;
+	color: grey;
+}
+#add_group_btn:hover {
+	background-color: #36393F;
 }
 #menu_bar {
 	background-color: #36393F;
 	width: 100%;
-	display: flex;
 }
 #columnOne {
 	background-color: grey;
@@ -283,9 +303,27 @@ message shit
 	float: right;
 }
 
+#message_button {
+	background-color: #CEDFFA;
+	border: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: inline;
+}
+#textAreaInput {
+	border: none;
+}
+
+#input_content {
+	width: 80%;
+	float: left;
+}
+
 #incoming_container {
 	width: 100%;
-	display: inline-block;
+	display: inline;
 }
 
 #outgoing_container {
@@ -314,14 +352,11 @@ textarea {
 
 #message_box {
 	border: 1px solid gray;
-	width: 80%;
+	width: 87%;
 	margin: auto;
 	padding: 10px;
 	border-radius: 10px;
 	position: relative;
 }
 
-#message_button {
-	float: right;
-}
 

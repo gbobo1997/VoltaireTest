@@ -7,8 +7,8 @@
   <body id="body">
   	<section>
   		<div id="menu_bar">
-        <button id="settings_button">
-          <img src="images/settings.png" alt="Settings" id="settings_image">
+        <button id="settings_button" onclick="userOptions()">
+          <!--<img src="images/settings.png" alt="Settings" id="settings_image">-->Settings
         </button>
         <button id="logout_button" onclick="logout()">
           Logout
@@ -32,7 +32,16 @@
   </div>
   	<section id="non_menu">
   		<div class="column1" id="columnOne">
-        <button type="button" class="menu_button" onclick="addGroup()">Add Group</button>
+             <div id="columnOne_two">
+
+             </div>
+             <div id="column_buttons"><br>
+              <button type="button" id="add_group_btn" onclick="addGroup()">add group</button>  
+             </div>
+             
+      </div>
+      <div>
+
       </div>
 
   		<div class="column2" id="fillMe">
@@ -41,8 +50,12 @@
         </div>
         <div id="message_box">
           <form>
-            <input type="text"  name="textInput" id="tInput" placeholder="Message..." size="25">
-            <input id="message_button" type="button" value="Send" onclick="sendMessage()">
+            <div id="input_content">              
+              <textarea id="textAreaInput" name="" placeholder="Message ..." style="resize:none;"></textarea>
+            </div>
+            <div id="send_messages_content">
+              <input id="message_button" type="button" value="Send" onclick="sendMessage()">
+            </div>
           </form> 
         </div>    
       </div>  
