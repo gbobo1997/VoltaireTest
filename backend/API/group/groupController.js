@@ -3,6 +3,7 @@ const { Success, Error } = require('../common');
 const updater = require('../update/updateController');
 
 async function createGroup(body, connection){
+    console.log(body)
     const {user_id, group_name} = body;
     var query = 'INSERT INTO ChatGroup (GroupName) VALUES (?)';
 

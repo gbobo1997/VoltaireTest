@@ -17,17 +17,17 @@ const suite = new TestSuite('app tests', [
     createAuthValidationSuite(),
     createAuthRouteSuite(),
     createGroupControllerSuite(),
-    createGroupValidationSuite(),
+    createGroupValidationSuite(),*/
     createGroupRouteSuite(),
-    createChatControllerSuite(),
+    /*createChatControllerSuite(),
     createChatValidationSuite(),
     createChatRouteSuite(),
     createFileControllerSuite(),
     createFileValidationSuite(),
     createFileRouteSuite(),
-    createUpdateControllerSuite(),*/ 
+    createUpdateControllerSuite(),
     createMessageControllerSuite(),
     createMessageValidationSuite(),
-    createMessageRouteSuite()
+    createMessageRouteSuite()*/
 ]);
 TestSuite.executeTestSuite(suite, server);

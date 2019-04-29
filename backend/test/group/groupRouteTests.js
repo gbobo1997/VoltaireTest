@@ -21,7 +21,7 @@ function createCreateGroupTests(){
         new Test('it should create the group when given correct parameters', models, async (c, token) =>{
             const result = await chai.request(app)
                 .post('/group/create')
-                .send({token : token, group_name : 'test'});
+                .send({token : token, user_id: "user_id", group_name : 'test'});
             
             assertRouteResult(result, 200, {group_id : 4});
         }),
