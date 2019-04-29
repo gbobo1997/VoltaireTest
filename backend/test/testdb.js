@@ -34,7 +34,7 @@ async function populateDb(connection, models){
 
 function getToken(token_model){
     if (!(token_model instanceof models.UserModel)) throw new Error('cannot get a token from a non-UserModel');
-    return jwt.sign({ userId : token_model.id }, 'secret', { expiresIn: "1h" });
+    return jwt.sign({ user_id : token_model.id }, 'secret', { expiresIn: "1h" });
 }
 
 module.exports = { startConnection, recreateDb, getToken }
