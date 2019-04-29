@@ -58,7 +58,7 @@ function sendMessage()
 function addGroup()
 {
   var content = '<label>Group Name:</label><input type="text" name="groupName" '+
-  'value="group name"><button type="button" onclick="">Create</button><br><div id="error" style="text-align:center; font-size=125%;'+
+  'value="group name" id="new_groupName"><button type="button" onclick="addGroupFetch()">Create</button><br><div id="error" style="text-align:center; font-size=125%;'+
   ' color:red;">Error: error type</div>';
   openModal(content);
 
@@ -192,5 +192,59 @@ function togglePreview()
   }
 }
 
+function addGroupFetch()
+{
+  var userID = localStorage.getItem('user_id');
+  var userToken = localStorage.getItem('token');
 
+  var groupName = document.getElementById('new_groupName').value;
+
+  var URL = 'http://73.153.45.13:8080/group/create'; 
+
+  var test_data =
+  {
+    token : userToken,
+    user_id : userID,
+    group_name : groupName
+  };
+  console.log(test_data);
+  console.log(JSON.stringify(test_data));
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: ', apiResponse);
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      document.getElementById("error").innerHTML = '<br><b>Invalid Group Name<b>';
+      window.setTimeout(clearErrorDiv, 2000);
+    }
+    
+
+  })
+  .catch(error => console.log('Error: ', error))
+
+}
+
+function clearErrorDiv()
+{
+  document.getElementById("error").innerHTML = '';
+}
 
