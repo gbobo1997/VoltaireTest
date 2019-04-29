@@ -4,16 +4,9 @@ body {
 
 section {
 
-	margin: 0 auto;
+	margin: 0;
 	display: flex;
 }
-/*
-section:first-of-type .column:first-of-type {
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-basis: 0;
-	height: 10vh;
-}*/
 
 #settings_button {
 	background-color: #36393F;
@@ -72,16 +65,8 @@ section:first-of-type .column:first-of-type {
 #columnOne {
 	background-color: grey;
 }
-#non_menu {
-	
-}
 
-#menu_column {
-	flex-grow: .25;
-	flex-shrink: .25;
-	flex-direction: row;
-	background-color: #2F3136;
-}
+
 
 .menu_button {
 	text-align: center;
@@ -121,33 +106,18 @@ section:first-of-type .column:first-of-type {
 }
 
 
-/*.columnScroll {
-	flex-direction: column;
-	margin: 0px;
-	flex-grow: 1;
-	flex-shrink: 1;
-	flex-basis: 0;
-}
-*/
 .messaging {
 	top: 0;
-	height: 88.5vh;
+	height: 85vh;
 	overflow-y: auto;
 }
-.row {
-	
-}
 
-.row:first-of-type {
-	flex-grow: 1;
-	overflow: auto;
-}
 
-.row:second-of-type {
-	flex-grow: 1;
-	border-color: green;
-}
+/***************************************
 
+Modal Stuff
+
+***************************************/
 
 /* The Modal (background) */
 .modal {
@@ -190,7 +160,9 @@ section:first-of-type .column:first-of-type {
   cursor: pointer;
 }
 
-/* scrollbar shit */
+/******************************
+ scrollbar stuff
+ ************************** */
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -274,13 +246,12 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+
 /*************************************************** 
 
-message shit 
+message display stuff 
 
 ************************************************/
-
-
 #message_incoming {
 	display: inline-block;
 	background-color: #EEF1F2;
@@ -303,23 +274,6 @@ message shit
 	float: right;
 }
 
-#message_button {
-	background-color: #CEDFFA;
-	border: none;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	padding-left: 10px;
-	padding-right: 10px;
-	display: inline;
-}
-#textAreaInput {
-	border: none;
-}
-
-#input_content {
-	width: 80%;
-	float: left;
-}
 
 #incoming_container {
 	width: 100%;
@@ -330,26 +284,20 @@ message shit
 	width: 100%;
 	display: inline-block;
 }
+/***************************************
 
-/* editor header */
-#editor_header {
-	background-color: grey;
-	display: inline-block;
-	width: 100%;
+message input stuff
+
+****************************************/
+
+#textAreaInput {
+	border: none;
 }
 
-/* editor textarea */
-textarea {
-	width: 100%;
-     -webkit-box-sizing: border-box;
-     resize: vertical;
+#input_content {
+	width: 80%;
+	float: left;
 }
-
-#md_preview {
-	overflow-y: auto;
-	margin-left: 5px;
-}
-
 #message_box {
 	border: 1px solid gray;
 	width: 87%;
@@ -358,5 +306,40 @@ textarea {
 	border-radius: 10px;
 	position: relative;
 }
+#message_button {
+	background-color: #CEDFFA;
+	border: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 10px;
+	padding-right: 10px;
+	display: inline;
+}
+
+
+/******************************
+
+markdown editor header 
+
+********************************/
+#editor_header {
+	background-color: grey;
+	display: inline-block;
+	width: 100%;
+}
+
+textarea {
+	width: 100%;
+     -webkit-box-sizing: border-box;
+     resize: vertical;
+}
+
+#md_preview {
+	overflow-y: auto;
+	max-height: 85vh;
+	margin-left: 5px;
+}
+
+
 
 
