@@ -1,29 +1,6 @@
-/*class Handler 
-{
-  // We may consider using a group class as well, to handle group
-  // operations but I am unsure. 
-  constructor(token, user_id)
-  {
-    this.token = token;
-    this.user_id = user_id;
-  }  
-  // To be written and used for the entire home.html interface
-  getGroups(token)
-  getGroupChats(group_id)
-  changeUsername()
-  changePassword()
-  createGroup(grup_name)
-  // etc...
-}*/
 
-// On run we want to generate the handler object by retrieving the token/user_id from the 
-// session storage. Because everything we do requires a token, we should route our
-// arguments via methods within a class where that token is an attribute, 
-// this is a good application of OOP. 
-// let current_user = Handler(a,b);
-// md package we are using:  https://github.com/evilstreak/markdown-js
 var markdown = require( "markdown" ).markdown;
-listGroups();
+fetchGroups();
 var span = document.getElementsByClassName("close")[0];
 var modal = document.getElementById('myModal');  
 var currentGroup = 'Home';
@@ -75,11 +52,11 @@ function editGroup()
 }
 
 // Create Chat
-function createChat()
+function createChat(group_id)
 {
-  var content = '<label>Groups: </label><select><option value="test">Group1</option><option'+
-  ' value="test2">Group2</option></select><label>Chat Name: </label><input id="newChatName" '+
-  'value="chat name"></form><button type="button" onlick="">Create Chat</button><br>'+
+  console.log(group_id);
+  var content = 'Chat Name: </label><input id="newChatName" '+
+  'value="chat name"></form><button type="button" onlick="postChat('+group_id+')">Create Chat</button><br>'+
   '<div id="error" style="text-align:center; font-size=125%; color:red; display:none;">'+
   'Error: error type</div>';
   openModal(content);
@@ -107,40 +84,170 @@ function openModal(content)
   modal.style.display = "block"; 
 }
 
-function listGroups()
+function fetchGroups()
+{
+  var userID = localStorage.getItem('user_id');
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/user_groups'; 
+
+  var test_data =
+  {
+    token : userToken,
+    user_id : userID
+  };
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: ', apiResponse);
+      console.log(response[0].group_id);
+      listGroups(response);
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      alert("Could not fetch user groups");
+    }
+    
+
+  })
+  .catch(error => console.log('Error: ', error))
+}
+
+function fetchGroupsChats(id)
+{
+  var userID = localStorage.getItem('user_id');
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
+
+  var test_data =
+  {
+    group_id : id,
+    token : userToken
+  };
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: ', apiResponse);
+      return response;
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      alert("Could not fetch group chats");
+      var list = [];
+      return list;
+    }
+    
+
+  })
+  .catch(error => console.log('Error: ', error))
+}
+
+function postChat(groupID)
+{
+  var userToken = localStorage.getItem('token');
+  var chatName = document.getElementById('newChatName').value;
+  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
+
+  var test_data =
+  {
+    group_id : groupID,
+    chat_name : chatName,
+    token : userToken
+  };
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: ', apiResponse);
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      document.getElementById("error").innerHTML = '<br><b>Invalid chat name<b>';
+      window.setTimeout(clearErrorDiv, 2000);
+    }
+    
+
+  })
+  .catch(error => console.log('Error: ', error))
+}
+
+function listGroups(data)
 {
   // basic output
   // group name will be a link, on link click expand list and
   // display associated chats
   // data model
-  var data = [
-    {
-      "group_id" : 1,
-      "group_name" : "group 1"
-    },
-    {
-      "group_id" : 2,
-      "group_name" : "group 2"
-    },
-    {
-      "group_id" : 3,
-      "group_name" : "group 3"
-    }
-  ];
   var content = '';
+  var groups_chats;
+  document.getElementById('columnOne_two').innerHTML=content;
   for(var i =0; i < data.length; i++)
   {
+    groups_chats = fetchGroupsChats(data[i].group_id);
     content += '<br><button id="group_select_btn" value="'+data[i].group_id+'"><i>'
     +data[i].group_name+'</i></button><br>';
-  }  
-  
+
+    if(groups_chats != null)
+    {
+      for(var j = 0; j < groups_chats.length; j++)
+      {
+        content += '<br><button id="chat_select_button" value="'+groups_chats[j].ChatID+'"<i>'
+        +groups_chats[j].ChatName+'</i></button>';
+      }
+    }   
+    content+= '<button id="addChat" onclick="createChat('+data[i].group_id+')">└ add chat</button>'; 
+  }
   document.getElementById('columnOne_two').innerHTML+=content;
 }
 
-function changeGroup(group)
-{
-  currentGroup = group;
-}
 
 function addMessage(user, type, content)
 {
@@ -228,6 +335,7 @@ function addGroupFetch()
     {
       var apiResponse = JSON.stringify(response);
       console.log('Success: ', apiResponse);
+      fetchGroups();
     }
     else
     {

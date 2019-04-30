@@ -66,6 +66,15 @@ section {
 	background-color: grey;
 }
 
+#addChat {
+	border: none;
+	cursor: pointer;	
+	display: inline-block;
+	background-color: grey;
+}
+#addChat:hover {
+	background-color: #36393F;
+}
 
 
 .menu_button {
