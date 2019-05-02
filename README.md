@@ -139,17 +139,31 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 
 ### Invite a User to a group
-**Route:** TODO \
-**In:** TODO \
-**Out:** TODO
+**Route:** POST /group/invite \
+**In:** 
+```
+{
+  token : token,
+  group_id : int,
+  invitee_id : int (id of person you are inviting to the group)
+}
+```
+**Out:** NONE
 
 ### Accept or Decline an invitation
-**Route:** TODO \
-**In:** TODO \
-**Out:** TODO
+**Route:** POST /group/respond
+**In:** 
+```
+{
+  token : token,
+  group_id : int,
+  confirmed : bool (True to accept invitation, False to reject it)
+}
+```
+**Out:** NONE
 
 ## File
-### Testing Status: Done excpet routes
+### Testing Status: Completed
 ### Get a File
 **Route:** POST /file/get_by_id \
 **In:**
@@ -230,11 +244,7 @@ right now there are no restrictions on names or passwords (except that the name 
 {
   [
     FileID : int,
-    GroupID : int,
-    FileName : string,
-    FileContent : string,
-    ScreenName : string,
-    Expires : int (Unix time code)
+    FileName : string
   ]
 }
 ```
@@ -327,8 +337,8 @@ right now there are no restrictions on names or passwords (except that the name 
   ]
 }
 ```
-## Mesages
-### Testing Status: Incomplete
+## Messages
+### Testing Status: Pretty much done
 ### Send a Message
 **Route:** POST/ message/send \
 **In:**
