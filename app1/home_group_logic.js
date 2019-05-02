@@ -101,7 +101,7 @@ function renderGroup(groupID)
       var content = '';
       for(var i = 0; i < response.length; i++)
       {
-        content +='<button id="chat_button" onclick="loadChat('+response[i].ChatID+')">'+response[i].ChatName+'</button>';
+        content +='<button id="chat_button" onclick="loadChat('+response[i].ChatID+','+groupID+')">'+response[i].ChatName+'</button>';
       }
       document.getElementById(groupID).innerHTML+=content;
     }

@@ -45,72 +45,12 @@ function postChat(groupID)
   .catch(error => console.log('Error: ', error))
 }
 
-function fetchChats(groupID)
+
+
+function loadChat(chatID, groupID)
 {
-  var userToken = localStorage.getItem('token');
-  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
-
-  var data = {group_id : groupID, token : userToken};
-  var status;
-
-  fetch(URL, {
-    method: 'POST',
-    body: JSON.stringify(test_data),
-    headers :
-    {
-      'Content-Type':'application/json'
-    }
-  })
-  .then(res => {
-    status = res.status;
-  })
-
-}
-
-async function fetchGroupsChats(id)
-{
-  //var userID = localStorage.getItem('user_id');
-  var userToken = localStorage.getItem('token');
-  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
-
-  var test_data =
-  {
-    group_id : id,
-    token : userToken
-  };
-  var status;
-  var chats;
-  var testResponse = await fetch(URL, 
-  {
-    method: 'POST',
-    body: JSON.stringify(test_data),
-    headers :
-    {
-      'Content-Type':'application/json'
-    }
-  })
-  .then(res => {
-    status = res.status;
-    return res.json();})
-  .then(response => {
-    if(status == 200)
-    {
-      var apiResponse = JSON.stringify(response);
-      console.log('Success: '+apiResponse);
-      chats = response;
-      return chats;
-    }
-    else
-    {
-      var apiResponse = JSON.stringify(response);
-      console.log('Non-Success: ', apiResponse);
-      alert("Could not fetch group chats");
-      var list = [];
-      chats = list;
-    }
-    
-
-  }).then(chats)
-  .catch(error => console.log('Error: ', error));
-  console.log('chats: '+chats);
+  localStorage.setItem('chat_id', chatID);
+  console.log('Passed chat ID: '+chatID+' Set chat ID: '+localStorage.getItem('chat_id'));
+  localStorage.setItem('group_id', groupID);
+  getMessages();
 }

@@ -53,8 +53,9 @@ function getMessages()
   {
     chat_id : chatID,
     token : userToken
-  }
+  };
 
+  console.log(test_data);
   var status;
 
   fetch(URL, 
