@@ -139,14 +139,28 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 
 ### Invite a User to a group
-**Route:** TODO \
-**In:** TODO \
-**Out:** TODO
+**Route:** POST /group/invite \
+**In:** 
+```
+{
+  token : token,
+  group_id : int,
+  invitee_id : int (id of person you are inviting to the group)
+}
+```
+**Out:** NONE
 
 ### Accept or Decline an invitation
-**Route:** TODO \
-**In:** TODO \
-**Out:** TODO
+**Route:** POST /group/respond
+**In:** 
+```
+{
+  token : token,
+  group_id : int,
+  confirmed : bool (True to accept invitation, False to reject it)
+}
+```
+**Out:** NONE
 
 ## File
 ### Testing Status: Completed
