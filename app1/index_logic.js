@@ -132,7 +132,7 @@ function checkLogin()
 {
   var userID = localStorage.getItem('user_id');
 
-  if(userID !== 'not_logged_in')
+  if(userID !== 'not_logged_in' && userID != undefined && userID != 'undefined')
   {
     console.log('logged in');
     //window.location = 'home.html';
