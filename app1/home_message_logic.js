@@ -1,9 +1,88 @@
 // message logic
 function sendMessage()
 {
-  
+  var userID = localStorage.getItem('user_id');
+  var chatID = localStorage.getItem('chat_id');
   var content = document.getElementById('textAreaInput').value;
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/message/send';
+  var test_data =
+  {
+    user_id : userID,
+    chat_id : chatID,
+    content : content,
+    token : userToken
+  };
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: '+apiResponse);
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+    }
+
+  })
+  .catch(error => console.log('Error: ', error))
   document.getElementById('textAreaInput').value = '';
+}
+
+function getMessages()
+{
+  var chatID = localStorage.getItem('chat_id ');
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/message/messages';
+  var test_data =
+  {
+    chat_id : chatID,
+    token : userToken
+  }
+
+  var status;
+
+  fetch(URL, 
+  {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+    return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Success: '+apiResponse);
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+    }
+
+  })
+  .catch(error => console.log('Error: ', error))
 }
 
 function addMessage(user, type, content)
