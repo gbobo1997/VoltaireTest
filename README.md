@@ -327,3 +327,73 @@ right now there are no restrictions on names or passwords (except that the name 
   ]
 }
 ```
+## Mesages
+### Testing Status: Incomplete
+### Send a Message
+**Route:** POST/ message/send \
+**In:**
+...
+{
+  user_id: int,
+  chat_id: int,
+  content: string,
+  token: token
+}
+...
+**Out:**
+...
+{
+  [
+    MessageID: int,
+    ChatId: int,
+    MessageContent: string,
+    TimeSent: Big int,
+    ScreenName: string
+   ]
+}
+...
+### Get all Messages in the chat
+**Route:** POST/ message/messages \
+**In:**
+...
+{
+  chat_id: int,
+  token: token
+}
+...
+**Out:**
+...
+{
+  [
+    MessageID: int,
+    ChatId: int,
+    MessageContent: string,
+    TimeSent: Big int,
+    ScreenName: string
+   ]
+}
+...
+### Get all recent Messages
+**Route:** POST/ message/send \
+**In:**
+...
+{
+  chat_id: int,
+  message_id: int,
+  token: token
+}
+...
+**Out:**
+...
+{
+  [
+    MessageID: int,
+    ChatId: int,
+    MessageContent: string,
+    TimeSent: Big int,
+    ScreenName: string
+   ]
+}
+...
+    
+    
