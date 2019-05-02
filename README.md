@@ -149,7 +149,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:** TODO
 
 ## File
-### Testing Status: Done excpet routes
+### Testing Status: Completed
 ### Get a File
 **Route:** POST /file/get_by_id \
 **In:**
@@ -230,11 +230,7 @@ right now there are no restrictions on names or passwords (except that the name 
 {
   [
     FileID : int,
-    GroupID : int,
-    FileName : string,
-    FileContent : string,
-    ScreenName : string,
-    Expires : int (Unix time code)
+    FileName : string
   ]
 }
 ```
@@ -327,8 +323,8 @@ right now there are no restrictions on names or passwords (except that the name 
   ]
 }
 ```
-## Mesages
-### Testing Status: Incomplete
+## Messages
+### Testing Status: Pretty much done
 ### Send a Message
 **Route:** POST/ message/send \
 **In:**
