@@ -1,4 +1,5 @@
 const db = require('./db');
+const update = require('./update/updateController')
 
 
 function executeRoute(request, response, controller, validator){
@@ -14,9 +15,24 @@ async function handleConnection(request, controller, validator){
     const connection = conn_res.getParam('connection');
 
     const valid = await validator(request.body, connection);
-    if (valid.isError()) return valid;
+    if (valid.isError()){
+        connection.end();
+        return valid;
+    } 
 
     const result = await controller(request.body, connection);
+    if (result.isError() || request.body.user_id == null){
+        connection.end();
+        return valid;
+    }
+
+    const updates = await update.getUserUpdates(request.body.user_id, connection);
+    if (updates.isError()){
+        connection.end()
+        return updates;
+    }
+    result.getParams().updates = updates.getParams();
+
     connection.end();
     return result;
 }
