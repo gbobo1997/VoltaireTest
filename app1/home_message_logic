@@ -1,0 +1,8 @@
+// message logic
+function sendMessage()
+{
+  
+  var content = document.getElementById('textAreaInput').value;
+  document.getElementById('textAreaInput').value = '';
+}
+
