@@ -1,5 +1,5 @@
 class Success{
-    constructor(params=null){
+    constructor(params={}){
         this.params = params;
     }
 

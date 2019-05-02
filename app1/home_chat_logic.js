@@ -45,7 +45,29 @@ function postChat(groupID)
   .catch(error => console.log('Error: ', error))
 }
 
-function fetchGroupsChats(id)
+function fetchChats(groupID)
+{
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
+
+  var data = {group_id : groupID, token : userToken};
+  var status;
+
+  fetch(URL, {
+    method: 'POST',
+    body: JSON.stringify(test_data),
+    headers :
+    {
+      'Content-Type':'application/json'
+    }
+  })
+  .then(res => {
+    status = res.status;
+  })
+
+}
+
+async function fetchGroupsChats(id)
 {
   //var userID = localStorage.getItem('user_id');
   var userToken = localStorage.getItem('token');
@@ -57,8 +79,8 @@ function fetchGroupsChats(id)
     token : userToken
   };
   var status;
-
-  fetch(URL, 
+  var chats;
+  var testResponse = await fetch(URL, 
   {
     method: 'POST',
     body: JSON.stringify(test_data),
@@ -75,8 +97,8 @@ function fetchGroupsChats(id)
     {
       var apiResponse = JSON.stringify(response);
       console.log('Success: '+apiResponse);
-      console.log('Response: '+response);
-      return response;
+      chats = response;
+      return chats;
     }
     else
     {
@@ -84,10 +106,11 @@ function fetchGroupsChats(id)
       console.log('Non-Success: ', apiResponse);
       alert("Could not fetch group chats");
       var list = [];
-      return list;
+      chats = list;
     }
     
 
-  })
-  .catch(error => console.log('Error: ', error))
+  }).then(chats)
+  .catch(error => console.log('Error: ', error));
+  console.log('chats: '+chats);
 }
