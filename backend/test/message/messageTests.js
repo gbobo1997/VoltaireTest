@@ -53,8 +53,8 @@ function getMessageInChatTests(){
         }),
         new Test('returns nothing when given a null parameter', models, async (connection) =>{
             const result = await controller.getMessageInChat({chat_id : null}, connection);
-            assertError(result, []);
-            })
+            assertError(result, 400, []);
+        })
      ]);
 }
 

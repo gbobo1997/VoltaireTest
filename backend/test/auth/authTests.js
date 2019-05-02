@@ -88,7 +88,7 @@ function validateLoginTests(){
     return new TestSuite('validateLogin', [
         new Test('successfully validates given correct parameters', models, async (connection) =>{
             const result = await validator.validateLogin({name : 'name', password :'pass'});
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given a null parameter', models, async (connection) =>{
             const result = await validator.validateLogin({name : 'name', password : null});
@@ -103,7 +103,7 @@ function validateSignUpTests(){
     return new TestSuite('validateSignUp', [
         new Test('successfully validates given correct parameters', models, async (connection) =>{
             const result = await validator.validateSignUp({name : 'name4', screen_name : 'screen', password : 'test'}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection) =>{
             const result = await validator.validateSignUp({name : 'name4', screen_name : 'screen'}, connection);

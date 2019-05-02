@@ -23,7 +23,7 @@ async function handleConnection(request, controller, validator){
     const result = await controller(request.body, connection);
     if (result.isError() || request.body.user_id == null){
         connection.end();
-        return valid;
+        return result;
     }
 
     const updates = await update.getUserUpdates(request.body.user_id, connection);

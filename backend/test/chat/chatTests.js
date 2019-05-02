@@ -77,7 +77,7 @@ function updateChatTests(){
         }),
         new Test('does nothing when given a null parameter', models, async (connection) =>{
             const result = await controller.updateChat({chat_name: 'test'}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         })
     ])
 }
@@ -153,7 +153,7 @@ function validateCreateChatTests(){
     return new TestSuite('validateCreateChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
             const result = await validator.validateCreateChat({group_id: 1, chat_name : 'test', token: token}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateCreateChat({token: token}, connection);
@@ -176,7 +176,7 @@ function validateDeleteChatTests(){
     return new TestSuite('validateDeleteChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
             const result = await validator.validateDeleteChat({chat_id: 1, token: token}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateDeleteChat({token: token}, connection);
@@ -199,7 +199,7 @@ function validateUpdateChatTests(){
     return new TestSuite('validateUpdateChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
             const result = await validator.validateUpdateChat({chat_id: 1, chat_name : 'test', token: token}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateUpdateChat({chat_id : null, chat_name: 'test', token: token}, connection);
@@ -222,7 +222,7 @@ function validateGetChatsFromGroupTests(){
     return new TestSuite('validateGetChatsFromGroupChat', [
         new Test('successfully validates given the correct parameters', models, async (connection, token) =>{
             const result = await validator.validateGetChatsFromGroup({group_id: 1, token: token}, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
         }),
         new Test('fails validation given an incomplete parameter set', models, async (connection, token) =>{
             const result = await validator.validateGetChatsFromGroup({token: token}, connection);

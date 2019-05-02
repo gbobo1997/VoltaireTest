@@ -166,7 +166,7 @@ function respondToInvitationTests(){
     return new TestSuite('POST /respond', [
         new Test('it should respond to an invitation given correct parameters', models, async (c, token) =>{
             const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, c);
-            assertSuccess(invite_result, null);
+            assertSuccess(invite_result, {});
 
             const result = await chai.request(app)
                 .post('/group/respond')
@@ -176,7 +176,7 @@ function respondToInvitationTests(){
         }),
         new Test('it should return a validation error given incorrect input (a string instead of a bool)', models, async (c, token) =>{
             const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, c);
-            assertSuccess(invite_result, null);
+            assertSuccess(invite_result, {});
             
             const result = await chai.request(app)
                 .post('/group/respond')
@@ -186,7 +186,7 @@ function respondToInvitationTests(){
         }),
         new Test('it should return a validation given other erroneous input (user has not been invited to the group)', models, async (c, token) =>{
             const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 2}, c);
-            assertSuccess(invite_result, null);
+            assertSuccess(invite_result, {});
             
             const result = await chai.request(app)
                 .post('/group/respond')
@@ -196,7 +196,7 @@ function respondToInvitationTests(){
         }),
         new Test('it should return an auth error gien an invalid token', models, async (c, token) =>{
             const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, c);
-            assertSuccess(invite_result, null);
+            assertSuccess(invite_result, {});
             
             const result = await chai.request(app)
                 .post('/group/respond')

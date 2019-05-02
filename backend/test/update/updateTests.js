@@ -21,9 +21,9 @@ function getUserUpdatesTests(){
     return new TestSuite('getUserUpdates', [
         new Test('successfully gets all updates for a user', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(1, 1, JSON.stringify({test : 'value'}), connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
             result = await controller.insertGroupUpdate(1, 2, JSON.stringify({test : 'value2'}), connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {test:"value"}},
@@ -35,7 +35,7 @@ function getUserUpdatesTests(){
         }),
         new Test('returns no updates given an invalid user', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(1, 1, JSON.stringify({test : 'value'}), connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
             result = await controller.getUserUpdates(5, connection);
             assertSuccess(result, []);
         }),
@@ -52,7 +52,7 @@ function insertGroupUpdateTests(){
     return new TestSuite('insertGroupUpdate', [
         new Test('successfully sends updates to all users in a group', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(1, 1, JSON.stringify({test : 'value'}), connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType : 1, UpdateTime : 1, UpdateContent : {test:"value"}}]);
@@ -65,7 +65,7 @@ function insertGroupUpdateTests(){
         }),
         new Test('sends no updates if a group does not exist', models, async (connection) =>{
             var result = await controller.insertGroupUpdate(5, 1, JSON.stringify({test : 'value'}), connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, []);
@@ -89,7 +89,7 @@ function invitedToGroupTests(){
     return new TestSuite('invitedToGroup', [
         new Test('successfully inserts updates given correct parameters', models, async (connection) =>{
             var result = await controller.invitedToGroup(1, 3, 'screen', connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, []);
@@ -126,10 +126,10 @@ function chatCreatedTests(){
     return new TestSuite('chatCreated', [
         new Test('successfully sends updates given correct input', models, async (connection) =>{
             var result = await controller.chatCreated(1, 3, 'new_chat', connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             var result = await controller.chatCreated(2, 4, 'other_new_chat', connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 3, chat_name : 'new_chat'}}, {UpdateType : 2, UpdateTime : 1, UpdateContent : {chat_id : 4, chat_name : 'other_new_chat'}}]);
@@ -149,10 +149,10 @@ function chatDeletedTests(){
     return new TestSuite('chatDeleted', [
         new Test('successfully sends updates given correct input', models, async (connection) =>{
             var result = await controller.chatDeleted(1, 3, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             var result = await controller.chatDeleted(2, 4, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
 
             result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 3}}, {UpdateType : 3, UpdateTime : 1, UpdateContent : {chat_id : 4}}]);
@@ -176,7 +176,7 @@ function fileCreatedTests(){
     return new TestSuite('fileCreated', [
         new Test('sends the update given correct parameters', models, async (connection) =>{
             var result = await controller.fileCreated(1, 3, 'new_file', connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
             var result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType: 4, UpdateTime : 1, 
                 UpdateContent : {file_id: 3, file_name: "new_file"}}])
@@ -190,7 +190,7 @@ function fileDeletedTests(){
     return new TestSuite('fileDeleted', [
         new Test('sends the update given correct parameters', models, async (connection) =>{
             var result = await controller.fileDeleted(1, 3, connection);
-            assertSuccess(result, null);
+            assertSuccess(result, {});
             var result = await controller.getUserUpdates(1, connection);
             assertSuccess(result, [{UpdateType: 5, UpdateTime : 1, 
                 UpdateContent : {file_id: 3}}])
