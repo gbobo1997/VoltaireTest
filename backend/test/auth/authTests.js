@@ -54,7 +54,7 @@ function signUpTests(){
             expect(user_result).to.be.true;
 
             const group_result = await group_controller.getUsersGroups({user_id : 4}, connection);
-            assertSuccess(group_result, [{group_name: 'personal', group_id: 1}]);
+            assertSuccess(group_result, {groups: [{group_name: 'personal', group_id: 1}]});
         }),
         new Test('returns an error when a db error occurs (given a null parameter)', models, async (connection) =>{
             const result = await controller.signUp({name : 'new_name', screen_name : null, password : 'pass'}, connection);

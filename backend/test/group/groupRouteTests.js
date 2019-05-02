@@ -23,7 +23,7 @@ function createCreateGroupTests(){
                 .post('/group/create')
                 .send({token : token, user_id: "user_id", group_name : 'test'});
             
-            assertRouteResult(result, 200, {group_id : 4});
+            assertRouteResult(result, 200, {group_id : 4, updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -51,7 +51,7 @@ function createDeleteGroupTests(){
                 .delete('/group/delete')
                 .send({group_id : 1, token : token});
             
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -79,7 +79,7 @@ function createUpdateGroupTests(){
                 .patch('/group/update')
                 .send({group_id : 1, token : token, group_name : 'test'});
 
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -106,7 +106,7 @@ function createGetUserGroupsTests(){
             const result = await chai.request(app)
                 .post('/group/user_groups')
                 .send({user_id : 1, token : token});
-            assertRouteResult(result, 200, [{group_id: 1, group_name: 'name'}]);
+            assertRouteResult(result, 200, {groups : [{group_id: 1, group_name: 'name'}], updates : []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -134,7 +134,7 @@ function inviteUserToGroupTests(){
                 .post('/group/invite')
                 .send({token : token, invitee_id : 1, group_id : 3});
 
-                assertRouteResult(result, 200);
+                assertRouteResult(result, 200, {updates:[]});
         }),
         new Test('it should return a validation error given incorrect input (a string instead of an int)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -172,7 +172,7 @@ function respondToInvitationTests(){
                 .post('/group/respond')
                 .send({token : token, confirmed : false, group_id : 3});
 
-                assertRouteResult(result, 200);
+                assertRouteResult(result, 200, {updates:[{UpdateType: 1, UpdateTime: 1, UpdateContent: {group_id : 3, group_name : 'name3', inviting_user_name: 'screen3'}}]});
         }),
         new Test('it should return a validation error given incorrect input (a string instead of a bool)', models, async (c, token) =>{
             const invite_result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, c);

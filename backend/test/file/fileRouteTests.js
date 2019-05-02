@@ -4,17 +4,17 @@ const {app} = require('../../API/index');
 
 function createFileRouteSuite(){
     return new TestSuite('fileRoute.js', [
-        getChatByIdTests(),
-        createChatTests(),
-        updateChatTests(),
-        deleteChatTests(),
+        getFileByIdTests(),
+        createFileTests(),
+        updateFileTests(),
+        deleteFileTests(),
         getGroupFilesTests(),
         requestFileLockTests(),
         deleteFileLockTests()
     ])
 }
 
-function getChatByIdTests(){
+function getFileByIdTests(){
     const models = getDbModels(1);
 
     return new TestSuite('POST /get_by_id', [
@@ -22,9 +22,8 @@ function getChatByIdTests(){
             const result = await chai.request(app)
                 .post('/file/get_by_id')
                 .send({token: token, file_id: 1});
-            
-            assertRouteResult(result, 200, [{FileID : 1, GroupID : 1, FileName: 'name', FileContent: 'content', 
-                ScreenName: 'screen', Expires: 1546369200000}]);
+            assertRouteResult(result, 200, {file : {FileID : 1, GroupID : 1, FileName: 'name', FileContent: 'content', 
+                ScreenName: 'screen', Expires: 1546369200000}, updates : []});
         }),
         new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -50,7 +49,7 @@ function getChatByIdTests(){
     ])
 }
 
-function createChatTests(){
+function createFileTests(){
     const models = getDbModels(1);
 
     return new TestSuite('POST /create', [
@@ -58,7 +57,7 @@ function createChatTests(){
             const result = await chai.request(app)
                 .post('/file/create')
                 .send({token: token, group_id: 1, file_name: 'name', file_content: 'content'});
-            assertRouteResult(result, 200, {file_id : 4});
+            assertRouteResult(result, 200, {file_id : 4, updates: [{UpdateType : 4, UpdateTime : 1, UpdateContent: {file_id : 4, file_name : 'name'}}]});
         }),
         new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -84,7 +83,7 @@ function createChatTests(){
     ])
 }
 
-function updateChatTests(){
+function updateFileTests(){
     const models = getDbModels(2);
 
     return new TestSuite('PATCH /update', [
@@ -92,7 +91,7 @@ function updateChatTests(){
             const result = await chai.request(app)
                 .patch('/file/update')
                 .send({token: token, file_id: 1, file_name: 'new_name', file_content: 'content'});
-            assertRouteResult(result, 200, {expiration: 1546369200001});
+            assertRouteResult(result, 200, {expiration: 1546369200001, updates: []});
         }),
         new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -118,7 +117,7 @@ function updateChatTests(){
     ])
 }
 
-function deleteChatTests(){
+function deleteFileTests(){
     const models = getDbModels(1);
 
     return new TestSuite('DELETE /delete', [
@@ -126,7 +125,7 @@ function deleteChatTests(){
             const result = await chai.request(app)
                 .delete('/file/delete')
                 .send({token: token, file_id: 1, group_id : 1});
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates : [{UpdateType : 5, UpdateTime : 1, UpdateContent: {file_id : 1}}]});
         }),
         new Test('it should send a validation error given an invalid parameter set (issing parameter)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -161,7 +160,7 @@ function getGroupFilesTests(){
                 .post('/file/group_files')
                 .send({token: token, group_id: 1});
             
-            assertRouteResult(result, 200, [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}]);
+            assertRouteResult(result, 200, {files : [{FileID: 1, FileName: 'name'}, {FileID: 2, FileName: 'name2'}], updates : []});
         }),
         new Test('it should send a validation error given an invalid parameter set (string instead of int)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -195,7 +194,7 @@ function requestFileLockTests(){
                 .post('/file/lock')
                 .send({token: token, file_id: 1});
             
-            assertRouteResult(result, 200, {expiration: 1546369200001});
+            assertRouteResult(result, 200, {expiration: 1546369200001, updates: []});
         }),
         new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -230,7 +229,7 @@ function deleteFileLockTests(){
                 .delete('/file/delete_lock')
                 .send({token: token, file_id: 2});
             
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates: []});
         }),
         new Test('it should send a validation error given an invalid parameter set (missing parameter)', models, async (c, token) =>{
             const result = await chai.request(app)

@@ -100,7 +100,8 @@ async function getFile(body, connection){
 
     var result = await queryDb(connection, query, file_id);
     if (result.isError()) return result;
-    else return new Success(result.getData());
+    else if (result.isEmpty()) return new Success({file : {}})
+    else return new Success({file : result.getData()[0]});
 }
 
 //putting this in the update table would take too much space so clients will just have to periodically query the file if they 
@@ -128,7 +129,7 @@ async function getGroupFiles(body, connection){
 
     var result = await queryDb(connection, query, group_id);
     if (result.isError()) return result;
-    else return new Success(result.getData());
+    else return new Success({files : result.getData()});
 }
 
 async function fileExists(file_id, connection){ 

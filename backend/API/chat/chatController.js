@@ -49,7 +49,7 @@ async function getChatsInGroup(body, connection){
 
     var result = await queryDb(connection, query, group_id);
     if (result.isError()) return result;
-    return new Success(result.getData());
+    return new Success({chats: result.getData()});
 }
 
 async function chatExists(chat_id, connection){

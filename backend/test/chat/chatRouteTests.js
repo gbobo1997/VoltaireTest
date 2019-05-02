@@ -19,7 +19,7 @@ function createCreateChatTests(){
             const result = await chai.request(app)
                 .post('/chat/create')
                 .send({token : token, group_id: 1, chat_name : 'test'});
-            assertRouteResult(result, 200, {chat_id : 4});
+            assertRouteResult(result, 200, {chat_id : 4, updates:[{UpdateType : 2, UpdateTime : 1, UpdateContent: {chat_id : 4, chat_name : 'test'}}]});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -46,8 +46,7 @@ function createDeleteChatTests(){
             const result = await chai.request(app)
                 .delete('/chat/delete')
                 .send({chat_id : 1, token : token});
-            
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates: [{UpdateType : 3, UpdateTime : 1, UpdateContent: {chat_id : 1}}]});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -74,7 +73,7 @@ function createUpdateChatTests(){
             const result = await chai.request(app)
                 .patch('/chat/update')
                 .send({chat_id : 1, token : token, chat_name : 'test'});
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -102,7 +101,7 @@ function createGetChatInGroupTests(){
                 .post('/chat/chat_groups')
                 .send({group_id : 1, token : token});
             console.log(result.body)
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {chats: [{ChatID : 1, GroupID: 1, ChatName: 'chat'}], updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)

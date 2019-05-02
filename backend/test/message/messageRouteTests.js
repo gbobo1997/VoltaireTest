@@ -19,7 +19,7 @@ function createSendMessageTests(){
                 .post('/message/send')
                 .send({token : token, content : 'test', chat_id:1 });
             
-            assertRouteResult(result, 200, {message_id : 4});
+            assertRouteResult(result, 200, {message_id : 4, updates:[]});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -47,7 +47,8 @@ function createGetMessagesInChatTests(){
                 .post('/message/messages')
                 .send({chat_id : 1, token : token});
             console.log(result.body);
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {messages: [{ChatID : 1, MessageID: 1, MessageContent: 'test1', TimeSent: 1, UserID: 1, ScreenName :'screen' },
+            {ChatID : 1, MessageID: 3, MessageContent: 'test3', TimeSent:3, UserID: 2, ScreenName :'screen2' }], updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)
@@ -73,7 +74,7 @@ function createGetRecentMessagesTests(){
             const result = await chai.request(app)
                 .post('/message/recent_messages')
                 .send({chat_id : 1, message_id: 1, token : token});
-            assertRouteResult(result, 200);
+            assertRouteResult(result, 200, {messages: [{ChatID : 1, MessageID: 3, MessageContent: 'test3', TimeSent: 3, UserID: 2, ScreenName :'screen2' }], updates: []});
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
             const result = await chai.request(app)

@@ -48,7 +48,7 @@ async function getUsersGroups(body, connection){
                     WHERE UserID = ?`;
     var result = await queryDb(connection, query, user_id);
     if (result.isError()) return result;
-    return new Success(result.getData());
+    return new Success({groups: result.getData()});
 }
 
 async function inviteUserToGroup(body, connection){

@@ -25,7 +25,7 @@ async function getMessageInChat(body, connection){
 
     var result = await queryDb(connection, query, chat_id)
     if (result.isError()) return result;
-    return new Success(result.getData());
+    return new Success({messages: result.getData()});
 }
 
 async function getRecentMessages(body, connection){
@@ -36,7 +36,7 @@ async function getRecentMessages(body, connection){
 
     var result = await queryDb(connection, query, [message_id, chat_id]);
     if (result.isError()) return result;
-    return new Success(result.getData());
+    return new Success({messages: result.getData()});
 }
 
 async function messageExists(message_id, connection){

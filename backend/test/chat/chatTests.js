@@ -33,8 +33,8 @@ function createChatTests(){
             assertSuccess(result, {chat_id: 4});
 
             const chat_result = await controller.getChatsInGroup({group_id: 2},connection);
-            assertSuccess(chat_result, [{ChatID : 2, ChatName: 'chat2', GroupID: 2}, {ChatID : 3, ChatName: 'chat3', GroupID: 2}, 
-                {ChatID : 4, ChatName: 'test', GroupID: 2}]);
+            assertSuccess(chat_result, {chats: [{ChatID : 2, ChatName: 'chat2', GroupID: 2}, {ChatID : 3, ChatName: 'chat3', GroupID: 2}, 
+                {ChatID : 4, ChatName: 'test', GroupID: 2}]});
 
             const updater_result = await update_controller.getUserUpdates(3, connection);
             assertSuccess(updater_result, [{UpdateType: 2, UpdateTime: 1, UpdateContent: {chat_id : 4, chat_name : 'test'}}]);
@@ -53,7 +53,7 @@ function deleteChatTests(){
             const result = await controller.deleteChat({chat_id : 1}, connection);
             assertSuccess(result);
             const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
-            assertSuccess(chat_result, []);
+            assertSuccess(chat_result, {chats: []});
 
             const updater_result = await update_controller.getUserUpdates(1, connection);
             assertSuccess(updater_result, [{UpdateType: 3, UpdateTime: 1, UpdateContent: {chat_id : 1}}]);
@@ -73,7 +73,7 @@ function updateChatTests(){
             const result = await controller.updateChat({chat_id: 1, chat_name: 'test'}, connection);
             assertSuccess(result);
             const chat_result = await controller.getChatsInGroup({group_id: 1}, connection);
-            assertSuccess(chat_result, [{ChatID : 1, GroupID: 1, ChatName: 'test'}]);
+            assertSuccess(chat_result, {chats: [{ChatID : 1, GroupID: 1, ChatName: 'test'}]});
         }),
         new Test('does nothing when given a null parameter', models, async (connection) =>{
             const result = await controller.updateChat({chat_name: 'test'}, connection);
@@ -88,11 +88,11 @@ function getChatsInGroupTests(){
     return new TestSuite('getChatsInGroup', [
         new Test('gets All the chats in a group given valid input', models, async (connection) =>{
             const result = await controller.getChatsInGroup({group_id : 1}, connection);
-            assertSuccess(result, [{ChatID : 1, GroupID: 1, ChatName: 'chat'}]);
+            assertSuccess(result, {chats: [{ChatID : 1, GroupID: 1, ChatName: 'chat'}]});
         }),
         new Test('gets no chats when given a group that does not exist', models, async (connection) =>{
             const result = await controller.getChatsInGroup({group_id : 4}, connection);
-            assertSuccess(result, []);
+            assertSuccess(result, {chats: []});
         }),
         new Test('returns a db error when given a null parameter', models, async (connection) =>{
             const result = await controller.getChatsInGroup({group_id : null}, connection);
