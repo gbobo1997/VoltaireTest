@@ -9,6 +9,7 @@ async function validateCreateFile(body, connection){
     }
 
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const group = await group_controller.groupExists(body.group_id, connection);

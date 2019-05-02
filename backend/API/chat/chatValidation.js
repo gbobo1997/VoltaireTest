@@ -8,6 +8,7 @@ async function validateCreateChat(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, chat_name : string, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const group_res = await group.groupExists(body.group_id, connection);
@@ -23,6 +24,7 @@ async function validateDeleteChat(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {chat_id : int, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const chat = await controller.chatExists(body.chat_id, connection);
@@ -38,6 +40,7 @@ async function validateUpdateChat(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {chat_id : int, chat_name : string, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const chat = await controller.chatExists(body.chat_id, connection);
@@ -53,6 +56,7 @@ async function validateGetChatsFromGroup(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const group_res = await group.groupExists(body.group_id, connection);

@@ -8,13 +8,9 @@ function validateCreateGroup(body){
         return new Error(400, 'invalid parameters, send the following body: {group_name : string, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
-    console.log(valid)
-    console.log(user_id)
     if (!valid) return new Error(401, 'token invalid');
 
-    console.log(body)
     body.user_id = user_id
-    console.log(body)
     return new Success();
 }
 
@@ -23,6 +19,7 @@ async function validateDeleteGroup(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const group = await controller.groupExists(body.group_id, connection);
@@ -38,6 +35,7 @@ async function validateUpdateGroup(body, connection){
         return new Error(400, 'invalid parameters, send the following body: {group_id : int, group_name : string, token : token}');
     }
     const {valid, user_id} = tokenValid(body.token);
+    body.user_id = user_id;
     if (!valid) return new Error(401, 'token invalid');
 
     const group = await controller.groupExists(body.group_id, connection);

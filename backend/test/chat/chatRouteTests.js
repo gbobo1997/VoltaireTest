@@ -101,6 +101,7 @@ function createGetChatInGroupTests(){
             const result = await chai.request(app)
                 .post('/chat/chat_groups')
                 .send({group_id : 1, token : token});
+            console.log(result.body)
             assertRouteResult(result, 200);
         }),
         new Test('it should return a validation error given incorrect input', models, async (c, token) =>{
