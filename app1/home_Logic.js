@@ -54,7 +54,6 @@ function editGroup()
 // Create Chat
 function createChat(group_id)
 {
-  console.log(group_id);
   var content = 'Chat Name: </label><input id="newChatName" '+
   'value="chat name"></form><button type="button" onclick="postChat('+group_id+')">Create Chat</button><br>'+
   '<div id="error" style="text-align:center; font-size=125%; color:red; display:none;">'+
@@ -131,7 +130,7 @@ function fetchGroups()
 
 function fetchGroupsChats(id)
 {
-  var userID = localStorage.getItem('user_id');
+  //var userID = localStorage.getItem('user_id');
   var userToken = localStorage.getItem('token');
   var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
 
@@ -180,7 +179,7 @@ function postChat(groupID)
 {
   var userToken = localStorage.getItem('token');
   var chatName = document.getElementById('newChatName').value;
-  var URL = 'http://73.153.45.13:8080/chat/chat_groups'; 
+  var URL = 'http://73.153.45.13:8080/chat/create'; 
   console.log('what the hell');
   var test_data =
   {
@@ -207,7 +206,7 @@ function postChat(groupID)
     if(status == 200)
     {
       var apiResponse = JSON.stringify(response);
-      console.log('Success: ', apiResponse);
+      console.log('Success: '+apiResponse);
     }
     else
     {
@@ -360,6 +359,6 @@ function clearErrorDiv()
 
 function fetchGroupFiles()
 {
-  
+
 }
 
