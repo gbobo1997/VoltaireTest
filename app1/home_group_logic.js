@@ -54,16 +54,17 @@ function listGroups(data)
   // group name will be a link, on link click expand list and
   // display associated chats
   // data model
+  console.log('data; '+data.groups.length);
   var content = '';
   var groups_chats;
   document.getElementById('columnOne_two').innerHTML=content;
-  for(var i =0; i < data.length; i++)
+  for(var i =0; i < data.groups.length; i++)
   {
     content += '<div id="'
-    +data[i].group_id+'"><br><button id="group_select_btn" onclick="renderGroup('
-    +data[i].group_id+')"><i>'
-    +data[i].group_name+'</i></button><br></div>';
-    content+= '<button id="addChat" onclick="createChat('+data[i].group_id+')">└ add chat</button>'; 
+    +data.groups[i].group_id+'"><br><button id="group_select_btn" onclick="renderGroup('
+    +data.groups[i].group_id+')"><i>'
+    +data.groups[i].group_name+'</i></button><br></div>';
+    content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">└ add chat</button>'; 
   }
   document.getElementById('columnOne_two').innerHTML+=content;
 }
