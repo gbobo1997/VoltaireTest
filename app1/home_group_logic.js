@@ -71,6 +71,7 @@ function listGroups(data)
 
 function renderGroup(groupID)
 {
+  localStorage.setItem('group_id', groupID);
   console.log("group: "+groupID);
 
   var userToken = localStorage.getItem('token');
@@ -104,7 +105,9 @@ function renderGroup(groupID)
       {
         content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">'+response.chats[i].ChatName+'</button>';
       }
+      
       document.getElementById(groupID).innerHTML+=content;
+      getGroupFiles(groupID);
     }
     else
     {
