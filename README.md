@@ -244,7 +244,7 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 {
   group_id : int,
-  token : null
+  token : token
 }
 ```
 **Out:**
