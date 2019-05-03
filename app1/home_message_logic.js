@@ -105,7 +105,8 @@ function displayMessages(messages)
   {
     user = messages[i].ScreenName;
     content = messages[i].MessageContent;
-    if(messages[i].user_id == localID)
+    console.log('message userId: '+messages[i].UserID+' local id: '+localID);
+    if(messages[i].UserID == localID)
     {
       type = 'outgoing';
     }

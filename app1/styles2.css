@@ -263,7 +263,7 @@ message display stuff
 ************************************************/
 #message_incoming {
 	display: inline-block;
-	background-color: #EEF1F2;
+	background-color: #c6c6c6;
 	border-radius: 5px;
 	margin: 15px;
 	max-width: 50%;
@@ -286,7 +286,7 @@ message display stuff
 
 #incoming_container {
 	width: 100%;
-	display: inline;
+	display: inline-block;
 }
 
 #outgoing_container {
