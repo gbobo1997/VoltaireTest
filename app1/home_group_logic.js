@@ -33,7 +33,7 @@ function fetchGroups()
       var apiResponse = JSON.stringify(response);
       console.log('Fetch groups success: ', apiResponse);
       //console.log(response[0].group_id);
-      listGroups(response);
+      listGroups(apiResponse);
     }
     else
     {
@@ -54,6 +54,7 @@ function listGroups(data)
   // group name will be a link, on link click expand list and
   // display associated chats
   // data model
+  console.log('data; '+data.length);
   var content = '';
   var groups_chats;
   document.getElementById('columnOne_two').innerHTML=content;
