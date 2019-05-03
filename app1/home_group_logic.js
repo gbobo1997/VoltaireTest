@@ -63,7 +63,9 @@ function listGroups(data)
     content += '<div id="'
     +data.groups[i].group_id+'"><br><button id="group_select_btn" onclick="renderGroup('
     +data.groups[i].group_id+')"><i>'
-    +data.groups[i].group_name+'</i></button><br></div>';
+    +data.groups[i].group_name+'</i></button>'
+    +'<button id="group_edit_btn" onclick="editGroup('
+    +data.groups[i].group_id+',\''+data.groups[i].group_name+'\')">#</button><br></div>';
     content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">└ add chat</button>'; 
     content +='<button id="group_invite" onclick="renderInvite('+data.groups[i].group_id+')">└ invite</button>'; 
   }
@@ -202,5 +204,38 @@ function groupInvite(groupID)
 function clearInviteMessage()
 {
   document.getElementById('invite_error').innerHTML = '';
+}
+
+function patchGroup(groupID)
+{
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/update'; 
+  var groupName = document.getElementById('newGroupName').value;
+  var data = {token : userToken, group_id : Number(groupID), group_name : groupName};
+  var status;
+  fetch(URL, { method: 'PATCH', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log(apiResponse);
+      document.getElementById('error').innerHTML = 'Name Change Success';
+      setTimeout(clearErrorDiv, 2000);          
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      document.getElementById('error').innerHTML = 'could not update group';
+      setTimeout(clearErrorDiv, 2000);
+    }
+  })
+  .catch(error => console.log('Error: ', error));
+}
+
+function deleteGroup(groupID)
+{
+
 }
 

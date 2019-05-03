@@ -8,12 +8,12 @@ function addGroup()
 
 }
 
-function editGroup()
+function editGroup(groupID, groupName)
 {
-  var content = '<label>Current Group Name:</label><input type="text" name="groupName" '+
-  'value="group name"><button type="button" onclick="">Change</button><button type="button"'+
-  ' onclick="">Delete</button><br><div id="error" style="text-align:center; font-size=125%;'+
-  ' color:red;">Error: error type</div>';
+  var content = '<label>Current Group Name:</label><input type="text" id="newGroupName" '+
+  'value="'+groupName+'"><button type="button" onclick="patchGroup('+groupID+')">Change</button><button type="button"'+
+  ' onclick="deleteGroup('+groupID+')">Delete</button><br><div id="error" style="text-align:center; font-size=125%;'+
+  ' color:red;"></div>';
   openModal(content);
 
 }

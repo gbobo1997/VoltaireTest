@@ -140,7 +140,8 @@ function deleteFile()
   .then(response => {
     if(status == 200)
     {
-      document.getElementById('file_message').innerHTML = 'file deleted';  
+      document.getElementById('file_message').innerHTML = 'file deleted'; 
+      clearEditor(); 
       setTimeout(clearFileMessage, 2000); 
     }
     else
@@ -195,4 +196,11 @@ function loadFile(fileID)
 function clearFileMessage()
 {
   document.getElementById('file_message').innerHTML = '';
+}
+
+function clearEditor()
+{
+  document.getElementById('file_name').value = '';
+  document.getElementById('file_name').placeholder = 'filename.txt ...';
+  document.getElementById('md_input').value = 'Type **Markdown** here.';
 }
