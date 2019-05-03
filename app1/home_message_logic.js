@@ -46,6 +46,7 @@ function sendMessage()
 
 function getMessages()
 {
+  document.getElementById('output').innerHTML = '';
   var chatID = localStorage.getItem('chat_id');
   var userToken = localStorage.getItem('token');
   var URL = 'http://73.153.45.13:8080/message/messages';
