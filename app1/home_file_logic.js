@@ -86,7 +86,8 @@ function addFile()
     if(status == 200)
     {
       var apiResponse = JSON.stringify(response);
-      console.log('file ID: '+apiResponse.file_id);      
+      console.log('file ID: '+apiResponse.file_id);  
+      getGroupFiles(groupID);         
     }
     else
     {
@@ -100,7 +101,29 @@ function addFile()
 
 function editFile()
 {
-  
+   var fileID = localStorage.getItem('file_ID');
+  var fileName = document.getElementById('file_name').value;
+  var content = document.getElementById('md_input').value;
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/file/update'; 
+  var data = {file_id : Number(fileID), file_name : fileName, file_content : content, token: userToken};
+  fetch(URL, { method: 'PATCH', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response);   
+      document.getElementById('file_message').innerHTML = 'file saved';  
+      setTimeout(clearFileMessage, 2000);     
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      alert("Could not save file");
+    }
+  })
+  .catch(error => console.log('Error: ', error));
 }
 
 function renderFiles(data)
@@ -118,6 +141,7 @@ function renderFiles(data)
 
 function loadFile(fileID)
 {
+  localStorage.setItem('file_ID', fileID);
   var userToken = localStorage.getItem('token');
   var URL = 'http://73.153.45.13:8080/file/get_by_id'; 
   var data = {token : userToken, file_id : Number(fileID)};
@@ -139,4 +163,9 @@ function loadFile(fileID)
     }
   })
   .catch(error => console.log('Error: ', error));
+}
+
+function clearFileMessage()
+{
+  document.getElementById('file_message').innerHTML = '';
 }
