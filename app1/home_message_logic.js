@@ -77,11 +77,11 @@ function getMessages()
     if(status == 200)
     {
       var apiResponse = JSON.stringify(response);
-      console.log('Success: '+apiResponse);
-      for( var i = 0; i <= apiResponse.messages; i++)
+      console.log('Message get Success: '+apiResponse);
+      for( var i = 0; i < response.messages.length; i++)
       {
-        user = messages[i].ScreenName;
-        if(messages[i].user_id == localStorage.getItem('user_id'))
+        user = response.messages[i].ScreenName;
+        if(response.messages[i].user_id == localStorage.getItem('user_id'))
         {
           type = 'outgoing';
         }
@@ -89,9 +89,11 @@ function getMessages()
         {
           type = 'incoming';
         }
-        content = messages[i].MessageContent;
+        content = response.messages[i].MessageContent;
+        console.log('display message debug | user: '+user+' | type: '+type+' | content: '+content);
         displayMessages(user, type, content);
       }
+      
     }
     else
     {
