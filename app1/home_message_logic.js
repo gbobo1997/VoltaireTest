@@ -98,6 +98,7 @@ function displayMessages(messages)
   var type;
   var content;
   var user;
+  var messages_html = '';
 
   for(var i = 0; i < messages.length; i++)
   {
@@ -119,8 +120,9 @@ function displayMessages(messages)
     {
       var newMessage = '<div id="outgoing_container"><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div></div>';
     }
-    document.getElementById('output').innerHTML+=newMessage;
+    messages_html+=newMessage;    
   }
+  document.getElementById('output').innerHTML=messages_html;
     
 }
 
