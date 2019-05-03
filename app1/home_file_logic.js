@@ -130,8 +130,9 @@ function deleteFile()
 {
   var fileID = localStorage.getItem('file_ID');
   var userToken = localStorage.getItem('token');
+  var groupID = localStorage.getItem('group_id');
   var URL = 'http://73.153.45.13:8080/file/delete'; 
-  var data = {token : userToken, file_id : Number(fileID)};
+  var data = {token : userToken, file_id : Number(fileID), group_id : groupID};
   console.log(data);
   var status;
   fetch(URL, { method: 'DELETE', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
@@ -139,7 +140,7 @@ function deleteFile()
   .then(response => {
     if(status == 200)
     {
-      document.getElementById('file_message').innerHTML = 'file delete';  
+      document.getElementById('file_message').innerHTML = 'file deleted';  
       setTimeout(clearFileMessage, 2000); 
     }
     else

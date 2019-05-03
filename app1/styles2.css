@@ -65,6 +65,9 @@ section {
 #columnOne {
 	background-color: grey;
 }
+#columnOne_two {
+	overflow-y: auto;
+}
 
 #addChat {
 	border: none;

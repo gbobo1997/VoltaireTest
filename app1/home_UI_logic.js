@@ -62,3 +62,15 @@ function logout()
   localStorage.setItem('user_id', 'not_logged_in');
   window.location.href = 'index.html';
 }
+
+function renderInvite(groupID)
+{
+  var content = '<label>Invitee ID: </label><input type="text" id="invite_id" placeholder="id ...">'+
+  '<br><button type="button" onclick="groupInvite('+groupID+')">Send Invite</button><br><div id="invite_error"></div>';
+  openModal(content);
+}
+
+function modalInvites() 
+{
+  
+}

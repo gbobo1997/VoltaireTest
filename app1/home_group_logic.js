@@ -65,6 +65,7 @@ function listGroups(data)
     +data.groups[i].group_id+')"><i>'
     +data.groups[i].group_name+'</i></button><br></div>';
     content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">└ add chat</button>'; 
+    content +='<button id="group_invite" onclick="renderInvite('+data.groups[i].group_id+')">└ invite</button>'; 
   }
   document.getElementById('columnOne_two').innerHTML+=content;
 }
@@ -172,3 +173,34 @@ function addGroupFetch()
   .catch(error => console.log('Error: ', error))
 
 }
+
+function groupInvite(groupID)
+{
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/invite'; 
+  var invID = document.getElementById('invite_id').value;
+  var data = {token : userToken, group_id : Number(groupID), invitee_id : Number(invID)};
+  fetch(URL, { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { 
+    status = res.status; 
+    if(status == 200)
+    {
+      document.getElementById('invite_error').innerHTML = 'Invite successful';  
+      window.setTimeout(clearInviteMessage, 2000); 
+    }
+    else
+    {
+      //var apiResponse = JSON.stringify(response);
+      //console.log('Non-Success: ', apiResponse);
+      document.getElementById('invite_error').innerHTML = 'Invite unsuccessful';  
+      window.setTimeout(clearInviteMessage, 2000); 
+    }
+  })
+  .catch(error => console.log('Error: ', error));
+}
+
+function clearInviteMessage()
+{
+  document.getElementById('invite_error').innerHTML = '';
+}
+
