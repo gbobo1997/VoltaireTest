@@ -109,7 +109,7 @@ function inviteUserToGroupTests(){
             assertSuccess(result, {});
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
-            assertSuccess(invite_result, [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]);
+            assertSuccess(invite_result, {invitations : [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]});
 
             const update_result = await update_controller.getUserUpdates(1, connection);
             assertSuccess(update_result, [{UpdateTime : 1, UpdateType : 1, UpdateContent: {group_id : 3, group_name : 'name3', inviting_user_name : 'screen3'}}]);
@@ -144,7 +144,7 @@ function respondToInvitationTests(){
             assertSuccess(respond_result, {});
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
-            assertSuccess(invite_result, []);
+            assertSuccess(invite_result, {invitations : []});
 
             const member_result = await controller.getUsersGroups({user_id : 1}, connection);
             assertSuccess(member_result, {groups : [{group_id: 1, group_name: 'name'}, {group_id: 3, group_name: 'name3'}]});
@@ -157,7 +157,7 @@ function respondToInvitationTests(){
             assertSuccess(respond_result, {});
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
-            assertSuccess(invite_result, []);
+            assertSuccess(invite_result, {invitations : []});
 
             const member_result = await controller.getUsersGroups({user_id : 1}, connection);
             assertSuccess(member_result, {groups: [{group_id: 1, group_name: 'name'}]});
@@ -170,7 +170,7 @@ function respondToInvitationTests(){
             assertError(respond_result, 500, 'database error');
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
-            assertSuccess(invite_result, [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]);
+            assertSuccess(invite_result, {invitations : [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]});
         }),
         new Test('does nothing given a null parameter and a denial', models, async (connection) =>{
             const result = await controller.inviteUserToGroup({user_id: 3, invitee_id: 1, group_id: 3}, connection);
@@ -180,7 +180,7 @@ function respondToInvitationTests(){
             assertSuccess(respond_result, {});
 
             const invite_result = await controller.getAllInvitations({user_id : 1}, connection);
-            assertSuccess(invite_result, [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]);
+            assertSuccess(invite_result, {invitations : [{UserID: 1, GroupID: 3, SenderName: 'screen3'}]});
 
             const member_result = await controller.getUsersGroups({user_id : 1}, connection);
             assertSuccess(member_result, {groups : [{group_id: 1, group_name: 'name'}]});

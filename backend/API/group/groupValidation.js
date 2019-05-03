@@ -96,7 +96,19 @@ async function validateRespondToinvitation(body, connection){
     const prior_invitation = await controller.userHasBeenInvitedToGroup(body.group_id, user_id, connection);
     if (!prior_invitation) return new Error(400, 'user has not been invited to the group');
 
-    return new Success()
+    return new Success();
 }
 
-module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups, validateInviteUserToGroup, validateRespondToinvitation }
+async function validateGetAllInvitations(body, connection){
+    if (body.token == null){
+        return new Error(400, 'invalid parameters, send the following body : {token : token}')
+    }
+
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
+    body.user_id = user_id;
+
+    return new Success();
+}
+
+module.exports = { validateCreateGroup, validateDeleteGroup, validateUpdateGroup, validateGetUserGroups, validateInviteUserToGroup, validateRespondToinvitation, validateGetAllInvitations }

@@ -41,6 +41,27 @@ async function validateFileIdTokenRoute(body, connection){
     return new Success();
 }
 
+async function validateDeleteFile(body, connection){
+    if (body.file_id == null || !Number.isInteger(body.file_id) || body.group_id == null || !Number.isInteger(body.group_id) || body.file_name == null || body.file_content == null || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {file_id : int, group_id : int, file_name : string, file_content : string, token : token}')
+    }
+
+    const {valid, user_id} = tokenValid(body.token);
+    if (!valid) return new Error(401, 'token invalid');
+    body.user_id = user_id;
+
+    const file = await controller.fileExists(body.file_id, connection);
+    if (!file) return new Error(400, 'file does not exist');
+
+    const group = await group_controller.groupExists(body.group_id, connection);
+    if (!group) return new Error(400, 'group does not exist');
+
+    const access = await controller.userHasAccessToFile(user_id, body.file_id, connection);
+    if (!access) return new Error(400, 'user cannot access this file');
+
+    return new Success();
+}
+
 async function validateUpdateFile(body, connection){
     if (body.file_id == null || !Number.isInteger(body.file_id) || body.file_name == null || body.file_content == null || body.token == null){
         return new Error(400, 'invalid parameters, send the following body: {file_id : int, file_name : string, file_content : string, token : token}')
@@ -77,4 +98,4 @@ async function validateGetGroupFiles(body, connection){
     return new Success();
 }
 
-module.exports = { validateCreateFile, validateFileIdTokenRoute, validateUpdateFile, validateGetGroupFiles }
+module.exports = { validateCreateFile, validateFileIdTokenRoute, validateUpdateFile, validateGetGroupFiles, validateDeleteFile }
