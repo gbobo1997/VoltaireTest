@@ -78,10 +78,10 @@ function getMessages()
     {
       var apiResponse = JSON.stringify(response);
       console.log('Success: '+apiResponse);
-      for( var i = 0; i <= response.length; i++)
+      for( var i = 0; i <= apiResponse.messages; i++)
       {
-        user = apiResponse[i].user_id;
-        if(apiResponse[i].user_id == localStorage.getItem('user_id'))
+        user = messages[i].ScreenName;
+        if(messages[i].user_id == localStorage.getItem('user_id'))
         {
           type = 'outgoing';
         }
@@ -89,9 +89,9 @@ function getMessages()
         {
           type = 'incoming';
         }
-        content = apiResponse[i].content;
+        content = messages[i].MessageContent;
+        displayMessages(user, type, content);
       }
-  displayMessages(user, type, content);
     }
     else
     {
