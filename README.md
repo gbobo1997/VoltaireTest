@@ -165,6 +165,25 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 **Out:** NONE
 
+### Get A User's invitations
+**Route:** POST /group/get_invites
+**In:** 
+```
+{
+  token : token
+}
+```
+**Out:** :
+```
+{
+  invitations : [
+    UserID : int,
+    GroupID : int,
+    SenderName : string
+  ]
+}
+```
+
 ## File
 ### Testing Status: Completed
 ### Get a File
@@ -214,7 +233,8 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 {
   token : token,
-  file_id : int
+  file_id : int,
+  group_id : int
 }
 ```
 
