@@ -126,6 +126,32 @@ function editFile()
   .catch(error => console.log('Error: ', error));
 }
 
+function deleteFile()
+{
+  var fileID = localStorage.getItem('file_ID');
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/file/delete'; 
+  var data = {token : userToken, file_id : Number(fileID)};
+  console.log(data);
+  var status;
+  fetch(URL, { method: 'DELETE', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      document.getElementById('file_message').innerHTML = 'file delete';  
+      setTimeout(clearFileMessage, 2000); 
+    }
+    else
+    {
+      var apiResponse = JSON.stringify(response);
+      console.log('Non-Success: ', apiResponse);
+      alert("Could not delete file");
+    }
+  })
+  .catch(error => console.log('Error: ', error));
+}
+
 function renderFiles(data)
 {
   // group_files
