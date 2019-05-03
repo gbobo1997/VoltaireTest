@@ -32,6 +32,7 @@ function sendMessage()
     {
       var apiResponse = JSON.stringify(response);
       console.log('Success: '+apiResponse);
+      getmessages();
     }
     else
     {
