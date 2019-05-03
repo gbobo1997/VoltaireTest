@@ -55,7 +55,7 @@ function getMessages()
   var content;
   var test_data =
   {
-    chat_id : chatID,
+    chat_id : Number(chatID),
     token : userToken
   };
 
@@ -79,6 +79,20 @@ function getMessages()
     {
       var apiResponse = JSON.stringify(response);
       console.log('Success: '+apiResponse);
+      for( var i = 0; i <= response.length; i++)
+      {
+        user = apiResponse[i].user_id;
+        if(apiResponse[i].user_id == localStorage.getItem('user_id'))
+        {
+          type = 'outgoing';
+        }
+        else
+        {
+          type = 'incoming';
+        }
+        content = apiResponse[i].content;
+      }
+  displayMessages(user, type, content);
     }
     else
     {
@@ -89,20 +103,7 @@ function getMessages()
   })
   .catch(error => console.log('Error: ', error))
 
-  for( var i = 0; i <= apiResponse.length; i++)
-  {
-    user = apiResponse[i].user_id;
-    if(apiResponse[i].user_id == localStorage.getItem('user_id'))
-    {
-      type = 'outgoing';
-    }
-    else
-    {
-      type = 'incoming';
-    }
-    content = apiResponse[i].content;
-  }
-  displayMessages(user, type, content);
+  
 }
 
 function displayMessages(user, type, content)

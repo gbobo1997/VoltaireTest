@@ -100,9 +100,9 @@ function renderGroup(groupID)
       var apiResponse = JSON.stringify(response);
       console.log(apiResponse);
       var content = '';
-      for(var i = 0; i < response.length; i++)
+      for(var i = 0; i < response.chats.length; i++)
       {
-        content +='<button id="chat_button" onclick="loadChat('+response[i].ChatID+','+groupID+')">'+response[i].ChatName+'</button>';
+        content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">'+response.chats[i].ChatName+'</button>';
       }
       document.getElementById(groupID).innerHTML+=content;
     }
