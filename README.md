@@ -59,7 +59,12 @@ Other than standard 404 errors, the back end will send 400 (validation - incorre
 }
 ```
 right now there are no restrictions on names or passwords (except that the name cant match another in the database)
-**Out:** None (We may want to return a token here so it acts as an immediate login)
+**Out:**
+```
+{
+  id : int
+}
+```
 
 ### Login
 **Route:** POST /auth/login \
@@ -84,8 +89,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **In:**
 ```
 {
-  token : token,
-  user_id : int,
+  token : token
   group_name : string
 }
 ```
@@ -124,14 +128,13 @@ right now there are no restrictions on names or passwords (except that the name 
 **In:**
 ```
 {
-  token : token,
-  user_id : int
+  token : token
 }
 ```
 **Out:** 
 ```
 {
-  [
+  groups: [
     group_id : int,
     group_name : string
   ]
@@ -176,14 +179,14 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:**
 ```
 {
-  [
+  file: {
     FileID : int,
     GroupID : int,
     FileName : string,
     FileContent : string,
     ScreenName : string,
     Expires : int (Unix time code)
-  ]
+  }
 }
 ```
 
@@ -228,7 +231,12 @@ right now there are no restrictions on names or passwords (except that the name 
   token : token
 }
 ```
-**Out:** None
+**Out:**
+```
+{
+  expiration : int (unix time code)
+}
+```
 
 ### Get Files from a Group
 **Route:** POST /file/group_files \
@@ -236,13 +244,13 @@ right now there are no restrictions on names or passwords (except that the name 
 ```
 {
   group_id : int,
-  token : null
+  token : token
 }
 ```
 **Out:**
 ```
 {
-  [
+  files : [
     FileID : int,
     FileName : string
   ]
@@ -330,7 +338,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:**
 ```
 {
-  [
+  chats : [
     ChatID : int,
     GroupID : int,
     ChatName : string
@@ -344,7 +352,6 @@ right now there are no restrictions on names or passwords (except that the name 
 **In:**
 ```
 {
-  user_id: int,
   chat_id: int,
   content: string,
   token: token
@@ -353,13 +360,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:**
 ```
 {
-  [
-    MessageID: int,
-    ChatId: int,
-    MessageContent: string,
-    TimeSent: Big int,
-    ScreenName: string
-   ]
+  message_id : int
 }
 ```
 ### Get all Messages in the chat
@@ -374,7 +375,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:**
 ```
 {
-  [
+  messages: [
     MessageID: int,
     ChatId: int,
     MessageContent: string,
@@ -396,7 +397,7 @@ right now there are no restrictions on names or passwords (except that the name 
 **Out:**
 ```
 {
-  [
+  messages: [
     MessageID: int,
     ChatId: int,
     MessageContent: string,

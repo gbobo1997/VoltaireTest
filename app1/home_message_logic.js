@@ -46,9 +46,12 @@ function sendMessage()
 
 function getMessages()
 {
-  var chatID = localStorage.getItem('chat_id ');
+  var chatID = localStorage.getItem('chat_id');
   var userToken = localStorage.getItem('token');
   var URL = 'http://73.153.45.13:8080/message/messages';
+  var user;
+  var type;
+  var content;
   var test_data =
   {
     chat_id : chatID,
@@ -84,9 +87,24 @@ function getMessages()
 
   })
   .catch(error => console.log('Error: ', error))
+
+  for( var i = 0; i <= apiResponse.length; i++)
+  {
+    user = apiResponse[i].user_id;
+    if(apiResponse[i].user_id == localStorage.getItem('user_id'))
+    {
+      type = 'outgoing';
+    }
+    else
+    {
+      type = 'incoming';
+    }
+    content = apiResponse[i].content;
+  }
+  displayMessages(user, type, content);
 }
 
-function addMessage(user, type, content)
+function displayMessages(user, type, content)
 {
   if(type == 'incoming')
   {
@@ -99,10 +117,10 @@ function addMessage(user, type, content)
   document.getElementById('output').innerHTML+=newMessage;  
 }
 
-for( var i = 0; i < 10; i++)
+/*for( var i = 0; i < 10; i++)
 {
   addMessage("Robert", 'outgoing', 'this is a new message.');
   addMessage("Austin", 'incoming', 'this is a new incoming message.');
 }
 addMessage("Austin", 'outgoing', 'this is a new incoming message.');
-addMessage("Robert", 'incoming', 'this is a new message.');
+addMessage("Robert", 'incoming', 'this is a new message.');*/
