@@ -78,22 +78,7 @@ function getMessages()
     {
       var apiResponse = JSON.stringify(response);
       console.log('Message get Success: '+apiResponse);
-      for( var i = 0; i < response.messages.length; i++)
-      {
-        user = response.messages[i].ScreenName;
-        if(response.messages[i].user_id == localStorage.getItem('user_id'))
-        {
-          type = 'outgoing';
-        }
-        else
-        {
-          type = 'incoming';
-        }
-        content = response.messages[i].MessageContent;
-        console.log('display message debug | user: '+user+' | type: '+type+' | content: '+content);
-        displayMessages(user, type, content);
-      }
-      
+      displayMessages(response.messages);      
     }
     else
     {
@@ -107,17 +92,36 @@ function getMessages()
   
 }
 
-function displayMessages(user, type, content)
+function displayMessages(messages)
 {
-  if(type == 'incoming')
+  var localID = localStorage.getItem('user_id');
+  var type;
+  var content;
+  var user;
+
+  for(var i = 0; i < messages.length; i++)
   {
-    var newMessage = '<div id="incoming_container"><div id="message_incoming"><b>'+user+'</b><br>'+content+'</div></div>';
+    user = messages[i].ScreenName;
+    content = messages[i].MessageContent;
+    if(messages[i].user_id == localID)
+    {
+      type = 'outgoing';
+    }
+    else
+    {
+      type = 'incoming';
+    }
+    if(type == 'incoming')
+    {
+      var newMessage = '<div id="incoming_container"><div id="message_incoming"><b>'+user+'</b><br>'+content+'</div></div>';
+    }
+    if(type == 'outgoing')
+    {
+      var newMessage = '<div id="outgoing_container"><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div></div>';
+    }
+    document.getElementById('output').innerHTML+=newMessage;
   }
-  if(type == 'outgoing')
-  {
-    var newMessage = '<div id="outgoing_container"><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div></div>';
-  }
-  document.getElementById('output').innerHTML+=newMessage;  
+    
 }
 
 /*for( var i = 0; i < 10; i++)
