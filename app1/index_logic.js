@@ -135,7 +135,7 @@ function checkLogin()
   if(userID !== 'not_logged_in' && userID != undefined && userID != 'undefined')
   {
     console.log('logged in');
-    //window.location = 'home.html';
+    window.location = 'home.html';
 
   }  
   else
