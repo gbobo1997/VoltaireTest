@@ -380,7 +380,8 @@ right now there are no restrictions on names or passwords (except that the name 
     ChatId: int,
     MessageContent: string,
     TimeSent: Big int,
-    ScreenName: string
+    ScreenName: string,
+    UserId: int
    ]
 }
 ```
@@ -402,7 +403,8 @@ right now there are no restrictions on names or passwords (except that the name 
     ChatId: int,
     MessageContent: string,
     TimeSent: Big int,
-    ScreenName: string
+    ScreenName: string,
+    UserId: int
    ]
 }
 ```
