@@ -8,8 +8,7 @@ function sendMessage()
   var URL = 'http://73.153.45.13:8080/message/send';
   var test_data =
   {
-    user_id : userID,
-    chat_id : chatID,
+    chat_id : Number(chatID),
     content : content,
     token : userToken
   };
