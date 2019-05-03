@@ -94,7 +94,7 @@ async function getAllInvitations(body, connection){
     var result = await queryDb(connection, query, user_id);
     if (result.isError()) return result;
 
-    return new Success(result.getData());
+    return new Success({invitations : result.getData()});
 }
 
 async function getUsersInGroup(group_id, connection){
