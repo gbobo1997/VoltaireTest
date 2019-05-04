@@ -120,7 +120,7 @@ function displayMessages(messages)
     }
     if(type == 'outgoing')
     {
-      var newMessage = '<div id="outgoing_container"><div id="message_outgoing"><b>'+user+'</b><br>'+content+'</div></div>';
+      var newMessage = '<div id="outgoing_container"><div id="message_outgoing">'+content+'</div></div>';
     }
     messages_html+=newMessage;    
   }

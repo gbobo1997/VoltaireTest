@@ -142,6 +142,7 @@ function deleteFile()
     {
       document.getElementById('file_message').innerHTML = 'file deleted'; 
       clearEditor(); 
+      getGroupFiles(groupID);
       setTimeout(clearFileMessage, 2000); 
     }
     else

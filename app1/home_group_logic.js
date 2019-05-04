@@ -60,20 +60,23 @@ function listGroups(data)
   document.getElementById('columnOne_two').innerHTML=content;
   for(var i =0; i < data.groups.length; i++)
   {
+    var chatName = data.groups[i].group_name;
+    if(chatName.length > 8){chatName = chatName.substr(0,8)+'...';}
     content += '<div id="'
     +data.groups[i].group_id+'"><br><button id="group_select_btn" onclick="renderGroup('
-    +data.groups[i].group_id+')"><i>'
-    +data.groups[i].group_name+'</i></button>'
+    +data.groups[i].group_id+')">'
+    +chatName+'</button>'
     +'<button id="group_edit_btn" onclick="editGroup('
-    +data.groups[i].group_id+',\''+data.groups[i].group_name+'\')">#</button><br></div><div id="chats_'+data.groups[i].group_id+'"></div>';
-    content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">├ add chat</button>'; 
-    content +='<button id="group_invite" onclick="renderInvite('+data.groups[i].group_id+')">└ invite</button>'; 
+    +data.groups[i].group_id+',\''+data.groups[i].group_name+'\')"> &#9881;</button><br></div><div id="chats_'+data.groups[i].group_id+'"></div>';
+    content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">add chat</button><br>'; 
+    content +='<button id="group_invite" onclick="renderInvite('+data.groups[i].group_id+')">invite</button>'; 
   }
   document.getElementById('columnOne_two').innerHTML+=content;
 }
 
 function renderGroup(groupID)
 {
+  clearEditor();
   localStorage.setItem('group_id', groupID);
   console.log("group: "+groupID);
 
@@ -106,7 +109,7 @@ function renderGroup(groupID)
       var content = '';
       for(var i = 0; i < response.chats.length; i++)
       {
-        content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">├ '+response.chats[i].ChatName+'</button>';
+        content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">'+response.chats[i].ChatName+'</button><br>';
       }
       
       document.getElementById('chats_'+groupID).innerHTML=content;

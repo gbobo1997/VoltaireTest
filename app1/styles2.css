@@ -1,17 +1,22 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
 body {
 	margin: 0;
+
+	font-family: 'Montserrat', sans-serif;
 }
 
 section {
 
 	margin: 0;
 	display: flex;
+	font-family: 'Montserrat', sans-serif;
 }
 #groupAction {
 	height: 100%;
 	overflow-y: auto;
 }
 #settings_button {
+	font-family: 'Montserrat', sans-serif;
 	background-color: #36393F;
 	border: none;
 	color: white;
@@ -34,6 +39,7 @@ section {
 	padding-bottom: 12px;
 	padding-left: 6px;
 	padding-right: 12px;
+	font-family: 'Montserrat', sans-serif;
 }
 #logout_button:hover {
 	background-color: grey;
@@ -48,53 +54,91 @@ section {
 	padding-bottom: 12px;
 	padding-left: 6px;
 	padding-right: 12px;
+	font-family: 'Montserrat', sans-serif;
 }
 #invites_button:hover {
 	background-color: grey;
 }
 
-
-#group_invite {
+#group_edit_btn {
+	background-color: #e8e1d7;
 	border: none;
+	font-family: 'Montserrat', sans-serif;
+	color: #36393F;
 	cursor: pointer;	
 	display: inline-block;
-	background-color: grey;
+}
+#group_edit_btn:hover {
+	background-color: rgba(84, 84, 84, 0.5);
+}
+#group_invite {
+	border: none;
+	color: #36393F;
+	cursor: pointer;	
+	display: inline-block;	
+	font-family: 'Montserrat', sans-serif;
+	margin-left: 15px;
+	background-color: #e8e1d7;
+	border: 1px solid #36393F;
+	border-radius: 5px;
+	padding: 2px;
+	margin-top: 4px;
+	border-left: 8px solid #F39237;
 }
 #group_invite:hover {
-	background-color: #36393F;
+	background-color: #F39237;
+	border-color: #F39237;
+	color: white;
 }
 
 #group_select_btn {
 	border: none;
 	cursor: pointer;	
-	color: white;
+	color: #36393F;
 	display: inline-block;
-	background-color: #36393F;
-	text-decoration: underline;
+	background-color: #e8e1d7;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 8px;
+	text-transform: uppercase;
+	font-weight: 800;
 }
 #group_select_btn:hover {
-	background-color: grey;
+	text-decoration: underline;
 }
 
 #chat_button {
+	font-family: 'Montserrat', sans-serif;
 	border: none;
 	cursor: pointer;	
 	display: inline-block;
-	background-color: #36393F;
-	color: white;
+	color: #36393F;
+	margin-left: 15px;
+	background-color: #e8e1d7;
+	border: 1px solid #36393F;
+	border-radius: 5px;
+	padding: 2px;
+	margin-top: 4px;
+	border-left: 8px solid #0E79B2;
 }
 #chat_button:hover {
-	background-color: grey;
+	background-color: #0E79B2;
+	border-color:#0E79B2; 
+	color: white;
 }
 
 #column_buttons {
+	font-family: 'Montserrat', sans-serif;
 	text-align: center;
 	margin: auto;
 }
 #add_group_btn {
+	font-family: 'Montserrat', sans-serif;
 	border: none;
 	color: white;
-	background-color: #36393F;
+	background-color: #BF1363;
 	cursor: pointer;
 }
 #add_group_btn:hover {
@@ -105,25 +149,34 @@ section {
 	width: 100%;
 }
 #columnOne {
-	background-color: #36393F;
+	background-color: #e8e1d7;
 }
 #columnOne_two {
 	overflow-y: auto;
 }
 
 #addChat {
-	border: none;
+	font-family: 'Montserrat', sans-serif;
 	cursor: pointer;	
 	display: inline-block;
-	background-color: #36393F;
-	color: white;
+	color: #36393F;
+	margin-left: 15px;
+	background-color: #e8e1d7;
+	border: 1px solid #36393F;
+	border-radius: 5px;
+	padding: 2px;
+	margin-top: 4px;
+	border-left: 8px solid #BF1363;
 }
 #addChat:hover {
-	background-color: grey;
+	background-color: #BF1363;
+	border-color: #BF1363;
+	color: white;
 }
 
 
 .menu_button {
+	font-family: 'Montserrat', sans-serif;
 	text-align: center;
 	cursor: pointer;
 	background-color: white;
@@ -151,7 +204,10 @@ section {
 .column2 {
 	top: 0;
 	bottom: 0;
-	width: 80%
+	width: 80%;
+	background-color: #e0e0e0;
+	border-left: 1px solid #36393F;
+	border-right: 1px solid #36393F;
 }
 
 .column3 {
@@ -309,24 +365,31 @@ message display stuff
 ************************************************/
 #message_incoming {
 	display: inline-block;
-	background-color: #c6c6c6;
-	border-radius: 5px;
+	/*background-color: #FCE3E9;*/
+	background-color: white;
+	border-radius: 8px;
 	margin: 15px;
 	max-width: 50%;
 	padding: 10px;
-	text-align: right;
+	text-align: left;
+	font-size: 85%;
+	/*border: 1px solid #36393F;*/
+	border: 3px solid #FCBDCE;
 }
 
 
 #message_outgoing {
 	display: inline-block;
-	background-color: #CEDFFA;
-	text-align: left;
-	border-radius: 5px;
+	/*background-color: #e8e1d7;*/
+	background-color: white;
+	border-radius: 8px;
 	margin: 15px;
 	max-width: 50%;
 	padding: 10px;
 	float: right;
+	font-size: 85%;
+	/*border: 1px solid #36393F;*/
+	border: 3px solid #E8D4B9;
 }
 
 
