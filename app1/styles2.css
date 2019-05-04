@@ -67,23 +67,24 @@ section {
 #group_select_btn {
 	border: none;
 	cursor: pointer;	
+	color: white;
 	display: inline-block;
-	background-color: grey;
+	background-color: #36393F;
 	text-decoration: underline;
 }
 #group_select_btn:hover {
-	background-color: #36393F;
+	background-color: grey;
 }
 
 #chat_button {
 	border: none;
 	cursor: pointer;	
 	display: inline-block;
-	background-color: grey;
-	color: blue;
+	background-color: #36393F;
+	color: white;
 }
 #chat_button:hover {
-	background-color: #36393F;
+	background-color: grey;
 }
 
 #column_buttons {
@@ -92,17 +93,19 @@ section {
 }
 #add_group_btn {
 	border: none;
-	color: grey;
+	color: white;
+	background-color: #36393F;
+	cursor: pointer;
 }
 #add_group_btn:hover {
-	background-color: #36393F;
+	background-color: grey;
 }
 #menu_bar {
 	background-color: #36393F;
 	width: 100%;
 }
 #columnOne {
-	background-color: grey;
+	background-color: #36393F;
 }
 #columnOne_two {
 	overflow-y: auto;
@@ -112,10 +115,11 @@ section {
 	border: none;
 	cursor: pointer;	
 	display: inline-block;
-	background-color: grey;
+	background-color: #36393F;
+	color: white;
 }
 #addChat:hover {
-	background-color: #36393F;
+	background-color: grey;
 }
 
 
