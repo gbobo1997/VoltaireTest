@@ -132,7 +132,7 @@ function deleteFile()
   var userToken = localStorage.getItem('token');
   var groupID = localStorage.getItem('group_id');
   var URL = 'http://73.153.45.13:8080/file/delete'; 
-  var data = {token : userToken, file_id : Number(fileID), group_id : groupID};
+  var data = {token : userToken, file_id : Number(fileID), group_id : Number(groupID)};
   console.log(data);
   var status;
   fetch(URL, { method: 'DELETE', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
@@ -140,7 +140,8 @@ function deleteFile()
   .then(response => {
     if(status == 200)
     {
-      document.getElementById('file_message').innerHTML = 'file deleted';  
+      document.getElementById('file_message').innerHTML = 'file deleted'; 
+      clearEditor(); 
       setTimeout(clearFileMessage, 2000); 
     }
     else
@@ -195,4 +196,11 @@ function loadFile(fileID)
 function clearFileMessage()
 {
   document.getElementById('file_message').innerHTML = '';
+}
+
+function clearEditor()
+{
+  document.getElementById('file_name').value = '';
+  document.getElementById('file_name').placeholder = 'filename.txt ...';
+  document.getElementById('md_input').value = 'Type **Markdown** here.';
 }

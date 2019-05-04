@@ -7,7 +7,10 @@ section {
 	margin: 0;
 	display: flex;
 }
-
+#groupAction {
+	height: 100%;
+	overflow-y: auto;
+}
 #settings_button {
 	background-color: #36393F;
 	border: none;
@@ -36,17 +39,53 @@ section {
 	background-color: grey;
 }
 
+#invites_button {
+	background-color: #36393F;
+	border: none;
+	color: white;
+	cursor: pointer;	
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-left: 6px;
+	padding-right: 12px;
+}
+#invites_button:hover {
+	background-color: grey;
+}
+
+
+#group_invite {
+	border: none;
+	cursor: pointer;	
+	display: inline-block;
+	background-color: grey;
+}
+#group_invite:hover {
+	background-color: #36393F;
+}
+
 #group_select_btn {
 	border: none;
 	cursor: pointer;	
 	display: inline-block;
 	background-color: grey;
 	text-decoration: underline;
-
 }
 #group_select_btn:hover {
 	background-color: #36393F;
 }
+
+#chat_button {
+	border: none;
+	cursor: pointer;	
+	display: inline-block;
+	background-color: grey;
+	color: blue;
+}
+#chat_button:hover {
+	background-color: #36393F;
+}
+
 #column_buttons {
 	text-align: center;
 	margin: auto;
