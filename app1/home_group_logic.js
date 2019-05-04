@@ -277,10 +277,33 @@ function getUserInvitations()
       for(var i = 0; i < invites.length; i++)
       {
         //group_invites
-        content += '<label>'+invites.SenderName+'</label><br><button onclick = "acceptInvite('+invites.GroupID+')">Accept</button>';
-        content += '<button onclick = "declineInvite('+invites.GroupID+')">Decline</button><hr><br>';
+        content += '<label>'+invites[i].SenderName+'</label><br><button type="button" onclick = "responseToInvite('+invites[i].GroupID+',\'true\')">Accept</button>';
+        content += '<button type="button" onclick = "responseToInvite('+invites[i].GroupID+',\'\')">Decline</button><hr>';
       }
       document.getElementById('group_invites').innerHTML = content;          
+    }
+    else
+    {
+      console.log(JSON.stringify(response));
+    }
+  })
+  .catch(error => console.log('Error: ', error));
+}
+
+function responseToInvite(groupID, c)
+{
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/respond'; 
+  var choice = Boolean(c);
+  var data = {token : userToken, confirmed : choice, group_id : Number(groupID)};
+  var status;
+  fetch(URL, { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      getUserInvitations();
+      fetchGroups();         
     }
     else
     {
