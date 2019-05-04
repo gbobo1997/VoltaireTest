@@ -42,8 +42,8 @@ async function validateFileIdTokenRoute(body, connection){
 }
 
 async function validateDeleteFile(body, connection){
-    if (body.file_id == null || !Number.isInteger(body.file_id) || body.group_id == null || !Number.isInteger(body.group_id) || body.file_name == null || body.file_content == null || body.token == null){
-        return new Error(400, 'invalid parameters, send the following body: {file_id : int, group_id : int, file_name : string, file_content : string, token : token}')
+    if (body.file_id == null || !Number.isInteger(body.file_id) || body.group_id == null || !Number.isInteger(body.group_id) || body.token == null){
+        return new Error(400, 'invalid parameters, send the following body: {file_id : int, group_id : int, token : token}')
     }
 
     const {valid, user_id} = tokenValid(body.token);
