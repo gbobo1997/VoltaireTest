@@ -221,6 +221,7 @@ function patchGroup(groupID)
       var apiResponse = JSON.stringify(response);
       console.log(apiResponse);
       document.getElementById('error').innerHTML = 'Name Change Success';
+      fetchGroups();
       setTimeout(clearErrorDiv, 2000);          
     }
     else
@@ -236,6 +237,56 @@ function patchGroup(groupID)
 
 function deleteGroup(groupID)
 {
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/delete'; 
+  var groupName = document.getElementById('newGroupName').value;
+  var data = {token : userToken, group_id : Number(groupID)};
+  var status;
+  fetch(URL, { method: 'DELETE', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      document.getElementById('error').innerHTML = 'Group Deleted';
+      fetchGroups();
+      setTimeout(clearErrorDiv, 2000);          
+    }
+    else
+    {
+      document.getElementById('error').innerHTML = 'could not update group';
+      setTimeout(clearErrorDiv, 2000);
+    }
+  })
+  .catch(error => console.log('Error: ', error));
+}
 
+function getUserInvitations()
+{
+  var userToken = localStorage.getItem('token');
+  var URL = 'http://73.153.45.13:8080/group/get_invites'; 
+  var data = {token : userToken};
+  var status;
+  fetch(URL, { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})
+  .then(res => { status = res.status; return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var content = '';
+      var invites = response.invitations;
+      console.log(JSON.stringify(response));
+      for(var i = 0; i < invites.length; i++)
+      {
+        //group_invites
+        content += '<label>'+invites.SenderName+'</label><br><button onclick = "acceptInvite('+invites.GroupID+')">Accept</button>';
+        content += '<button onclick = "declineInvite('+invites.GroupID+')">Decline</button><hr><br>';
+      }
+      document.getElementById('group_invites').innerHTML = content;          
+    }
+    else
+    {
+      console.log(JSON.stringify(response));
+    }
+  })
+  .catch(error => console.log('Error: ', error));
 }
 

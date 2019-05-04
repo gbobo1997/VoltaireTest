@@ -72,5 +72,46 @@ function renderInvite(groupID)
 
 function modalInvites() 
 {
-  
+  var content =  '<label> Invites: </label><br><div id="group_invites">'+
+  '</div><br><button type="button" onclick="renderUserIDDialog()">Get your ID</button>';
+  openModal(content);
+  getUserInvitations();
+}
+
+function renderUserIDDialog()
+{
+  var content = '<center><form><label>Email:</label><input type="text" name="uName" id="uName" required><br><label>Password:</label><input type="password" name="password" id="pWord" required><br><button type="button" onclick="loginConfirm()">Login</button></form><div id="error_display"></div></center>';
+  openModal(content);
+}
+function displayID(ID)
+{
+  var content = '<label>User ID: </label>'+ID;
+  openModal(content);
+}
+function loginConfirm()
+{
+  var username = document.getElementById("uName").value;
+  var password = document.getElementById("pWord").value;
+  var URL = 'http://73.153.45.13:8080/auth/login';
+  var bodyData = {name: username, password: password};
+  var status = '';
+  fetch(URL, {method: 'POST',body: JSON.stringify(bodyData),headers :{ 'Content-Type':'application/json'}
+  })
+  .then(res => {status = res.status;return res.json();})
+  .then(response => {
+    if(status == 200)
+    {
+      var apiResponse = JSON.stringify(response); 
+      console.log(apiResponse);
+      displayID(response.user_id);
+    }
+    else
+    {
+      // update the user
+      document.getElementById("error_display").innerHTML = '<br><b>Invalid login<b>';
+      window.setTimeout(clearErrorDiv, 2000);
+    }
+    
+  })
+  .catch(error => console.log('Error: ', error))
 }
