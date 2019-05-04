@@ -132,7 +132,7 @@ function deleteFile()
   var userToken = localStorage.getItem('token');
   var groupID = localStorage.getItem('group_id');
   var URL = 'http://73.153.45.13:8080/file/delete'; 
-  var data = {token : userToken, file_id : Number(fileID), group_id : groupID};
+  var data = {token : userToken, file_id : Number(fileID), group_id : Number(groupID)};
   console.log(data);
   var status;
   fetch(URL, { method: 'DELETE', body: JSON.stringify(data), headers: {'Content-Type':'application/json'}})

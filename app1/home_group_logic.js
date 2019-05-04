@@ -65,8 +65,8 @@ function listGroups(data)
     +data.groups[i].group_id+')"><i>'
     +data.groups[i].group_name+'</i></button>'
     +'<button id="group_edit_btn" onclick="editGroup('
-    +data.groups[i].group_id+',\''+data.groups[i].group_name+'\')">#</button><br></div>';
-    content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">└ add chat</button>'; 
+    +data.groups[i].group_id+',\''+data.groups[i].group_name+'\')">#</button><br></div><div id="chats_'+data.groups[i].group_id+'"></div>';
+    content+= '<button id="addChat" onclick="createChat('+data.groups[i].group_id+')">├ add chat</button>'; 
     content +='<button id="group_invite" onclick="renderInvite('+data.groups[i].group_id+')">└ invite</button>'; 
   }
   document.getElementById('columnOne_two').innerHTML+=content;
@@ -106,10 +106,10 @@ function renderGroup(groupID)
       var content = '';
       for(var i = 0; i < response.chats.length; i++)
       {
-        content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">'+response.chats[i].ChatName+'</button>';
+        content +='<button id="chat_button" onclick="loadChat('+response.chats[i].ChatID+','+groupID+')">├ '+response.chats[i].ChatName+'</button>';
       }
       
-      document.getElementById(groupID).innerHTML+=content;
+      document.getElementById('chats_'+groupID).innerHTML=content;
       getGroupFiles(groupID);
     }
     else
