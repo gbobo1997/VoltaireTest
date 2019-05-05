@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 body {
 	margin: 0;
-
+	background-color: #e8e1d7;
 	font-family: 'Montserrat', sans-serif;
 }
 
@@ -147,6 +147,7 @@ section {
 #menu_bar {
 	background-color: #36393F;
 	width: 100%;
+	border-bottom: 1px solid white;
 }
 #columnOne {
 	background-color: #e8e1d7;
@@ -344,7 +345,7 @@ switch box styling shit
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #F39237;
 }
 
 input:focus + .slider {
@@ -410,6 +411,8 @@ message input stuff
 
 #textAreaInput {
 	border: none;
+	border-radius: 5px;
+	width: 98%;
 }
 
 #input_content {
@@ -425,13 +428,15 @@ message input stuff
 	position: relative;
 }
 #message_button {
-	background-color: #CEDFFA;
+	background-color: #E8D4B9;
+	color: #36393F;
 	border: none;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	padding-left: 10px;
 	padding-right: 10px;
 	display: inline;
+	border-radius: 5px;
 }
 
 
@@ -441,31 +446,79 @@ markdown editor header
 
 ********************************/
 #editor_header {
-	background-color: grey;
+	background-color: #e8e1d7;
 	display: inline-block;
 	width: 100%;
 }
 
-textarea {
+#md_input {
 	width: 100%;
      -webkit-box-sizing: border-box;
      resize: vertical;
+     height: 300px;
 }
 
 #md_preview {
 	overflow-y: auto;
+	overflow-x: scroll;
 	max-height: 85vh;
 	margin-left: 5px;
+	background-color: white;
+	display: none;
 }
 
 #file_name {
-	background-color: grey;
+	background-color: #e8e1d7;
+	font-family: 'Montserrat', sans-serif;
 	border: none;
 	color: black;
+	margin-left: 2px;
+	font-size: 110%;
 }
 #file_name::placeholder {
 	color: black;
 }
 
+#file_entity {
+	border: none;
+	padding: 3px;
+	margin-left: 15px;
+	margin-top: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+	background-color: #e8e1d7;
+	color: #36393F;
+	border: 1px solid #36393F;
+}
+#file_entity:hover {
+	color: white;
+	background-color: #36393F;
+}
 
+#toggle_style {
+	margin-left: 40px;
+	vertical-align: middle;
+}
+#file_options {
+	background-color: #e8e1d7;
+	display: flex;
+  justify-content: center;
+
+}
+
+#file_options > button {	
+	border: none;
+	border-radius: 5px;
+	padding: 5px;	
+	margin-left: 5px;
+	cursor: pointer;
+	background-color: #e8e1d7;
+	color: #36393F;
+	border: 1px solid #36393F;
+}
+
+#file_options > button:hover{
+	color: white;
+	background-color: #36393F;
+}
 

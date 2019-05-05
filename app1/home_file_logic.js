@@ -158,11 +158,11 @@ function deleteFile()
 function renderFiles(data)
 {
   // group_files
-  document.getElementById('group_files').innerHTML='<hr>';
+  document.getElementById('group_files').innerHTML='<hr><b>Files:</b><br>';
   var content = '';
   for(var i =0; i < data.length; i++)
   {
-    content += '<button onclick="loadFile('+data[i].FileID+')">'+data[i].FileName+'</button><br>'
+    content += '<button id="file_entity" onclick="loadFile('+data[i].FileID+')">'+data[i].FileName+'</button><br>'
   }
   console.log(content);
   document.getElementById('group_files').innerHTML+=content;
