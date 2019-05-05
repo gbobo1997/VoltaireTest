@@ -1,13 +1,13 @@
 checkLogin();
 function rdsLogin()
 {
-  var content = '<center><button type="button" onclick="homeLoad()">Back</button><h1>Login</h1><br><form><label>Email:</label><input type="text" name="uName" id="uName" required><br><label>Password:</label><input type="password" name="password" id="pWord" required><br><button type="button" onclick="loginConfirm()">Login</button></form><div id="error_display"></div></center>';
+  var content = '<center><h3>Login</h3><form><label>Email:</label><input type="text" name="uName" id="uName" required><br><label>Password:</label><input type="password" name="password" id="pWord" required><br><button type="button" onclick="loginConfirm()">Login</button><button type="button" onclick="homeLoad()">Back</button></form><div id="error_display"></div></center>';
   document.getElementById("loginArea2").innerHTML = content;
 }
 
 function rdsSignup()
 {
-  var content = '<center><button type="button" onclick="homeLoad()">Back</button><h1>Signup</h1><br><form><label>Screenname:</label><input type="text" name="screenName" id="screenName" required><br><label>Email:</label><input type="text" name="email" id="email"><br><label>Password:</label><input type="password" name="password" id="pWord"><br><button type="button" onclick="signupConfirm()">Signup</button></form><div id="error_display"></div></center>';
+  var content = '<center><h3>Signup</h3><form><label>Screenname:</label><input type="text" name="screenName" id="screenName" required><br><label>Email:</label><input type="text" name="email" id="email"><br><label>Password:</label><input type="password" name="password" id="pWord"><br><button type="button" onclick="signupConfirm()">Signup</button><button type="button" onclick="homeLoad()">Back</button></form><div id="error_display"></div></center>';
   document.getElementById("loginArea2").innerHTML = content;
 }
 

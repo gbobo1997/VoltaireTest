@@ -158,7 +158,7 @@ function deleteFile()
 function renderFiles(data)
 {
   // group_files
-  document.getElementById('group_files').innerHTML='<hr><b>Files:</b><br>';
+  document.getElementById('group_files').innerHTML='<hr width="80%" align="left"><div id="file_header">Files</div><br>';
   var content = '';
   for(var i =0; i < data.length; i++)
   {

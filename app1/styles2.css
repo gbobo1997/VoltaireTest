@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 body {
 	margin: 0;
-	background-color: #e8e1d7;
+	background-color: #36393F;
 	font-family: 'Montserrat', sans-serif;
 }
 
@@ -61,10 +61,10 @@ section {
 }
 
 #group_edit_btn {
-	background-color: #e8e1d7;
+	background-color: #36393F;
 	border: none;
 	font-family: 'Montserrat', sans-serif;
-	color: #36393F;
+	color: white;
 	cursor: pointer;	
 	display: inline-block;
 }
@@ -78,7 +78,7 @@ section {
 	display: inline-block;	
 	font-family: 'Montserrat', sans-serif;
 	margin-left: 15px;
-	background-color: #e8e1d7;
+	background-color: white;
 	border: 1px solid #36393F;
 	border-radius: 5px;
 	padding: 2px;
@@ -96,7 +96,7 @@ section {
 	cursor: pointer;	
 	color: #36393F;
 	display: inline-block;
-	background-color: #e8e1d7;
+	background-color: white;
 	font-family: 'Montserrat', sans-serif;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -116,7 +116,7 @@ section {
 	display: inline-block;
 	color: #36393F;
 	margin-left: 15px;
-	background-color: #e8e1d7;
+	background-color: white;
 	border: 1px solid #36393F;
 	border-radius: 5px;
 	padding: 2px;
@@ -147,10 +147,9 @@ section {
 #menu_bar {
 	background-color: #36393F;
 	width: 100%;
-	border-bottom: 1px solid white;
 }
 #columnOne {
-	background-color: #e8e1d7;
+	background-color: #36393F;
 }
 #columnOne_two {
 	overflow-y: auto;
@@ -162,7 +161,7 @@ section {
 	display: inline-block;
 	color: #36393F;
 	margin-left: 15px;
-	background-color: #e8e1d7;
+	background-color: white;	
 	border: 1px solid #36393F;
 	border-radius: 5px;
 	padding: 2px;
@@ -206,12 +205,11 @@ section {
 	top: 0;
 	bottom: 0;
 	width: 80%;
-	background-color: #e0e0e0;
-	border-left: 1px solid #36393F;
-	border-right: 1px solid #36393F;
+	background-color: #686B72;
 }
 
 .column3 {
+	border-top: 1px solid white;
 	top: 0;
 	bottom: 0;
 	width: 80%;
@@ -345,11 +343,10 @@ switch box styling shit
 }
 
 input:checked + .slider {
-  background-color: #F39237;
+  background-color: #03CEA4;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
 }
 
 input:checked + .slider:before {
@@ -368,29 +365,27 @@ message display stuff
 	display: inline-block;
 	/*background-color: #FCE3E9;*/
 	background-color: white;
-	border-radius: 8px;
+	border-top: 12px solid #FCBDCE;
+	border-radius: 0px 8px 8px 8px;
 	margin: 15px;
 	max-width: 50%;
 	padding: 10px;
 	text-align: left;
 	font-size: 85%;
-	/*border: 1px solid #36393F;*/
-	border: 3px solid #FCBDCE;
 }
 
 
 #message_outgoing {
 	display: inline-block;
-	/*background-color: #e8e1d7;*/
 	background-color: white;
-	border-radius: 8px;
+	border-top: 12px solid #0E79B2;
+	border-radius: 0px 8px 8px 8px;
 	margin: 15px;
 	max-width: 50%;
 	padding: 10px;
 	float: right;
 	font-size: 85%;
-	/*border: 1px solid #36393F;*/
-	border: 3px solid #E8D4B9;
+	color: black;
 }
 
 
@@ -420,16 +415,17 @@ message input stuff
 	float: left;
 }
 #message_box {
-	border: 1px solid gray;
+	border: none;
 	width: 87%;
 	margin: auto;
 	padding: 10px;
 	border-radius: 10px;
 	position: relative;
+	background-color: #36393F;
 }
 #message_button {
-	background-color: #E8D4B9;
-	color: #36393F;
+	background-color: #0E79B2;
+	color: white;
 	border: none;
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -446,9 +442,10 @@ markdown editor header
 
 ********************************/
 #editor_header {
-	background-color: #e8e1d7;
+	background-color: #36393F;
 	display: inline-block;
 	width: 100%;
+	margin-top: 5px;
 }
 
 #md_input {
@@ -468,15 +465,15 @@ markdown editor header
 }
 
 #file_name {
-	background-color: #e8e1d7;
+	background-color: #36393F;
 	font-family: 'Montserrat', sans-serif;
 	border: none;
-	color: black;
+	color: white;
 	margin-left: 2px;
 	font-size: 110%;
 }
 #file_name::placeholder {
-	color: black;
+	color: white;
 }
 
 #file_entity {
@@ -486,39 +483,59 @@ markdown editor header
 	margin-top: 5px;
 	border-radius: 5px;
 	cursor: pointer;
-	background-color: #e8e1d7;
+	background-color: white;
 	color: #36393F;
 	border: 1px solid #36393F;
+	border-left: 8px solid #03CEA4;
 }
 #file_entity:hover {
 	color: white;
-	background-color: #36393F;
+	background-color: #03CEA4;
 }
 
 #toggle_style {
-	margin-left: 40px;
+	margin-left: 90px;
 	vertical-align: middle;
+	color: #03CEA4;
 }
 #file_options {
-	background-color: #e8e1d7;
+	background-color: #36393F;
 	display: flex;
-  justify-content: center;
-
+  	justify-content: center;
+  	margin-top: 3px;
 }
 
 #file_options > button {	
 	border: none;
-	border-radius: 5px;
 	padding: 5px;	
 	margin-left: 5px;
 	cursor: pointer;
-	background-color: #e8e1d7;
+	background-color: white;
 	color: #36393F;
-	border: 1px solid #36393F;
+	border-left: 5px solid #03CEA4;
 }
 
 #file_options > button:hover{
 	color: white;
-	background-color: #36393F;
+	background-color: #03CEA4;
+}
+
+#file_header {
+	color: #36393F;
+	display: inline-block;
+	background-color: white;
+	font-family: 'Montserrat', sans-serif;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-left: 5px;
+	padding-right: 8px;
+	text-transform: uppercase;
+	font-weight: 200;
+}
+
+*:focus {
+	outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #719ECE;
 }
 
